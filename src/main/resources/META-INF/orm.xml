@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm
+http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+                 version="1.0">
+    <description>ORM JPA XML Schema</description>
+
+    <package>com.depvin.pps.model</package>
+
+    <entity class="com.depvin.pps.model.Utente" name="Utente">
+        <table name="Utente" />
+        <inheritance strategy="JOINED" />
+        <discriminator-column name="ruolo" />
+        <attributes>
+            <id name="username">
+                <generated-value strategy="IDENTITY" />
+            </id>
+            <!-- nome, cognome -->
+        </attributes>
+    </entity>
+
+    <entity class="com.depvin.pps.model.Amministratore" name="Amministratore">
+        <table name="Amministratore"/>
+        <discriminator-value>A</discriminator-value>
+    </entity>
+
+    <entity class="com.depvin.pps.model.CapoProgetto" name="CapoProgetto">
+        <table name="CapoProgetto"/>
+        <discriminator-value>C</discriminator-value>
+        <attributes>
+            <one-to-many name="progetti" target-entity="com.depvin.pps.model.Progetto">
+                <join-column name="capoprogetto" />
+            </one-to-many>
+        </attributes>
+    </entity>
+
+    <entity class="com.depvin.pps.model.Dipendente" name="Dipendente">
+        <table name="Dipendente" />
+        <discriminator-value>D</discriminator-value>
+        <attributes>
+            <many-to-many name="progetti" target-entity="com.depvin.pps.model.Progetto">
+                <join-table name="DipendentiProgetto">
+                    <join-column name="dipendente" />
+                    <inverse-join-column name="progetto" />
+                </join-table>
+            </many-to-many>
+            <one-to-many name="ordini" target-entity="com.depvin.pps.model.Ordine" mapped-by="dipendente" />
+        </attributes>
+    </entity>
+
+    <entity class="com.depvin.pps.model.Magazziniere" name="Magazziniere">
+        <table name="Magazziniere"/>
+        <discriminator-value>M</discriminator-value>
+        <attributes>
+            <one-to-one name="magazzino">
+                <join-column name="magazzino" />
+            </one-to-one>
+        </attributes>
+    </entity>
+
+    <entity class="com.depvin.pps.model.Articolo" name="Articolo">
+        <table name="Articolo" />
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY" />
+            </id>
+            <basic name="immagine">
+                <lob/>
+            </basic>
+            <!-- nome, descrizione, prezzo -->
+            <many-to-one name="prodotto">
+                <join-column name="prodotto" />
+            </many-to-one>
+            <many-to-one name="produttore">
+                <join-column name="produttore" />
+            </many-to-one>
+            <many-to-one name="fornitore">
+                <join-column name="fornitore" />
+            </many-to-one>
+        </attributes>
+    </entity>
+
+    <entity class="com.depvin.pps.model.Categoria" name="Categoria">
+        <table name="Categoria" />
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY" />
+            </id>
+            <!-- nome -->
+        </attributes>
+    </entity>
+
+    <entity class="com.depvin.pps.model.Fornitore" name="Fornitore">
+        <table name="Fornitore" />
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY" />
+            </id>
+            <!-- nome -->
+        </attributes>
+    </entity>
+
+    <entity class="com.depvin.pps.model.Prodotto" name="Prodotto">
+        <table name="Prodotto" />
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY" />
+            </id>
+            <!-- nome -->
+            <many-to-many name="categorie">
+                <join-table name="CategorieProdotti">
+                    <join-column name="prodotto" />
+                    <inverse-join-column name="categoria" />
+                </join-table>
+            </many-to-many>
+        </attributes>
+    </entity>
+
+    <entity class="com.depvin.pps.model.Produttore" name="Produttore">
+        <table name="Produttore" />
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY" />
+            </id>
+            <!-- nome -->
+        </attributes>
+    </entity>
+
+    <embeddable class="ArticoloOrdine">
+        <attributes>
+            <many-to-one name="articolo">
+                <join-column name="articolo" />
+            </many-to-one>
+            <!-- quantita -->
+            <many-to-one name="magazzino">
+                <join-column name="magazzino" />
+            </many-to-one>
+        </attributes>
+    </embeddable>
+
+    <entity class="com.depvin.pps.model.Ordine" name="Ordine">
+        <table name="Ordine" />
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY" />
+            </id>
+            <!-- nome -->
+            <many-to-one name="dipendente" target-entity="com.depvin.pps.model.Dipendente">
+                <join-column name="dipendente" />
+            </many-to-one>
+            <many-to-one name="progetto">
+                <join-column name="progetto" />
+            </many-to-one>
+            <element-collection name="articoliOrdine">
+                <collection-table name="ArticoloOrdine">
+                    <join-column name="ordine" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </entity>
+
+    <entity class="com.depvin.pps.model.Progetto" name="Progetto">
+        <table name="Progetto" />
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY" />
+            </id>
+            <!-- nome, budget -->
+            <many-to-one name="sede">
+                <join-column name="sede" />
+            </many-to-one>
+            <one-to-many name="ordini" target-entity="com.depvin.pps.model.Ordine" mapped-by="progetto">
+        </attributes>
+    </entity>
+
+    <entity class="com.depvin.pps.model.Nazione" name="Nazione">
+        <table name="Nazione" />
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY" />
+            </id>
+            <!-- nome, prezzoSpedizione -->
+        </attributes>
+    </entity>
+
+    <entity class="com.depvin.pps.model.Sede" name="Sede">
+        <table name="Sede" />
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY" />
+            </id>
+            <!-- nome -->
+            <many-to-one name="nazione">
+                <join-column name="nazione" />
+            </many-to-one>
+        </attributes>
+    </entity>
+
+    <embeddable class="com.depvin.pps.model.ArticoloMagazzino">
+        <attributes>
+            <many-to-one name="articolo">
+                <join-column name="articolo" />
+            </many-to-one>
+            <!-- quantita -->
+        </attributes>
+    </embeddable>
+
+    <entity class="com.depvin.pps.model.Magazzino" name="Magazzino">
+        <table name="Magazzino" />
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY" />
+            </id>
+            <!-- nome -->
+            <element-collection name="articoliMagazzino">
+                <collection-table name="ArticoloMagazzino">
+                    <join-column name="magazzino" />
+                </collection-table>
+            </element-collection>
+            <many-to-one name="sede">
+                <join-column name="sede" />
+            </many-to-one>
+        </attributes>
+    </entity>
+</entity-mappings>
