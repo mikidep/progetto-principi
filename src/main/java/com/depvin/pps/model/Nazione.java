@@ -12,6 +12,8 @@ public class Nazione {
     private String nome;
     private float prezzoSpedizione;
 
+    protected Nazione() {}
+
     public Nazione(String nome, float prezzoSpedizione) {
         this.nome = nome;
         this.prezzoSpedizione = prezzoSpedizione;

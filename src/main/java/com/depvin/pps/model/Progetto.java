@@ -15,6 +15,8 @@ public class Progetto {
     private Sede sede;
     private List<Ordine> ordini;
 
+    protected Progetto() {}
+
     public Progetto(String nome, float budget, Sede sede) {
         this.nome = nome;
         this.budget = budget;

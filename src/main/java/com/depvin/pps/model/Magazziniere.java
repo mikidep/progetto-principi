@@ -8,8 +8,10 @@ package com.depvin.pps.model;
 public class Magazziniere extends Utente {
     private Magazzino magazzino;
 
-    public Magazziniere(String username, Magazzino magazzino) {
-        super(username);
+    protected Magazziniere() {}
+
+    public Magazziniere(String username, byte[] passwordHash, Magazzino magazzino) {
+        super(username, passwordHash);
         this.magazzino = magazzino;
     }
 

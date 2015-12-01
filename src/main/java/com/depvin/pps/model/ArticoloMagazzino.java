@@ -9,6 +9,8 @@ public class ArticoloMagazzino {
     private Articolo articolo;
     private int disponibilita;
 
+    protected ArticoloMagazzino() {}
+
     public ArticoloMagazzino(Articolo articolo, int disponibilita) {
         this.articolo = articolo;
         this.disponibilita = disponibilita;

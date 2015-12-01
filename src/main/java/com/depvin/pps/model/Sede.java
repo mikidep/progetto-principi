@@ -10,6 +10,8 @@ public class Sede {
     private String nome;
     private Nazione nazione;
 
+    protected Sede() {}
+
     public Sede(String nome, Nazione nazione) {
         this.nome = nome;
         this.nazione = nazione;

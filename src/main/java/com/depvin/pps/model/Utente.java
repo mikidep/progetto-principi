@@ -9,17 +9,27 @@ import javax.persistence.*;
 
 public class Utente {
     private String username;
-
+    private byte[] passwordHash;
     private String nome;
-
     private String cognome;
 
-    public Utente(String username) {
+    protected Utente() {}
+
+    public Utente(String username, byte[] passwordHash) {
         this.username = username;
+        this.passwordHash = passwordHash;
     }
 
     public String getUsername() {
         return username;
+    }
+
+    public byte[] getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(byte[] passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public String getNome() {

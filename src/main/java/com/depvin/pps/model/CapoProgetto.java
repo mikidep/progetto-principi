@@ -10,8 +10,11 @@ import java.util.List;
 public class CapoProgetto extends Utente {
     List<Progetto> progetti;
 
-    public CapoProgetto(String username) {
-        super(username);
+    protected CapoProgetto() {
+    }
+
+    public CapoProgetto(String username, byte[] passwordHash) {
+        super(username, passwordHash);
     }
 
     public List<Progetto> getProgetti() {

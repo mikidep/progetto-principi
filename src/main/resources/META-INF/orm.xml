@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml version="1.0" encoding="UTF-8" ?>
-<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm
-http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
-                 version="1.0">
+                 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm
+http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+                 version="2.1">
     <description>ORM JPA XML Schema</description>
 
     <package>com.depvin.pps.model</package>
@@ -17,6 +16,9 @@ http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
             <id name="username">
                 <generated-value strategy="IDENTITY" />
             </id>
+            <basic name="passwordHash">
+                <lob/>
+            </basic>
             <!-- nome, cognome -->
         </attributes>
     </entity>
@@ -40,13 +42,13 @@ http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
         <table name="Dipendente" />
         <discriminator-value>D</discriminator-value>
         <attributes>
+            <one-to-many name="ordini" target-entity="com.depvin.pps.model.Ordine" mapped-by="dipendente" />
             <many-to-many name="progetti" target-entity="com.depvin.pps.model.Progetto">
                 <join-table name="DipendentiProgetto">
                     <join-column name="dipendente" />
                     <inverse-join-column name="progetto" />
                 </join-table>
             </many-to-many>
-            <one-to-many name="ordini" target-entity="com.depvin.pps.model.Ordine" mapped-by="dipendente" />
         </attributes>
     </entity>
 
@@ -128,18 +130,6 @@ http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
         </attributes>
     </entity>
 
-    <embeddable class="ArticoloOrdine">
-        <attributes>
-            <many-to-one name="articolo">
-                <join-column name="articolo" />
-            </many-to-one>
-            <!-- quantita -->
-            <many-to-one name="magazzino">
-                <join-column name="magazzino" />
-            </many-to-one>
-        </attributes>
-    </embeddable>
-
     <entity class="com.depvin.pps.model.Ordine" name="Ordine">
         <table name="Ordine" />
         <attributes>
@@ -171,7 +161,7 @@ http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
             <many-to-one name="sede">
                 <join-column name="sede" />
             </many-to-one>
-            <one-to-many name="ordini" target-entity="com.depvin.pps.model.Ordine" mapped-by="progetto">
+            <one-to-many name="ordini" target-entity="com.depvin.pps.model.Ordine" mapped-by="progetto" />
         </attributes>
     </entity>
 
@@ -198,6 +188,36 @@ http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
         </attributes>
     </entity>
 
+    <entity class="com.depvin.pps.model.Magazzino" name="Magazzino">
+        <table name="Magazzino" />
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY" />
+            </id>
+            <!-- nome -->
+            <many-to-one name="sede">
+                <join-column name="sede" />
+            </many-to-one>
+            <element-collection name="articoliMagazzino">
+                <collection-table name="ArticoloMagazzino">
+                    <join-column name="magazzino" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </entity>
+
+    <embeddable class="ArticoloOrdine">
+        <attributes>
+            <many-to-one name="articolo">
+                <join-column name="articolo" />
+            </many-to-one>
+            <!-- quantita -->
+            <many-to-one name="magazzino">
+                <join-column name="magazzino" />
+            </many-to-one>
+        </attributes>
+    </embeddable>
+
     <embeddable class="com.depvin.pps.model.ArticoloMagazzino">
         <attributes>
             <many-to-one name="articolo">
@@ -206,22 +226,4 @@ http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
             <!-- quantita -->
         </attributes>
     </embeddable>
-
-    <entity class="com.depvin.pps.model.Magazzino" name="Magazzino">
-        <table name="Magazzino" />
-        <attributes>
-            <id name="id">
-                <generated-value strategy="IDENTITY" />
-            </id>
-            <!-- nome -->
-            <element-collection name="articoliMagazzino">
-                <collection-table name="ArticoloMagazzino">
-                    <join-column name="magazzino" />
-                </collection-table>
-            </element-collection>
-            <many-to-one name="sede">
-                <join-column name="sede" />
-            </many-to-one>
-        </attributes>
-    </entity>
 </entity-mappings>

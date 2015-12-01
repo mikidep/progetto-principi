@@ -13,4 +13,30 @@ public class Magazzino {
 
     private List<ArticoloMagazzino> articoliMagazzino;
     private Sede sede;
+
+    protected Magazzino() {}
+
+    public Magazzino(Sede sede) {
+        this.sede = sede;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public List<ArticoloMagazzino> getArticoliMagazzino() {
+        return articoliMagazzino;
+    }
+
+    public Sede getSede() {
+        return sede;
+    }
 }

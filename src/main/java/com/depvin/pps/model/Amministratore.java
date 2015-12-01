@@ -6,7 +6,10 @@ package com.depvin.pps.model;
  */
 
 public class Amministratore extends Utente {
-    public Amministratore(String username) {
-        super(username);
+    protected Amministratore() {}
+
+    public Amministratore(String username, byte[] passwordHash) {
+        super(username, passwordHash);
     }
 }
+

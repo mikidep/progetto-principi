@@ -9,6 +9,8 @@ public class ArticoloOrdine {
     int quantita;
     Magazzino magazzino;
 
+    protected ArticoloOrdine() {}
+
     public ArticoloOrdine(Articolo articolo, int quantita, Magazzino magazzino) {
         this.articolo = articolo;
         this.quantita = quantita;

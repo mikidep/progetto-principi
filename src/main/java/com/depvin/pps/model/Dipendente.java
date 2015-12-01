@@ -8,11 +8,13 @@ import java.util.List;
  */
 
 public class Dipendente extends Utente {
-    List<Progetto> progetti;
-    List<Ordine> ordini;
+    private List<Progetto> progetti;
+    private List<Ordine> ordini;
 
-    public Dipendente(String username) {
-        super(username);
+    protected Dipendente() {}
+
+    public Dipendente(String username, byte[] passwordHash) {
+        super(username, passwordHash);
     }
 
     public List<Progetto> getProgetti() {

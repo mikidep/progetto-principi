@@ -16,6 +16,8 @@ public class Ordine {
 
     private List<ArticoloOrdine> articoliOrdine;
 
+    protected Ordine() {}
+
     public Ordine(String nome, Progetto progetto, Dipendente dipendente) {
         this.nome = nome;
         this.progetto = progetto;
@@ -59,7 +61,7 @@ public class Ordine {
         // Java -- Y U NO REDUCE!
         float t = 0.0f;
         for (ArticoloOrdine ao: articoliOrdine) {
-            t += ao.getParziale() /* + progetto.getMagazzino().getSpedizioneTo(ao.getMagazzino()) */;
+            t += ao.getParziale() + ao.getMagazzino().getSede().calcolaSpedizionePer(progetto.getSede());
         }
         return t;
     }
