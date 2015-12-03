@@ -39,4 +39,13 @@ public class Magazzino {
     public Sede getSede() {
         return sede;
     }
+
+    public boolean hasArticoloWithDisponibilita(Articolo a, int d) {
+        for (ArticoloMagazzino am: articoliMagazzino) {
+            if (am.getArticolo().getId() == a.getId() && am.getDisponibilita() >= d) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

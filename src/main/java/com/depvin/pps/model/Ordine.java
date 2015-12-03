@@ -1,6 +1,8 @@
 package com.depvin.pps.model;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Michele De Pascalis on 30/11/15.
@@ -60,8 +62,13 @@ public class Ordine {
         // return articoliOrdine reduce (_ + _)
         // Java -- Y U NO REDUCE!
         float t = 0.0f;
+        Set<Sede> sedi = new HashSet<Sede>();
         for (ArticoloOrdine ao: articoliOrdine) {
-            t += ao.getParziale() + ao.getMagazzino().getSede().calcolaSpedizionePer(progetto.getSede());
+            t += ao.getParziale();
+            sedi.add(ao.getMagazzino().getSede());
+        }
+        for (Sede s: sedi) {
+            t += s.calcolaSpedizionePer(progetto.getSede());
         }
         return t;
     }
