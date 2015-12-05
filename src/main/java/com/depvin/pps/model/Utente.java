@@ -4,7 +4,7 @@ package com.depvin.pps.model;
  * Created by Michele De Pascalis on 27/11/15.
  */
 
-public class Utente {
+public abstract class Utente {
     private String username;
     private byte[] passwordHash;
     private String nome;

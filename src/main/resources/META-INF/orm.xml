@@ -163,7 +163,11 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
             <many-to-one name="progetto">
                 <join-column name="progetto"/>
             </many-to-one>
-            <one-to-many name="articoliOrdine" target-entity="ArticoloOrdine" mapped-by="ordine"/>
+            <one-to-many name="articoliOrdine" target-entity="ArticoloOrdine" mapped-by="ordine">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
         </attributes>
     </entity>
 
@@ -215,7 +219,11 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
                 <join-column name="sede"/>
             </many-to-one>
             <one-to-many name="articoliMagazzino" target-entity="ArticoloMagazzino"
-                         mapped-by="magazzino"/>
+                         mapped-by="magazzino">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
         </attributes>
     </entity>
 
