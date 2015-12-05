@@ -7,12 +7,13 @@
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
-            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
-            <property name="javax.persistence.jdbc.url"    value="jdbc:postgresql://ec2-54-195-252-202.eu-west-1.compute.amazonaws.com:5432/d38rau9pqf28f7?ssl=true&amp;sslfactory=org.postgresql.ssl.NonValidatingFactory" />
-            <property name="javax.persistence.jdbc.user" value="ovjvkwhxjhlfeg" />
-            <property name="javax.persistence.jdbc.password" value="bV0869ydTsq_O1s68WhLUPm4JS" />
-            <property name="eclipselink.ddl-generation" value="create-tables" />
-            <property name="eclipselink.ddl-generation.output-mode" value="database" />
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:postgresql://ec2-54-195-252-202.eu-west-1.compute.amazonaws.com:5432/d38rau9pqf28f7?ssl=true&amp;sslfactory=org.postgresql.ssl.NonValidatingFactory"/>
+            <property name="javax.persistence.jdbc.user" value="ovjvkwhxjhlfeg"/>
+            <property name="javax.persistence.jdbc.password" value="bV0869ydTsq_O1s68WhLUPm4JS"/>
+            <property name="eclipselink.ddl-generation" value="create-tables"/>
+            <property name="eclipselink.ddl-generation.output-mode" value="database"/>
         </properties>
     </persistence-unit>
 </persistence>

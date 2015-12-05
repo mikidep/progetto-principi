@@ -2,21 +2,27 @@ package com.depvin.pps.model;
 
 /**
  * Created by Michele De Pascalis on 30/11/15.
- *
  */
 public class ArticoloOrdine {
-    Articolo articolo;
-    int quantita;
-    Magazzino magazzino;
+    private long id;
+    private Articolo articolo;
+    private int quantita;
+    private Magazzino magazzino;
+    private Ordine ordine;
+    private boolean richiesto = false;
 
-    private boolean richiesto;
+    protected ArticoloOrdine() {
+    }
 
-    protected ArticoloOrdine() {}
-
-    public ArticoloOrdine(Articolo articolo, int quantita, Magazzino magazzino) {
+    public ArticoloOrdine(Ordine ordine, Articolo articolo, int quantita, Magazzino magazzino) {
+        this.ordine = ordine;
         this.articolo = articolo;
         this.quantita = quantita;
         this.magazzino = magazzino;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public Articolo getArticolo() {
@@ -39,6 +45,10 @@ public class ArticoloOrdine {
         this.magazzino = magazzino;
     }
 
+    public Ordine getOrdine() {
+        return ordine;
+    }
+
     public boolean isRichiesto() {
         return richiesto;
     }
@@ -52,6 +62,12 @@ public class ArticoloOrdine {
     }
 
     public float getParziale() {
-        return quantita*articolo.getPrezzo();
+        return quantita * articolo.getPrezzo();
+    }
+
+    void verificaRichiestePerMagazzino(Magazzino magazzino) {
+        if (magazzino.hasArticoloWithDisponibilita(articolo, quantita) && richiesto) {
+            ordine.getDipendente().notificaDisponibilitàInMagazzino(this, magazzino);
+        }
     }
 }

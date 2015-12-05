@@ -2,10 +2,7 @@ package com.depvin.pps.model;
 
 /**
  * Created by Michele De Pascalis on 27/11/15.
- *
  */
-
-import javax.persistence.*;
 
 public class Produttore {
     private long id;

@@ -4,7 +4,6 @@ import java.util.List;
 
 /**
  * Created by Michele De Pascalis on 30/11/15.
- *
  */
 
 public class Progetto {
@@ -15,12 +14,17 @@ public class Progetto {
     private Sede sede;
     private List<Ordine> ordini;
 
-    protected Progetto() {}
+    protected Progetto() {
+    }
 
     public Progetto(String nome, float budget, Sede sede) {
         this.nome = nome;
         this.budget = budget;
         this.sede = sede;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getNome() {

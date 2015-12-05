@@ -1,10 +1,7 @@
 package com.depvin.pps.model;
 
-import javax.persistence.*;
-
 /**
  * Created by Michele De Pascalis on 27/11/15.
- *
  */
 
 public class Utente {
@@ -13,7 +10,8 @@ public class Utente {
     private String nome;
     private String cognome;
 
-    protected Utente() {}
+    protected Utente() {
+    }
 
     public Utente(String username, byte[] passwordHash) {
         this.username = username;

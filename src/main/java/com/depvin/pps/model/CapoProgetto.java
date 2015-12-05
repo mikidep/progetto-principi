@@ -4,7 +4,6 @@ import java.util.List;
 
 /**
  * Created by Michele De Pascalis on 30/11/15.
- *
  */
 
 public class CapoProgetto extends Utente {

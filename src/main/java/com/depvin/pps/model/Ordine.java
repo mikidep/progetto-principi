@@ -6,7 +6,6 @@ import java.util.Set;
 
 /**
  * Created by Michele De Pascalis on 30/11/15.
- *
  */
 
 public class Ordine {
@@ -18,7 +17,8 @@ public class Ordine {
 
     private List<ArticoloOrdine> articoliOrdine;
 
-    protected Ordine() {}
+    protected Ordine() {
+    }
 
     public Ordine(String nome, Progetto progetto, Dipendente dipendente) {
         this.nome = nome;
@@ -63,11 +63,11 @@ public class Ordine {
         // Java -- Y U NO REDUCE!
         float t = 0.0f;
         Set<Sede> sedi = new HashSet<Sede>();
-        for (ArticoloOrdine ao: articoliOrdine) {
+        for (ArticoloOrdine ao : articoliOrdine) {
             t += ao.getParziale();
             sedi.add(ao.getMagazzino().getSede());
         }
-        for (Sede s: sedi) {
+        for (Sede s : sedi) {
             t += s.calcolaSpedizionePer(progetto.getSede());
         }
         return t;

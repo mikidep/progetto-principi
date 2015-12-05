@@ -2,7 +2,6 @@ package com.depvin.pps.model;
 
 /**
  * Created by Michele De Pascalis on 30/11/15.
- *
  */
 
 public class Sede {
@@ -10,7 +9,8 @@ public class Sede {
     private String nome;
     private Nazione nazione;
 
-    protected Sede() {}
+    protected Sede() {
+    }
 
     public Sede(String nome, Nazione nazione) {
         this.nome = nome;
@@ -36,8 +36,7 @@ public class Sede {
     public float calcolaSpedizionePer(Sede s) {
         if (s.getId() == id) {
             return 0.0f;
-        }
-        else {
+        } else {
             return nazione.calcolaSpedizionePer(s.getNazione());
         }
     }

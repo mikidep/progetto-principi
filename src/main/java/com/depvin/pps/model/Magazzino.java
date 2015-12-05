@@ -4,7 +4,6 @@ import java.util.List;
 
 /**
  * Created by Michele De Pascalis on 30/11/15.
- *
  */
 
 public class Magazzino {
@@ -14,7 +13,8 @@ public class Magazzino {
     private List<ArticoloMagazzino> articoliMagazzino;
     private Sede sede;
 
-    protected Magazzino() {}
+    protected Magazzino() {
+    }
 
     public Magazzino(Sede sede) {
         this.sede = sede;
@@ -41,7 +41,7 @@ public class Magazzino {
     }
 
     public boolean hasArticoloWithDisponibilita(Articolo a, int d) {
-        for (ArticoloMagazzino am: articoliMagazzino) {
+        for (ArticoloMagazzino am : articoliMagazzino) {
             if (am.getArticolo().getId() == a.getId() && am.getDisponibilita() >= d) {
                 return true;
             }

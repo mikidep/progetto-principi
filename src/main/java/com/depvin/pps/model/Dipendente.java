@@ -6,12 +6,11 @@ import java.util.Set;
 
 /**
  * Created by Michele De Pascalis on 27/11/15.
- *
  */
 
 public class Dipendente extends Utente {
     public interface NotificaArticoloListener {
-        void articoloOrdineIsDisponibile(ArticoloOrdine articoloOrdine);
+        void articoloOrdineIsDisponibile(ArticoloOrdine articoloOrdine, Magazzino magazzino);
     }
 
     private List<Progetto> progetti;
@@ -19,7 +18,8 @@ public class Dipendente extends Utente {
 
     private Set<NotificaArticoloListener> listeners = new HashSet<NotificaArticoloListener>();
 
-    protected Dipendente() {}
+    protected Dipendente() {
+    }
 
     public Dipendente(String username, byte[] passwordHash) {
         super(username, passwordHash);
@@ -35,5 +35,11 @@ public class Dipendente extends Utente {
 
     public void addListener(NotificaArticoloListener listener) {
         listeners.add(listener);
+    }
+
+    void notificaDisponibilitàInMagazzino(ArticoloOrdine articoloOrdine, Magazzino magazzino) {
+        for (NotificaArticoloListener listener : listeners) {
+            listener.articoloOrdineIsDisponibile(articoloOrdine, magazzino);
+        }
     }
 }

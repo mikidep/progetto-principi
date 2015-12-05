@@ -6,7 +6,6 @@ import javax.persistence.Persistence;
 
 /**
  * Created by Michele De Pascalis on 01/12/15.
- *
  */
 
 public class StartUp {

@@ -1,8 +1,9 @@
 package com.depvin.pps.model;
 
+import java.util.List;
+
 /**
  * Created by Michele De Pascalis on 27/11/15.
- *
  */
 
 public class Articolo {
@@ -14,6 +15,7 @@ public class Articolo {
     private Prodotto prodotto;
     private Produttore produttore;
     private Fornitore fornitore;
+    private List<ArticoloOrdine> inOrdine;
 
     public long getId() {
         return id;
@@ -73,5 +75,11 @@ public class Articolo {
 
     public void setFornitore(Fornitore fornitore) {
         this.fornitore = fornitore;
+    }
+
+    void verificaRichiestePerMagazzino(Magazzino magazzino) {
+        for (ArticoloOrdine ao : inOrdine) {
+            ao.verificaRichiestePerMagazzino(magazzino);
+        }
     }
 }

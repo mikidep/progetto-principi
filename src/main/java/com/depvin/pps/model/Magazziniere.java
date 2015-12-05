@@ -2,13 +2,13 @@ package com.depvin.pps.model;
 
 /**
  * Created by Michele De Pascalis on 01/12/15.
- *
  */
 
 public class Magazziniere extends Utente {
     private Magazzino magazzino;
 
-    protected Magazziniere() {}
+    protected Magazziniere() {
+    }
 
     public Magazziniere(String username, byte[] passwordHash, Magazzino magazzino) {
         super(username, passwordHash);

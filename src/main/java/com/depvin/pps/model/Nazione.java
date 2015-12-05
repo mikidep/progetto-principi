@@ -2,7 +2,6 @@ package com.depvin.pps.model;
 
 /**
  * Created by Michele De Pascalis on 30/11/15.
- *
  */
 
 public class Nazione {
@@ -12,7 +11,8 @@ public class Nazione {
     private String nome;
     private float prezzoSpedizione;
 
-    protected Nazione() {}
+    protected Nazione() {
+    }
 
     public Nazione(String nome, float prezzoSpedizione) {
         this.nome = nome;
@@ -42,9 +42,8 @@ public class Nazione {
     public float calcolaSpedizionePer(Nazione n) {
         if (n.getId() == id) {
             return prezzoSpedizione;
-        }
-        else {
-            return  PREZZO_SPEDIZIONE_INTERNAZIONALE;
+        } else {
+            return PREZZO_SPEDIZIONE_INTERNAZIONALE;
         }
     }
 }
