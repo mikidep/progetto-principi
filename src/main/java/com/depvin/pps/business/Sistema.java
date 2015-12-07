@@ -1,10 +1,16 @@
 package com.depvin.pps.business;
 
+import com.depvin.pps.dao.NoSuchUserException;
 import com.depvin.pps.dao.UserAlreadyExistsException;
 import com.depvin.pps.dao.UtenteDAO;
 import com.depvin.pps.model.*;
+import com.sun.org.apache.bcel.internal.util.ByteSequence;
+import com.sun.xml.internal.ws.util.ByteArrayBuffer;
+import sun.nio.cs.UTF_32BE_BOM;
 
-import javax.persistence.EntityExistsException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 /**
@@ -18,6 +24,7 @@ public class Sistema {
             ourInstance = new Sistema();
         return ourInstance;
     }
+
 
     public ArrayList<ArticoloMagazzino> getListaMagazzino(Magazzino magazzino) {
         ArrayList<ArticoloMagazzino> lista = new ArrayList<ArticoloMagazzino>();
@@ -66,8 +73,10 @@ public class Sistema {
     }
 
     public void aggiungiDipendente(String username, String name, String surname, Progetto progetto, String password)
-            throws UserAlreadyExistsException {
-        //Hasshare dentro la password
+            throws NoSuchUserException {
+        if (UtenteDAO.getUtenteWithUsernameAndHash(username, HashPassword(password)) == null) {
+            //gestire più throws
+        }
     }
 
     public void aggiungiMagazziniere() {
@@ -81,5 +90,11 @@ public class Sistema {
     public void login(String username, byte[] hash) {
 
     }
+
+    public byte[] HashPassword(String password) {//Verrà aggiustata più avanti porcoddio
+        byte[] result = password.getBytes();
+        return result;
+    }
+
 
 }
