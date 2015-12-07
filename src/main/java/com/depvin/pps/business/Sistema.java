@@ -4,13 +4,9 @@ import com.depvin.pps.dao.NoSuchUserException;
 import com.depvin.pps.dao.UserAlreadyExistsException;
 import com.depvin.pps.dao.UtenteDAO;
 import com.depvin.pps.model.*;
-import com.sun.org.apache.bcel.internal.util.ByteSequence;
-import com.sun.xml.internal.ws.util.ByteArrayBuffer;
-import sun.nio.cs.UTF_32BE_BOM;
 
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 /**
@@ -24,7 +20,6 @@ public class Sistema {
             ourInstance = new Sistema();
         return ourInstance;
     }
-
 
     public ArrayList<ArticoloMagazzino> getListaMagazzino(Magazzino magazzino) {
         ArrayList<ArticoloMagazzino> lista = new ArrayList<ArticoloMagazzino>();
@@ -73,32 +68,59 @@ public class Sistema {
     }
 
     public void aggiungiDipendente(String username, String name, String surname, Progetto progetto, String password)
-            throws NoSuchUserException {
-        if (UtenteDAO.getUtenteWithUsernameAndHash(username, HashPassword(password)) == null) {
-            //gestire più throws
-        }
+            throws NoSuchUserException, UserAlreadyExistsException, NoSuchAlgorithmException {
+
+        //verifica dell'esistenza di un'altro dipendente
+
+        Dipendente dip = UtenteDAO.getNewDipendente(username, HashPassword(password));
+        dip.setCognome(surname);
+        dip.setNome(name);
+        dip.getProgetti().add(progetto);
     }
 
-    public void aggiungiMagazziniere() {
+    public void aggiungiMagazziniere(String username, String password, Magazzino magazzino, String name, String surname)
+            throws NoSuchUserException, UserAlreadyExistsException, NoSuchAlgorithmException {
 
+        //verifica dell'esistenza di un'altro dipendente
+
+        Magazziniere mag = UtenteDAO.getNewMagazziniere(username, HashPassword(password), magazzino);
+        mag.setNome(name);
+        mag.setCognome(surname);
     }
 
-    public void aggiungiCapoProgetto() {
+    public void aggiungiCapoProgetto(String name, String surname, String username, String Password)
+            throws NoSuchUserException, UserAlreadyExistsException, NoSuchAlgorithmException {
 
+        //verifica dell'esistenza di un'altro dipendente
+
+        CapoProgetto cap = UtenteDAO.getNewCapoProgetto(username, HashPassword(Password));
+        cap.setNome(name);
+        cap.setCognome(surname);
+    }
+
+    public void aggiungiAmministratore(String name, String surname, String username, String password)
+            throws NoSuchUserException, UserAlreadyExistsException, NoSuchAlgorithmException {
+
+        //verifica dell'esistenza di un'altro dipendente
+
+        Amministratore amm = UtenteDAO.getNewAmministratore(username, HashPassword(password));
+        amm.setNome(name);
+        amm.setCognome(surname);
     }
 
     public void login(String username, byte[] hash) {
 
     }
 
-    public byte[] HashPassword(String password) {//Verrà aggiustata più avanti porcoddio
-        byte[] result = new byte[0];
+    private byte[] HashPassword(String password) throws NoSuchAlgorithmException {
         try {
-            result = password.getBytes("UTF_32BE_BOM");
-        } catch (Exception e) {
-            System.out.println("errore");
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(password.getBytes());
+            byte byteData[] = md.digest();
+            return byteData;
+        } catch (NoSuchAlgorithmException e) {
+            throw new NoSuchAlgorithmException("No Provider supports a MessageDigestSpi implementation for the specified algorithm", e);
         }
-        return result;
     }
 
 
