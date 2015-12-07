@@ -92,7 +92,12 @@ public class Sistema {
     }
 
     public byte[] HashPassword(String password) {//Verrà aggiustata più avanti porcoddio
-        byte[] result = password.getBytes();
+        byte[] result = new byte[0];
+        try {
+            result = password.getBytes("UTF_32BE_BOM");
+        } catch (Exception e) {
+            System.out.println("errore");
+        }
         return result;
     }
 
