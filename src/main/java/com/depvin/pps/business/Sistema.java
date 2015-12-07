@@ -1,6 +1,11 @@
 package com.depvin.pps.business;
 
+import com.depvin.pps.dao.UserAlreadyExistsException;
+import com.depvin.pps.dao.UtenteDAO;
 import com.depvin.pps.model.*;
+
+import javax.persistence.EntityExistsException;
+import java.util.ArrayList;
 
 /**
  * Created by costantino on 05/12/15.
@@ -14,12 +19,12 @@ public class Sistema {
         return ourInstance;
     }
 
-    public void getListaMagazzino(Magazzino magazzino) {
-        for (ArticoloMagazzino am : magazzino.getArticoliMagazzino()) {
-            System.out.println("L'articolo " + am.getArticolo() + " è disponibile in "
-                    + am.getDisponibilita() + " pezzi nel magazzino " + am.getMagazzino());
-        }
-    }//Da cambiare più avanti con qualcosa di più serio
+    public ArrayList<ArticoloMagazzino> getListaMagazzino(Magazzino magazzino) {
+        ArrayList<ArticoloMagazzino> lista = new ArrayList<ArticoloMagazzino>();
+        for (ArticoloMagazzino am : magazzino.getArticoliMagazzino())
+            lista.add(am);
+        return lista;
+    }
 
     public void aggiungiProgetto(String nome, Sede sede, float budget, CapoProgetto capoProgetto) {
         Progetto progetto = new Progetto(nome, budget, sede);
@@ -38,35 +43,31 @@ public class Sistema {
             if (!ao.isDisponibile())
                 t++;
         }
-        if (t > 0)
-            System.out.println("Non si può chiudere l'ordine perchè non tutti gli articoli scelti sono disponibili");
-        else
+        if (t == 0)
             ordine.setEvaso(true);
     }
 
-    public void modificaBudget(Progetto progetto, float budget) {
+    public float modificaBudget(Progetto progetto, float budget) {
         float variab = progetto.getBudget() + budget;
         if (variab >= 0)
             progetto.setBudget(variab);
-        else
-            System.out.println("Errore nell'inserimento del budget, saldo del progetto negativo, ritenta");
-    }//l'errore sarà poi gestito dalle eccezzioni
+        return progetto.getBudget();
+    }
 
-    public void stampaOrdine(Ordine ordine) {
-        System.out.println("L'ordine del progetto: " + ordine.getProgetto() + " è composto da: ");
-        for (ArticoloOrdine ao : ordine.getArticoliOrdine()) {
-            System.out.println("L'articolo " + ao.getArticolo() + " in quantità " + ao.getQuantita() + " dal magazzino " + ao.getMagazzino());
-        }
-        System.out.println("Prezzo totale" + ordine.getTotale());
-    }//dovrebbe andare bene visto che il prof voleva una stampa
+    public ArrayList<ArticoloOrdine> stampaOrdine(Ordine ordine) {
+        ArrayList<ArticoloOrdine> lista = new ArrayList<ArticoloOrdine>();
+        for (ArticoloOrdine ao : ordine.getArticoliOrdine())
+            lista.add(ao);
+        return lista;
+    }
 
     public void richiediNotifica(ArticoloOrdine articoloOrdine) {
         articoloOrdine.setRichiesto(true);
-    }//Premesso che non si possa richiedere la disponibilità anche quando è disponibile le quantità necessarie
+    }
 
-
-    public void aggiungiDipendente() {
-
+    public void aggiungiDipendente(String username, String name, String surname, Progetto progetto, String password)
+            throws UserAlreadyExistsException {
+        //Hasshare dentro la password
     }
 
     public void aggiungiMagazziniere() {
