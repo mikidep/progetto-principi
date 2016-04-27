@@ -45,15 +45,19 @@ public class Sistema {
             if (!ao.isDisponibile())
                 t++;
         }
-        if (t == 0)
-            ordine.setEvaso(true);
+        if (t == 0) {
+            if (ordine.getTotale() <= ordine.getProgetto().getBudget()) {
+                float appoggio = ordine.getProgetto().getBudget() - ordine.getTotale();
+                ordine.getProgetto().setBudget(appoggio);
+                ordine.setEvaso(true);
+            }
+        }
     }
 
-    public float modificaBudget(Progetto progetto, float budget) {
+    public void modificaBudget(Progetto progetto, float budget) {
         float variab = progetto.getBudget() + budget;
         if (variab >= 0)
             progetto.setBudget(variab);
-        return progetto.getBudget();
     }
 
     public ArrayList<ArticoloOrdine> stampaOrdine(Ordine ordine) {
@@ -65,9 +69,9 @@ public class Sistema {
 
     public void richiediNotifica(ArticoloOrdine articoloOrdine) {
         articoloOrdine.setRichiesto(true);
-    }
+    }//da modificare, fatto male
 
-    public void aggiungiDipendente(String username, String name, String surname, Progetto progetto, String password)
+    public void aggiungiDipendente(String name, String surname, String username, String password)
             throws NoSuchUserException, UserAlreadyExistsException, NoSuchAlgorithmException {
 
         //verifica dell'esistenza di un'altro dipendente
@@ -75,10 +79,9 @@ public class Sistema {
         Dipendente dip = UtenteDAO.getNewDipendente(username, HashPassword(password));
         dip.setCognome(surname);
         dip.setNome(name);
-        dip.getProgetti().add(progetto);
     }
 
-    public void aggiungiMagazziniere(String username, String password, Magazzino magazzino, String name, String surname)
+    public void aggiungiMagazziniere(String name, String surname, Magazzino magazzino, String username, String password)
             throws NoSuchUserException, UserAlreadyExistsException, NoSuchAlgorithmException {
 
         //verifica dell'esistenza di un'altro dipendente
@@ -90,7 +93,6 @@ public class Sistema {
 
     public void aggiungiCapoProgetto(String name, String surname, String username, String Password)
             throws NoSuchUserException, UserAlreadyExistsException, NoSuchAlgorithmException {
-
         //verifica dell'esistenza di un'altro dipendente
 
         CapoProgetto cap = UtenteDAO.getNewCapoProgetto(username, HashPassword(Password));
@@ -108,8 +110,8 @@ public class Sistema {
         amm.setCognome(surname);
     }
 
-    public void login(String username, byte[] hash) {
-
+    public Utente login(String username, String password) throws NoSuchUserException, NoSuchAlgorithmException {
+        return UtenteDAO.getUtenteWithUsernameAndHash(username, HashPassword(password));
     }
 
     private byte[] HashPassword(String password) throws NoSuchAlgorithmException {
