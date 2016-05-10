@@ -7,6 +7,16 @@ import com.depvin.pps.model.*;
  */
 public class SessioneMagazziniere implements Sessione {
 
+    private Magazziniere magazziniere;
+
+    public SessioneMagazziniere(Magazziniere magazziniere) {
+        this.magazziniere = magazziniere;
+    }
+
+    public Magazziniere getUtente() {
+        return magazziniere;
+    }
+
     public void stampaOrdine(Ordine ordine) {
         Sistema.getInstance().stampaOrdine(ordine);
     }

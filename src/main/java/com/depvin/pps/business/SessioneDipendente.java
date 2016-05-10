@@ -1,6 +1,7 @@
 package com.depvin.pps.business;
 
 import com.depvin.pps.model.ArticoloOrdine;
+import com.depvin.pps.model.Dipendente;
 import com.depvin.pps.model.Ordine;
 
 /**
@@ -8,15 +9,27 @@ import com.depvin.pps.model.Ordine;
  */
 public class SessioneDipendente implements Sessione {
 
+    private Dipendente dipendente;
+
+    public SessioneDipendente(Dipendente dipendente) {
+        this.dipendente = dipendente;
+    }
+
+    public Dipendente getUtente() {
+        return dipendente;
+    }
+
     public void confermaOrdine(Ordine ordine) {
         Sistema.getInstance().confermaOrdine(ordine);
     }
 
-    public void rimuoviOridne(Ordine ordine, ArticoloOrdine articoloOrdine) {
+    public void rimuoviOrdine(Ordine ordine, ArticoloOrdine articoloOrdine) {
         Sistema.getInstance().rimuoviOrdine(ordine, articoloOrdine);
     }
 
     public void richiediNotifica(ArticoloOrdine articoloOrdine) {
         Sistema.getInstance().richiediNotifica(articoloOrdine);
     }
+
+
 }

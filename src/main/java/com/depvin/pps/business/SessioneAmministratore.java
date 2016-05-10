@@ -2,7 +2,10 @@ package com.depvin.pps.business;
 
 import com.depvin.pps.dao.NoSuchUserException;
 import com.depvin.pps.dao.UserAlreadyExistsException;
-import com.depvin.pps.model.*;
+import com.depvin.pps.model.Amministratore;
+import com.depvin.pps.model.CapoProgetto;
+import com.depvin.pps.model.Magazzino;
+import com.depvin.pps.model.Sede;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -11,9 +14,20 @@ import java.security.NoSuchAlgorithmException;
  */
 public class SessioneAmministratore implements Sessione {
 
+    private Amministratore amministratore;
+
+    public SessioneAmministratore(Amministratore amministratore) {
+        this.amministratore = amministratore;
+    }
+
+    public Amministratore getUtente() {
+        return amministratore;
+    }
+
     public void aggiungiDipendente(String name, String surname, String username, String password, CapoProgetto capoProgetto, String progetto)
             throws NoSuchUserException, UserAlreadyExistsException, NoSuchAlgorithmException {
         Sistema.getInstance().aggiungiDipendente(name, surname, username, password);
+
     }
 
     public void aggiungiMagazziniere(String name, String surname, String username, String password, Sede sede, String magazzinoNome)
@@ -21,7 +35,7 @@ public class SessioneAmministratore implements Sessione {
         Magazzino magazzino = new Magazzino(sede);
         magazzino.setNome(magazzinoNome);
         Sistema.getInstance().aggiungiMagazziniere(name, surname, magazzino, username, password);
-    }//Aggiunge magazziniere e magazzino
+    }
 
     public void aggiungiCapoProgetto(String name, String surname, String username, String password)
             throws NoSuchUserException, UserAlreadyExistsException, NoSuchAlgorithmException {

@@ -13,9 +13,10 @@ import java.util.ArrayList;
  * Created by costantino on 05/12/15.
  */
 public class Sistema {
+
     private static Sistema ourInstance;
 
-    public static synchronized Sistema getInstance() {
+    static synchronized Sistema getInstance() {
         if (ourInstance == null)
             ourInstance = new Sistema();
         return ourInstance;
@@ -69,7 +70,7 @@ public class Sistema {
 
     public void richiediNotifica(ArticoloOrdine articoloOrdine) {
         articoloOrdine.setRichiesto(true);
-    }//da modificare, fatto male
+    }
 
     public void aggiungiDipendente(String name, String surname, String username, String password)
             throws NoSuchUserException, UserAlreadyExistsException, NoSuchAlgorithmException {
@@ -110,8 +111,32 @@ public class Sistema {
         amm.setCognome(surname);
     }
 
-    public Utente login(String username, String password) throws NoSuchUserException, NoSuchAlgorithmException {
-        return UtenteDAO.getUtenteWithUsernameAndHash(username, HashPassword(password));
+    public Sessione login(String username, String password) throws UserNotFoundException, UserLoadingException {
+        try {
+            Utente utente = UtenteDAO.getUtenteWithUsernameAndHash(username, HashPassword(password));
+            if (utente instanceof Dipendente) {
+                ((Dipendente) utente).addListener(new Dipendente.NotificaArticoloListener() {
+                    public void articoloOrdineIsDisponibile(ArticoloOrdine articoloOrdine, Magazzino magazzino) {
+
+                        // TODO: Chiamerà il Presenter
+                    }
+                });
+                return new SessioneDipendente((Dipendente) utente);
+            } else if (utente instanceof Amministratore) {
+                return new SessioneAmministratore((Amministratore) utente);
+            } else if (utente instanceof Magazziniere) {
+                return new SessioneMagazziniere((Magazziniere) utente);
+            } else {
+                return new SessioneCapoProgetto((CapoProgetto) utente);
+            }
+
+        } catch (com.depvin.pps.dao.NoSuchUserException e) {
+            throw new UserNotFoundException(e.getMessage(), e);
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace(System.err);
+            throw new UserLoadingException(e.getMessage(), e);
+        }
     }
 
     private byte[] HashPassword(String password) throws NoSuchAlgorithmException {
@@ -124,6 +149,5 @@ public class Sistema {
             throw new NoSuchAlgorithmException("No Provider supports a MessageDigestSpi implementation for the specified algorithm", e);
         }
     }
-
 
 }
