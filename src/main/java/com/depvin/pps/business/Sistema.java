@@ -73,47 +73,64 @@ public class Sistema {
     }
 
     public void aggiungiDipendente(String name, String surname, String username, String password)
-            throws NoSuchUserException, UserAlreadyExistsException, NoSuchAlgorithmException {
-
-        //verifica dell'esistenza di un'altro dipendente
-
-        Dipendente dip = UtenteDAO.getNewDipendente(username, HashPassword(password));
-        dip.setCognome(surname);
-        dip.setNome(name);
+            throws UserExistsException, UserLoadingException {
+        try {
+            Dipendente dip = UtenteDAO.getNewDipendente(username, hashPassword(password));
+            dip.setCognome(surname);
+            dip.setNome(name);
+        } catch (com.depvin.pps.dao.UserAlreadyExistsException e) {
+            throw new UserExistsException(e.getMessage(), e);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace(System.err);
+            throw new UserLoadingException(e.getMessage(), e);
+        }
     }
 
     public void aggiungiMagazziniere(String name, String surname, Magazzino magazzino, String username, String password)
-            throws NoSuchUserException, UserAlreadyExistsException, NoSuchAlgorithmException {
-
-        //verifica dell'esistenza di un'altro dipendente
-
-        Magazziniere mag = UtenteDAO.getNewMagazziniere(username, HashPassword(password), magazzino);
+            throws UserExistsException, UserLoadingException {
+        try {
+            Magazziniere mag = UtenteDAO.getNewMagazziniere(username, hashPassword(password), magazzino);
         mag.setNome(name);
         mag.setCognome(surname);
+        } catch (com.depvin.pps.dao.UserAlreadyExistsException e) {
+            throw new UserExistsException(e.getMessage(), e);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace(System.err);
+            throw new UserLoadingException(e.getMessage(), e);
+        }
     }
 
     public void aggiungiCapoProgetto(String name, String surname, String username, String Password)
-            throws NoSuchUserException, UserAlreadyExistsException, NoSuchAlgorithmException {
-        //verifica dell'esistenza di un'altro dipendente
-
-        CapoProgetto cap = UtenteDAO.getNewCapoProgetto(username, HashPassword(Password));
+            throws UserExistsException, UserLoadingException {
+        try {
+            CapoProgetto cap = UtenteDAO.getNewCapoProgetto(username, hashPassword(Password));
         cap.setNome(name);
         cap.setCognome(surname);
+        } catch (com.depvin.pps.dao.UserAlreadyExistsException e) {
+            throw new UserExistsException(e.getMessage(), e);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace(System.err);
+            throw new UserLoadingException(e.getMessage(), e);
+        }
     }
 
     public void aggiungiAmministratore(String name, String surname, String username, String password)
-            throws NoSuchUserException, UserAlreadyExistsException, NoSuchAlgorithmException {
-
-        //verifica dell'esistenza di un'altro dipendente
-
-        Amministratore amm = UtenteDAO.getNewAmministratore(username, HashPassword(password));
+            throws UserExistsException, UserLoadingException {
+        try {
+            Amministratore amm = UtenteDAO.getNewAmministratore(username, hashPassword(password));
         amm.setNome(name);
         amm.setCognome(surname);
+        } catch (com.depvin.pps.dao.UserAlreadyExistsException e) {
+            throw new UserExistsException(e.getMessage(), e);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace(System.err);
+            throw new UserLoadingException(e.getMessage(), e);
+        }
     }
 
     public Sessione login(String username, String password) throws UserNotFoundException, UserLoadingException {
         try {
-            Utente utente = UtenteDAO.getUtenteWithUsernameAndHash(username, HashPassword(password));
+            Utente utente = UtenteDAO.getUtenteWithUsernameAndHash(username, hashPassword(password));
             if (utente instanceof Dipendente) {
                 ((Dipendente) utente).addListener(new Dipendente.NotificaArticoloListener() {
                     public void articoloOrdineIsDisponibile(ArticoloOrdine articoloOrdine, Magazzino magazzino) {
@@ -139,7 +156,7 @@ public class Sistema {
         }
     }
 
-    private byte[] HashPassword(String password) throws NoSuchAlgorithmException {
+    private byte[] hashPassword(String password) throws NoSuchAlgorithmException {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(password.getBytes());
