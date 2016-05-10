@@ -16,31 +16,27 @@ public class Sistema {
 
     private static Sistema ourInstance;
 
-    static synchronized Sistema getInstance() {
+    public static synchronized Sistema getInstance() {
         if (ourInstance == null)
             ourInstance = new Sistema();
         return ourInstance;
     }
 
-    public ArrayList<ArticoloMagazzino> getListaMagazzino(Magazzino magazzino) {
-        ArrayList<ArticoloMagazzino> lista = new ArrayList<ArticoloMagazzino>();
-        for (ArticoloMagazzino am : magazzino.getArticoliMagazzino())
-            lista.add(am);
-        return lista;
-    }
-
-    public void aggiungiProgetto(String nome, Sede sede, float budget, CapoProgetto capoProgetto) {
+    void aggiungiProgetto(String nome, Sede sede, float budget, CapoProgetto capoProgetto) {
         Progetto progetto = new Progetto(nome, budget, sede);
         capoProgetto.getProgetti().add(progetto);
     }
 
-    public void rimuoviOrdine(Ordine ordine, ArticoloOrdine articoloOrdine) {
-        for (ArticoloOrdine ao : ordine.getArticoliOrdine())
-            if (ao.equals(articoloOrdine))
-                ordine.getArticoliOrdine().remove(ao);
-    }//si limita ad eliminare un elemento dall'ordine
+    void rimuoviArticoloOrdine(Ordine ordine, ArticoloOrdine articoloOrdine) {
+        ordine.getArticoliOrdine().remove(articoloOrdine);
+    }
 
-    public void confermaOrdine(Ordine ordine) {
+    void rimuoviOrdine(Ordine ordine) {
+        Dipendente d = ordine.getDipendente();
+        d.getOrdini().remove(ordine);
+    }
+
+    void confermaOrdine(Ordine ordine) {
         int t = 0;
         for (ArticoloOrdine ao : ordine.getArticoliOrdine()) {
             if (!ao.isDisponibile())
@@ -55,24 +51,24 @@ public class Sistema {
         }
     }
 
-    public void modificaBudget(Progetto progetto, float budget) {
+    void modificaBudget(Progetto progetto, float budget) {
         float variab = progetto.getBudget() + budget;
         if (variab >= 0)
             progetto.setBudget(variab);
     }
 
-    public ArrayList<ArticoloOrdine> stampaOrdine(Ordine ordine) {
+    ArrayList<ArticoloOrdine> stampaOrdine(Ordine ordine) {
         ArrayList<ArticoloOrdine> lista = new ArrayList<ArticoloOrdine>();
         for (ArticoloOrdine ao : ordine.getArticoliOrdine())
             lista.add(ao);
         return lista;
     }
 
-    public void richiediNotifica(ArticoloOrdine articoloOrdine) {
+    void richiediNotifica(ArticoloOrdine articoloOrdine) {
         articoloOrdine.setRichiesto(true);
     }
 
-    public void aggiungiDipendente(String name, String surname, String username, String password)
+    void aggiungiDipendente(String name, String surname, String username, String password)
             throws UserExistsException, UserLoadingException {
         try {
             Dipendente dip = UtenteDAO.getNewDipendente(username, hashPassword(password));
@@ -86,7 +82,7 @@ public class Sistema {
         }
     }
 
-    public void aggiungiMagazziniere(String name, String surname, Magazzino magazzino, String username, String password)
+    void aggiungiMagazziniere(String name, String surname, Magazzino magazzino, String username, String password)
             throws UserExistsException, UserLoadingException {
         try {
             Magazziniere mag = UtenteDAO.getNewMagazziniere(username, hashPassword(password), magazzino);
@@ -100,7 +96,7 @@ public class Sistema {
         }
     }
 
-    public void aggiungiCapoProgetto(String name, String surname, String username, String Password)
+    void aggiungiCapoProgetto(String name, String surname, String username, String Password)
             throws UserExistsException, UserLoadingException {
         try {
             CapoProgetto cap = UtenteDAO.getNewCapoProgetto(username, hashPassword(Password));
@@ -114,7 +110,7 @@ public class Sistema {
         }
     }
 
-    public void aggiungiAmministratore(String name, String surname, String username, String password)
+    void aggiungiAmministratore(String name, String surname, String username, String password)
             throws UserExistsException, UserLoadingException {
         try {
             Amministratore amm = UtenteDAO.getNewAmministratore(username, hashPassword(password));
