@@ -23,6 +23,15 @@ public class SessioneDipendente implements Sessione {
         Sistema.getInstance().confermaOrdine(ordine);
     }
 
+    public void rimuoviOrdine(Ordine ordine) {
+        Sistema.getInstance().rimuoviOrdine(ordine);
+    }
+
+    public void stampaOrdine(Ordine ordine) {
+        if (ordine.isEvaso() == true)
+            Sistema.getInstance().stampaOrdine(ordine);
+    }
+
     public void rimuoviArticoloOrdine(Ordine ordine, ArticoloOrdine articoloOrdine) {
         Sistema.getInstance().rimuoviArticoloOrdine(ordine, articoloOrdine);
     }

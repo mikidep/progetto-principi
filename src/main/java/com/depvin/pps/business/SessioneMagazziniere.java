@@ -24,6 +24,9 @@ public class SessioneMagazziniere implements Sessione {
     public void aggiungiArticoloMagazzino(Articolo articolo, Magazzino magazzino, int disponibilità) {
         ArticoloMagazzino articoloMagazzino = new ArticoloMagazzino(magazzino, articolo, disponibilità);
         magazzino.getArticoliMagazzino().add(articoloMagazzino);
+    }
 
+    public void modificaQuantitàArticolo(ArticoloMagazzino articoloMagazzino, int quantità) {
+        Sistema.getInstance().modificaQuantitàArticolo(articoloMagazzino, quantità);
     }
 }

@@ -124,6 +124,10 @@ public class Sistema {
         }
     }
 
+    void modificaQuantitàArticolo(ArticoloMagazzino articoloMagazzino, int quantità) {
+        articoloMagazzino.setDisponibilita(quantità);
+    }
+
     public Sessione login(String username, String password) throws UserNotFoundException, UserLoadingException {
         try {
             Utente utente = UtenteDAO.getUtenteWithUsernameAndHash(username, hashPassword(password));
