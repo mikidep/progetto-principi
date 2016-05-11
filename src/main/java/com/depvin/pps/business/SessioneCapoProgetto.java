@@ -1,6 +1,7 @@
 package com.depvin.pps.business;
 
 import com.depvin.pps.model.CapoProgetto;
+import com.depvin.pps.model.Dipendente;
 import com.depvin.pps.model.Ordine;
 import com.depvin.pps.model.Progetto;
 
@@ -23,7 +24,14 @@ public class SessioneCapoProgetto implements Sessione {
         Sistema.getInstance().modificaBudget(progetto, budget);
     }
 
-    public void stampaOrdine(Ordine ordine) {
+    public void stampaOrdineProgetto(Ordine ordine) {
         Sistema.getInstance().stampaOrdine(ordine);
+        Sistema.getInstance().calcolaSpeseProgetto(ordine.getProgetto());
     }
+
+    public void stampaOrdineDipendente(Dipendente dipendente, Progetto progetto) {
+        Sistema.getInstance().stampaOrdineDipendente(dipendente, progetto);
+        Sistema.getInstance().calcolaSpeseDipendente(dipendente, progetto);
+    }
+
 }

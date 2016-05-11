@@ -8,6 +8,7 @@ import com.depvin.pps.model.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by costantino on 05/12/15.
@@ -62,6 +63,31 @@ public class Sistema {
         for (ArticoloOrdine ao : ordine.getArticoliOrdine())
             lista.add(ao);
         return lista;
+    }
+
+    ArrayList<ArticoloOrdine> stampaOrdineDipendente(Dipendente dipendente, Progetto progetto) {
+        ArrayList<ArticoloOrdine> lista = new ArrayList<ArticoloOrdine>();
+        for (Ordine o : progetto.getOrdini())
+            if (dipendente == o.getDipendente())
+                for (ArticoloOrdine ao : o.getArticoliOrdine())
+                    lista.add(ao);
+        return lista;
+    }
+
+    float calcolaSpeseProgetto(Progetto progetto) {
+        float speseProgetto = 0.0f;
+        for (Ordine o : progetto.getOrdini()) {
+            speseProgetto += o.getTotale();
+        }
+        return speseProgetto;
+    }
+
+    float calcolaSpeseDipendente(Dipendente dipendente, Progetto progetto) {
+        float speseDipendente = 0.0f;
+        for (Ordine o : progetto.getOrdini())
+            if (dipendente == o.getDipendente())
+                speseDipendente += o.getTotale();
+        return speseDipendente;
     }
 
     void richiediNotifica(ArticoloOrdine articoloOrdine) {
@@ -126,6 +152,10 @@ public class Sistema {
 
     void modificaQuantitàArticolo(ArticoloMagazzino articoloMagazzino, int quantità) {
         articoloMagazzino.setDisponibilita(quantità);
+    }
+
+    void creaOrdine(Ordine o, Progetto progetto) {
+        progetto.getOrdini().add(o);
     }
 
     public Sessione login(String username, String password) throws UserNotFoundException, UserLoadingException {

@@ -3,6 +3,7 @@ package com.depvin.pps.business;
 import com.depvin.pps.model.ArticoloOrdine;
 import com.depvin.pps.model.Dipendente;
 import com.depvin.pps.model.Ordine;
+import com.depvin.pps.model.Progetto;
 
 /**
  * Created by costantino on 05/12/15.
@@ -40,5 +41,10 @@ public class SessioneDipendente implements Sessione {
         Sistema.getInstance().richiediNotifica(articoloOrdine);
     }
 
+    public void creaOrdine(String nome, Progetto progetto) {
+        Ordine o = new Ordine(nome, progetto, getUtente());
+        Sistema.getInstance().creaOrdine(o, progetto);
+        getUtente().getOrdini().add(o);
+    }
 
 }
