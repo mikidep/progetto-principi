@@ -154,9 +154,14 @@ public class Sistema {
         articoloMagazzino.setDisponibilita(quantità);
     }
 
-    void creaOrdine(Ordine o, Progetto progetto) {
-        progetto.getOrdini().add(o);
+    void creaOrdine(Ordine ordine, Progetto progetto) {
+        progetto.getOrdini().add(ordine);
     }
+
+    void eliminaArticoloMagazzino(ArticoloMagazzino articoloMagazzino, Magazzino magazzino) {
+        if (articoloMagazzino.getDisponibilita() == 0)
+            magazzino.getArticoliMagazzino().remove(articoloMagazzino);
+    }// Deve inoltre avvisare il dipendente che il prodotto non sarà più disponibile in quel magazzino
 
     public Sessione login(String username, String password) throws UserNotFoundException, UserLoadingException {
         try {

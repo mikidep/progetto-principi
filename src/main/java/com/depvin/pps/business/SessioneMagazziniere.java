@@ -21,7 +21,13 @@ public class SessioneMagazziniere implements Sessione {
         Sistema.getInstance().stampaOrdine(ordine);
     }
 
-    public void aggiungiArticoloMagazzino(Articolo articolo, Magazzino magazzino, int disponibilità) {
+    public void eliminaArticoloMagazzino(ArticoloMagazzino articoloMagazzino) {
+        Magazzino magazzino = getUtente().getMagazzino();
+        Sistema.getInstance().eliminaArticoloMagazzino(articoloMagazzino, magazzino);
+    }
+
+    public void aggiungiArticoloMagazzino(Articolo articolo, int disponibilità) {
+        Magazzino magazzino = getUtente().getMagazzino();
         ArticoloMagazzino articoloMagazzino = new ArticoloMagazzino(magazzino, articolo, disponibilità);
         magazzino.getArticoliMagazzino().add(articoloMagazzino);
     }
