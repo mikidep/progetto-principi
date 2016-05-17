@@ -64,14 +64,14 @@ public class Sistema {
     ByteArrayOutputStream articoliToPDFBytes(String intestazione, List<ArticoloOrdine> aolist) throws ReportCreationFailedException {
         float sum = 0.0f;
         String htmlOut = "<!DOCTYPE html> <html> <head> <style> table, th, td " +
-                "{ border: 3px solid black; border-collapse: collapse;}" +
+                "{ border: 1px solid black; border-collapse: collapse;}" +
                 " th, td { padding: 5px; text-align: left;} </style> </head> <body> " +
                 "<h1>" + intestazione + "</h1>" +
                 "<table style=\"width:100%\"> <tr> " +
-                " <th>Articolo</th> <th>Prezzo</th> </tr> ";
+                " <th>Articolo x Quantità</th> <th>Prezzo</th> </tr> ";
         for (ArticoloOrdine ao : aolist) {
             float price = ao.getParziale() + ao.getMagazzino().getSede().calcolaSpedizionePer(ao.getOrdine().getProgetto().getSede());
-            htmlOut += "<tr> <td>" + ao.getArticolo().getNome() + "</td> <td>" + String.format("%.2f", price) + " €</td> </tr>";
+            htmlOut += "<tr> <td>" + ao.getArticolo().getNome() + " x " + ao.getQuantita() + "</td> <td>" + String.format("%.2f", price) + " €</td> </tr>";
             sum += price;
         }
         htmlOut += "<tr> <td>Prezzo totale</td> <td>" + sum + "€</td> </tr>";
@@ -104,22 +104,6 @@ public class Sistema {
                 for (ArticoloOrdine ao : o.getArticoliOrdine())
                     lista.add(ao);
         return lista;
-    }
-
-    float calcolaSpeseProgetto(Progetto progetto) {
-        float speseProgetto = 0.0f;
-        for (Ordine o : progetto.getOrdini()) {
-            speseProgetto += o.getTotale();
-        }
-        return speseProgetto;
-    }
-
-    float calcolaSpeseDipendente(Dipendente dipendente, Progetto progetto) {
-        float speseDipendente = 0.0f;
-        for (Ordine o : progetto.getOrdini())
-            if (dipendente == o.getDipendente())
-                speseDipendente += o.getTotale();
-        return speseDipendente;
     }
 
     void richiediNotifica(ArticoloOrdine articoloOrdine) {
@@ -186,7 +170,7 @@ public class Sistema {
         articoloMagazzino.setDisponibilita(quantità);
     }
 
-    void creaOrdine(Ordine ordine, Progetto progetto) {
+    void aggiungiOrdineProgetto(Ordine ordine, Progetto progetto) {
         progetto.getOrdini().add(ordine);
     }
 

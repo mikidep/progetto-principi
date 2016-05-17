@@ -38,9 +38,9 @@ public class SessioneDipendente implements Sessione {
         Sistema.getInstance().richiediNotifica(articoloOrdine);
     }
 
-    public void creaOrdine(String nome, Progetto progetto) {
+    public void aggiungiOrdineProgetto(String nome, Progetto progetto) {
         Ordine o = new Ordine(nome, progetto, getUtente());
-        Sistema.getInstance().creaOrdine(o, progetto);
+        Sistema.getInstance().aggiungiOrdineProgetto(o, progetto);
         getUtente().getOrdini().add(o);
     }
 

@@ -23,7 +23,7 @@ public class SistemaTest {
         Prodotto pr = new Prodotto("Cancro");
         Fornitore fo = new Fornitore("mammata");
         Articolo a = new Articolo("Teaser", "Abbastanza cancro", 12.98f, pr, p, fo);
-        Dipendente d = new Dipendente("OPPSS", "Ilikedick".getBytes());
+        Dipendente d = new Dipendente("OPPSS", "Ilik".getBytes());
         Nazione nazione = new Nazione("Fanculandia", 5.60f);
         Sede sede = new Sede("Sede di Fanculo", nazione);
         Magazzino m = new Magazzino(sede);
