@@ -17,6 +17,19 @@ public class Articolo {
     private Fornitore fornitore;
     private List<ArticoloOrdine> inOrdine;
 
+    public Articolo(String nome, String descrizione, float prezzo, Prodotto prodotto, Produttore produttore, Fornitore fornitore) {
+        this.nome = nome;
+        this.descrizione = descrizione;
+        this.prezzo = prezzo;
+        this.prodotto = prodotto;
+        this.produttore = produttore;
+        this.fornitore = fornitore;
+    }
+
+    protected Articolo() {
+
+    }
+
     public long getId() {
         return id;
     }

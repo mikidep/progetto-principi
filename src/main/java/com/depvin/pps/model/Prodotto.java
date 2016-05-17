@@ -4,12 +4,26 @@ package com.depvin.pps.model;
  * Created by Michele De Pascalis on 27/11/15.
  */
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Prodotto {
     private long id;
     private String nome;
     private List<Categoria> categorie;
+
+    public Prodotto(String nome, List<Categoria> categorie) {
+        this.nome = nome;
+        this.categorie = categorie;
+    }
+
+    public Prodotto(String nome) {
+        this(nome, new ArrayList<Categoria>());
+    }
+
+    protected Prodotto() {
+
+    }
 
     public long getId() {
         return id;

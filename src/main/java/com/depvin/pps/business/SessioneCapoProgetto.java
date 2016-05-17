@@ -5,6 +5,8 @@ import com.depvin.pps.model.Dipendente;
 import com.depvin.pps.model.Ordine;
 import com.depvin.pps.model.Progetto;
 
+import java.io.ByteArrayOutputStream;
+
 /**
  * Created by costantino on 05/12/15.
  */
@@ -24,14 +26,12 @@ public class SessioneCapoProgetto implements Sessione {
         Sistema.getInstance().modificaBudget(progetto, budget);
     }
 
-    public void stampaOrdineProgetto(Ordine ordine) {
-        Sistema.getInstance().stampaOrdine(ordine);
-        Sistema.getInstance().calcolaSpeseProgetto(ordine.getProgetto());
+    public ByteArrayOutputStream stampaOrdineDipendente(Dipendente dipendente, Progetto progetto) throws ReportCreationFailedException {
+        return Sistema.getInstance().articoliToPDFBytes(dipendente.getNome(), Sistema.getInstance().ottieniListaDipendente(dipendente, progetto));
     }
 
-    public void stampaOrdineDipendente(Dipendente dipendente, Progetto progetto) {
-        Sistema.getInstance().stampaOrdineDipendente(dipendente, progetto);
-        Sistema.getInstance().calcolaSpeseDipendente(dipendente, progetto);
+    public ByteArrayOutputStream stampaOrdineProgetto(Progetto progetto, Ordine ordine) throws ReportCreationFailedException {
+        return Sistema.getInstance().articoliToPDFBytes(ordine.getNome(), Sistema.getInstance().ottieniListaOrdine(ordine));
     }
 
 }

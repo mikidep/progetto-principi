@@ -9,6 +9,14 @@ public class Fornitore {
 
     private String nome;
 
+    public Fornitore(String nome) {
+        this.nome = nome;
+    }
+
+    protected Fornitore() {
+
+    }
+
     public long getId() {
         return id;
     }

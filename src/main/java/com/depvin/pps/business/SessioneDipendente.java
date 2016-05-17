@@ -5,6 +5,8 @@ import com.depvin.pps.model.Dipendente;
 import com.depvin.pps.model.Ordine;
 import com.depvin.pps.model.Progetto;
 
+import java.io.ByteArrayOutputStream;
+
 /**
  * Created by costantino on 05/12/15.
  */
@@ -28,11 +30,6 @@ public class SessioneDipendente implements Sessione {
         Sistema.getInstance().rimuoviOrdine(ordine);
     }
 
-    public void stampaOrdine(Ordine ordine) {
-        if (ordine.isEvaso() == true)
-            Sistema.getInstance().stampaOrdine(ordine);
-    }
-
     public void rimuoviArticoloOrdine(Ordine ordine, ArticoloOrdine articoloOrdine) {
         Sistema.getInstance().rimuoviArticoloOrdine(ordine, articoloOrdine);
     }
@@ -45,6 +42,10 @@ public class SessioneDipendente implements Sessione {
         Ordine o = new Ordine(nome, progetto, getUtente());
         Sistema.getInstance().creaOrdine(o, progetto);
         getUtente().getOrdini().add(o);
+    }
+
+    public ByteArrayOutputStream stampaOrdine(Ordine ordine) throws ReportCreationFailedException {
+        return Sistema.getInstance().articoliToPDFBytes(ordine.getNome(), Sistema.getInstance().ottieniListaOrdine(ordine));
     }
 
 }

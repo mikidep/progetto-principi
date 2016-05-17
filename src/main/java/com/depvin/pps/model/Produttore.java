@@ -8,6 +8,14 @@ public class Produttore {
     private long id;
     private String nome;
 
+    public Produttore(String nome) {
+        this.nome = nome;
+    }
+
+    protected Produttore() {
+
+    }
+
     public long getId() {
         return id;
     }

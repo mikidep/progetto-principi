@@ -1,10 +1,13 @@
 package com.depvin.pps.business;
 
-import com.depvin.pps.dao.NoSuchUserException;
-import com.depvin.pps.dao.UserAlreadyExistsException;
 import com.depvin.pps.dao.UtenteDAO;
 import com.depvin.pps.model.*;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
 
+import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -58,14 +61,43 @@ public class Sistema {
             progetto.setBudget(variab);
     }
 
-    ArrayList<ArticoloOrdine> stampaOrdine(Ordine ordine) {
+    ByteArrayOutputStream articoliToPDFBytes(String intestazione, List<ArticoloOrdine> aolist) throws ReportCreationFailedException {
+        float sum = 0.0f;
+        String htmlOut = "<!DOCTYPE html> <html> <head> <style> table, th, td " +
+                "{ border: 3px solid black; border-collapse: collapse;}" +
+                " th, td { padding: 5px; text-align: left;} </style> </head> <body> " +
+                "<h1>" + intestazione + "</h1>" +
+                "<table style=\"width:100%\"> <tr> " +
+                " <th>Articolo</th> <th>Prezzo</th> </tr> ";
+        for (ArticoloOrdine ao : aolist) {
+            float price = ao.getParziale() + ao.getMagazzino().getSede().calcolaSpedizionePer(ao.getOrdine().getProgetto().getSede());
+            htmlOut += "<tr> <td>" + ao.getArticolo().getNome() + "</td> <td>" + String.format("%.2f", price) + " €</td> </tr>";
+            sum += price;
+        }
+        htmlOut += "<tr> <td>Prezzo totale</td> <td>" + sum + "€</td> </tr>";
+        htmlOut += "</table> </body></html>";
+
+        Document document = new Document();
+        ByteArrayOutputStream res = new ByteArrayOutputStream();
+        try {
+            PdfWriter writer = PdfWriter.getInstance(document, res);
+            document.open();
+            XMLWorkerHelper.getInstance().parseXHtml(writer, document, new StringReader(htmlOut));
+            document.close();
+            return res;
+        } catch (Exception e) {
+            throw new ReportCreationFailedException("Reason of failure: " + e.getMessage(), e);
+        }
+    }
+
+    ArrayList<ArticoloOrdine> ottieniListaOrdine(Ordine ordine) {
         ArrayList<ArticoloOrdine> lista = new ArrayList<ArticoloOrdine>();
         for (ArticoloOrdine ao : ordine.getArticoliOrdine())
             lista.add(ao);
         return lista;
     }
 
-    ArrayList<ArticoloOrdine> stampaOrdineDipendente(Dipendente dipendente, Progetto progetto) {
+    ArrayList<ArticoloOrdine> ottieniListaDipendente(Dipendente dipendente, Progetto progetto) {
         ArrayList<ArticoloOrdine> lista = new ArrayList<ArticoloOrdine>();
         for (Ordine o : progetto.getOrdini())
             if (dipendente == o.getDipendente())
@@ -112,8 +144,8 @@ public class Sistema {
             throws UserExistsException, UserLoadingException {
         try {
             Magazziniere mag = UtenteDAO.getNewMagazziniere(username, hashPassword(password), magazzino);
-        mag.setNome(name);
-        mag.setCognome(surname);
+            mag.setNome(name);
+            mag.setCognome(surname);
         } catch (com.depvin.pps.dao.UserAlreadyExistsException e) {
             throw new UserExistsException(e.getMessage(), e);
         } catch (NoSuchAlgorithmException e) {
@@ -126,8 +158,8 @@ public class Sistema {
             throws UserExistsException, UserLoadingException {
         try {
             CapoProgetto cap = UtenteDAO.getNewCapoProgetto(username, hashPassword(Password));
-        cap.setNome(name);
-        cap.setCognome(surname);
+            cap.setNome(name);
+            cap.setCognome(surname);
         } catch (com.depvin.pps.dao.UserAlreadyExistsException e) {
             throw new UserExistsException(e.getMessage(), e);
         } catch (NoSuchAlgorithmException e) {
@@ -140,8 +172,8 @@ public class Sistema {
             throws UserExistsException, UserLoadingException {
         try {
             Amministratore amm = UtenteDAO.getNewAmministratore(username, hashPassword(password));
-        amm.setNome(name);
-        amm.setCognome(surname);
+            amm.setNome(name);
+            amm.setCognome(surname);
         } catch (com.depvin.pps.dao.UserAlreadyExistsException e) {
             throw new UserExistsException(e.getMessage(), e);
         } catch (NoSuchAlgorithmException e) {
