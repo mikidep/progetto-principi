@@ -75,12 +75,12 @@ public class Sistema {
             float prezzo = ao.getParziale();
             float spedizione = ao.getMagazzino().getSede().calcolaSpedizionePer(ao.getOrdine().getProgetto().getSede());
             htmlOut += "<tr> <td>" + ao.getArticolo().getNome() + "</td> <td>" + ao.getQuantita() + "</td> <td>" +
-                    String.format("%.2f", spedizione) + "</td> <td>" + String.format("%.2f", prezzo) + " €</td> </tr>";
+                    String.format("%.2f", spedizione) + "€</td> <td>" + String.format("%.2f", prezzo) + "€</td> </tr>";
             pt += prezzo;
             sped += spedizione;
             qt += ao.getQuantita();
         }
-        htmlOut += "<tr> <td>Prezzo totale</td> <td>" + qt + "</td> <td>" + sped + "</td> <td>" + pt + "€</td> </tr>";
+        htmlOut += "<tr> <td>Totale</td> <td>" + qt + "</td> <td>" + sped + "€</td> <td>" + pt + "€</td> </tr>";
         htmlOut += "</table> </body></html>";
 
         Document document = new Document();
