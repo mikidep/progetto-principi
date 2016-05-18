@@ -62,19 +62,25 @@ public class Sistema {
     }
 
     ByteArrayOutputStream articoliToPDFBytes(String intestazione, List<ArticoloOrdine> aolist) throws ReportCreationFailedException {
-        float sum = 0.0f;
+        float sped = 0.0f;
+        float pt = 0.0f;
+        int qt = 0;
         String htmlOut = "<!DOCTYPE html> <html> <head> <style> table, th, td " +
                 "{ border: 1px solid black; border-collapse: collapse;}" +
                 " th, td { padding: 5px; text-align: left;} </style> </head> <body> " +
                 "<h1>" + intestazione + "</h1>" +
                 "<table style=\"width:100%\"> <tr> " +
-                " <th>Articolo x Quantità</th> <th>Prezzo</th> </tr> ";
+                " <th>Articolo</th> <th>Quantità</th> <th> Prezzo Spedizione</th> <th>Prezzo Individuale</th> </tr> ";
         for (ArticoloOrdine ao : aolist) {
-            float price = ao.getParziale() + ao.getMagazzino().getSede().calcolaSpedizionePer(ao.getOrdine().getProgetto().getSede());
-            htmlOut += "<tr> <td>" + ao.getArticolo().getNome() + " x " + ao.getQuantita() + "</td> <td>" + String.format("%.2f", price) + " €</td> </tr>";
-            sum += price;
+            float prezzo = ao.getParziale();
+            float spedizione = ao.getMagazzino().getSede().calcolaSpedizionePer(ao.getOrdine().getProgetto().getSede());
+            htmlOut += "<tr> <td>" + ao.getArticolo().getNome() + "</td> <td>" + ao.getQuantita() + "</td> <td>" +
+                    String.format("%.2f", spedizione) + "</td> <td>" + String.format("%.2f", prezzo) + " €</td> </tr>";
+            pt += prezzo;
+            sped += spedizione;
+            qt += ao.getQuantita();
         }
-        htmlOut += "<tr> <td>Prezzo totale</td> <td>" + sum + "€</td> </tr>";
+        htmlOut += "<tr> <td>Prezzo totale</td> <td>" + qt + "</td> <td>" + sped + "</td> <td>" + pt + "€</td> </tr>";
         htmlOut += "</table> </body></html>";
 
         Document document = new Document();
