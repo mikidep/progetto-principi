@@ -189,8 +189,11 @@ public class Sistema {
     }
 
     void eliminaArticoloMagazzino(ArticoloMagazzino articoloMagazzino, Magazzino magazzino) {
-        if (articoloMagazzino.getDisponibilita() == 0)
+        if (articoloMagazzino.getDisponibilita() == 0) {
             magazzino.getArticoliMagazzino().remove(articoloMagazzino);
+        }
+        // TODO: Chiamerà il Presenter
+        //Cose molto confuse, si vedrà in seguito
     }// Deve inoltre avvisare il dipendente che il prodotto non sarà più disponibile in quel magazzino
 
     public Sessione login(String username, String password) throws UserNotFoundException, UserLoadingException {
