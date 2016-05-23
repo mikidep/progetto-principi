@@ -53,6 +53,14 @@ public class Sistema {
                 ordine.setEvaso(true);
             }
         }
+        for (ArticoloOrdine ao : ordine.getArticoliOrdine()) {
+            for (ArticoloMagazzino am : ao.getMagazzino().getArticoliMagazzino()) {
+                if (ao.getArticolo().equals(am.getArticolo())) {
+                    int appoggioqt = am.getDisponibilita() - ao.getQuantita();
+                    am.setDisponibilita(appoggioqt);
+                }
+            }
+        }
     }
 
     void modificaBudget(Progetto progetto, float budget) {

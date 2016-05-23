@@ -1,11 +1,10 @@
 package com.depvin.pps.business;
 
-import com.depvin.pps.model.CapoProgetto;
-import com.depvin.pps.model.Dipendente;
-import com.depvin.pps.model.Ordine;
-import com.depvin.pps.model.Progetto;
+import com.depvin.pps.model.*;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by costantino on 05/12/15.
@@ -30,7 +29,17 @@ public class SessioneCapoProgetto implements Sessione {
         return Sistema.getInstance().articoliToPDFBytes(dipendente.getNome(), Sistema.getInstance().ottieniListaDipendente(dipendente, progetto));
     }
 
-    public ByteArrayOutputStream stampaOrdineProgetto(Progetto progetto, Ordine ordine) throws ReportCreationFailedException {
+    public ByteArrayOutputStream stampaOrdineProgetto(Progetto progetto) throws ReportCreationFailedException {
+        ArrayList<ArticoloOrdine> lista = new ArrayList<ArticoloOrdine>();
+        for (Ordine o : progetto.getOrdini()) {
+            for (ArticoloOrdine ao : o.getArticoliOrdine()) {
+                lista.add(ao);
+            }
+        }
+        return Sistema.getInstance().articoliToPDFBytes(progetto.getNome(), lista);
+    }
+
+    public ByteArrayOutputStream stampaOrdine(Ordine ordine) throws ReportCreationFailedException {
         return Sistema.getInstance().articoliToPDFBytes(ordine.getNome(), Sistema.getInstance().ottieniListaOrdine(ordine));
     }
 
