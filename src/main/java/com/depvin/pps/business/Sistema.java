@@ -132,6 +132,7 @@ public class Sistema {
             Dipendente dip = UtenteDAO.getNewDipendente(username, hashPassword(password));
             dip.setCognome(surname);
             dip.setNome(name);
+            DBInterface.getInstance().save();
         } catch (com.depvin.pps.dao.UserAlreadyExistsException e) {
             throw new UserExistsException(e.getMessage(), e);
         } catch (NoSuchAlgorithmException e) {
@@ -146,6 +147,7 @@ public class Sistema {
             Magazziniere mag = UtenteDAO.getNewMagazziniere(username, hashPassword(password), magazzino);
             mag.setNome(name);
             mag.setCognome(surname);
+            DBInterface.getInstance().save();
         } catch (com.depvin.pps.dao.UserAlreadyExistsException e) {
             throw new UserExistsException(e.getMessage(), e);
         } catch (NoSuchAlgorithmException e) {
@@ -160,6 +162,7 @@ public class Sistema {
             CapoProgetto cap = UtenteDAO.getNewCapoProgetto(username, hashPassword(Password));
             cap.setNome(name);
             cap.setCognome(surname);
+            DBInterface.getInstance().save();
         } catch (com.depvin.pps.dao.UserAlreadyExistsException e) {
             throw new UserExistsException(e.getMessage(), e);
         } catch (NoSuchAlgorithmException e) {
@@ -174,10 +177,7 @@ public class Sistema {
             Amministratore amm = UtenteDAO.getNewAmministratore(username, hashPassword(password));
             amm.setNome(name);
             amm.setCognome(surname);
-            EntityManager em = DBInterface.getInstance().getEntityManager();
-            em.getTransaction().begin();
-            em.persist(amm);
-            em.getTransaction().commit();
+            DBInterface.getInstance().save();
         } catch (com.depvin.pps.dao.UserAlreadyExistsException e) {
             throw new UserExistsException(e.getMessage(), e);
         } catch (NoSuchAlgorithmException e) {

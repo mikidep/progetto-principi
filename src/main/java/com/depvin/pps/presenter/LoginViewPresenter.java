@@ -1,11 +1,9 @@
 package com.depvin.pps.presenter;
 
-import com.depvin.pps.business.Sessione;
-import com.depvin.pps.business.Sistema;
-import com.depvin.pps.business.UserLoadingException;
-import com.depvin.pps.business.UserNotFoundException;
+import com.depvin.pps.business.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -21,7 +19,10 @@ public class LoginViewPresenter {
 
     public LoginViewPresenter() {
         view = new JFrame("Login");
+        rootPanel.setPreferredSize(new Dimension(500, 150));
+        view.setLocation(450, 300);
         view.setContentPane(rootPanel);
+
         view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         view.pack();
 
@@ -32,7 +33,18 @@ public class LoginViewPresenter {
                 } else {
                     try {
                         Sessione s = Sistema.getInstance().login(usernameTextField.getText(), String.valueOf(passwordField.getPassword()));
+                        if (s instanceof SessioneDipendente) {
 
+                        } else if (s instanceof SessioneAmministratore) {
+                            SessioneAmministratoreViewPresenter p = new SessioneAmministratoreViewPresenter((SessioneAmministratore) s);
+                            view.setVisible(false);
+                            p.show();
+
+                        } else if (s instanceof SessioneCapoProgetto) {
+
+                        } else {
+                            //Sessione Magazziniere
+                        }
                     } catch (UserNotFoundException e) {
                         try {
                             Thread.sleep(2000);
@@ -42,6 +54,7 @@ public class LoginViewPresenter {
                     } catch (UserLoadingException e) {
                         JOptionPane.showMessageDialog(getView(), "Errore nel caricamento della sessione");
                     }
+                    JOptionPane.showMessageDialog(getView(), "Bravo, hai azzeccato le credenziali! Tacchite moi");
                 }
             }
         });
