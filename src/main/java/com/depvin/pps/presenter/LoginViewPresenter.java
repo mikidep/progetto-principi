@@ -34,6 +34,9 @@ public class LoginViewPresenter {
                     try {
                         Sessione s = Sistema.getInstance().login(usernameTextField.getText(), String.valueOf(passwordField.getPassword()));
                         if (s instanceof SessioneDipendente) {
+                            SessioneDipendenteViewPresenter p = new SessioneDipendenteViewPresenter((SessioneDipendente) s);
+                            view.setVisible(false);
+                            p.show();
 
                         } else if (s instanceof SessioneAmministratore) {
                             SessioneAmministratoreViewPresenter p = new SessioneAmministratoreViewPresenter((SessioneAmministratore) s);
@@ -41,7 +44,9 @@ public class LoginViewPresenter {
                             p.show();
 
                         } else if (s instanceof SessioneCapoProgetto) {
-
+                            SessioneCapoProgettoViewPresenter p = new SessioneCapoProgettoViewPresenter((SessioneCapoProgetto) s);
+                            view.setVisible(false);
+                            p.show();
                         } else {
                             //Sessione Magazziniere
                         }
