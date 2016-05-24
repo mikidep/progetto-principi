@@ -1,11 +1,13 @@
 package com.depvin.pps.business;
 
 import com.depvin.pps.dao.UtenteDAO;
+import com.depvin.pps.dbinterface.DBInterface;
 import com.depvin.pps.model.*;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
 
+import javax.persistence.EntityManager;
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 import java.security.MessageDigest;
@@ -172,6 +174,10 @@ public class Sistema {
             Amministratore amm = UtenteDAO.getNewAmministratore(username, hashPassword(password));
             amm.setNome(name);
             amm.setCognome(surname);
+            EntityManager em = DBInterface.getInstance().getEntityManager();
+            em.getTransaction().begin();
+            em.persist(amm);
+            em.getTransaction().commit();
         } catch (com.depvin.pps.dao.UserAlreadyExistsException e) {
             throw new UserExistsException(e.getMessage(), e);
         } catch (NoSuchAlgorithmException e) {

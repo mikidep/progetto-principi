@@ -22,6 +22,8 @@ public class UtenteDAO {
             return u;
         } catch (EntityExistsException e) {
             throw new UserAlreadyExistsException("A user with given username already exists!", e);
+        } catch (javax.persistence.RollbackException e) {
+            throw new UserAlreadyExistsException("A user with given username already exists!", e);
         }
     }
 
@@ -34,6 +36,8 @@ public class UtenteDAO {
             em.getTransaction().commit();
             return u;
         } catch (EntityExistsException e) {
+            throw new UserAlreadyExistsException("A user with given username already exists!", e);
+        } catch (javax.persistence.RollbackException e) {
             throw new UserAlreadyExistsException("A user with given username already exists!", e);
         }
     }
@@ -48,6 +52,8 @@ public class UtenteDAO {
             return u;
         } catch (EntityExistsException e) {
             throw new UserAlreadyExistsException("A user with given username already exists!", e);
+        } catch (javax.persistence.RollbackException e) {
+            throw new UserAlreadyExistsException("A user with given username already exists!", e);
         }
     }
 
@@ -60,6 +66,8 @@ public class UtenteDAO {
             em.getTransaction().commit();
             return u;
         } catch (EntityExistsException e) {
+            throw new UserAlreadyExistsException("A user with given username already exists!", e);
+        } catch (javax.persistence.RollbackException e) {
             throw new UserAlreadyExistsException("A user with given username already exists!", e);
         }
     }

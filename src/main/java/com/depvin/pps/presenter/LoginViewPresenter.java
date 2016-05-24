@@ -1,12 +1,13 @@
 package com.depvin.pps.presenter;
 
+import com.depvin.pps.business.Sessione;
+import com.depvin.pps.business.Sistema;
+import com.depvin.pps.business.UserLoadingException;
+import com.depvin.pps.business.UserNotFoundException;
+
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputMethodEvent;
-import java.awt.event.InputMethodListener;
 
 /**
  * Created by costantino on 24/05/16.
@@ -28,6 +29,19 @@ public class LoginViewPresenter {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (usernameTextField.getText().length() == 0 || passwordField.getPassword().length == 0) {
                     JOptionPane.showMessageDialog(getView(), "I campi \"username\" e \"password\" non possono essere lasciati vuoti");
+                } else {
+                    try {
+                        Sessione s = Sistema.getInstance().login(usernameTextField.getText(), String.valueOf(passwordField.getPassword()));
+
+                    } catch (UserNotFoundException e) {
+                        try {
+                            Thread.sleep(2000);
+                        } catch (java.lang.InterruptedException es) {
+                        }
+                        JOptionPane.showMessageDialog(getView(), "Dati dell'account non validi, immettere correttamente le credenziali porcoddio");
+                    } catch (UserLoadingException e) {
+                        JOptionPane.showMessageDialog(getView(), "Errore nel caricamento della sessione");
+                    }
                 }
             }
         });
