@@ -33,6 +33,7 @@ public class LoginViewPresenter {
                 } else {
                     try {
                         Sessione s = Sistema.getInstance().login(usernameTextField.getText(), String.valueOf(passwordField.getPassword()));
+                        JOptionPane.showMessageDialog(getView(), "Bravo, hai azzeccato le credenziali! Tacchite moi");
                         if (s instanceof SessioneDipendente) {
                             SessioneDipendenteViewPresenter p = new SessioneDipendenteViewPresenter((SessioneDipendente) s);
                             view.setVisible(false);
@@ -61,7 +62,6 @@ public class LoginViewPresenter {
                     } catch (UserLoadingException e) {
                         JOptionPane.showMessageDialog(getView(), "Errore nel caricamento della sessione");
                     }
-                    JOptionPane.showMessageDialog(getView(), "Bravo, hai azzeccato le credenziali! Tacchite moi");
                 }
             }
         });
