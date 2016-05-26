@@ -14,16 +14,16 @@ public class Articolo {
     private float prezzo;
     private Prodotto prodotto;
     private Produttore produttore;
-    private Fornitore fornitore;
+    private List<Fornitore> fornitori;
     private List<ArticoloOrdine> inOrdine;
 
-    public Articolo(String nome, String descrizione, float prezzo, Prodotto prodotto, Produttore produttore, Fornitore fornitore) {
+    public Articolo(String nome, String descrizione, float prezzo, Prodotto prodotto, Produttore produttore, List<Fornitore> fornitori) {
         this.nome = nome;
         this.descrizione = descrizione;
         this.prezzo = prezzo;
         this.prodotto = prodotto;
         this.produttore = produttore;
-        this.fornitore = fornitore;
+        this.fornitori = fornitori;
     }
 
     protected Articolo() {
@@ -82,12 +82,8 @@ public class Articolo {
         this.produttore = produttore;
     }
 
-    public Fornitore getFornitore() {
-        return fornitore;
-    }
-
-    public void setFornitore(Fornitore fornitore) {
-        this.fornitore = fornitore;
+    public List<Fornitore> getFornitori() {
+        return fornitori;
     }
 
     void verificaRichiestePerMagazzino(Magazzino magazzino) {

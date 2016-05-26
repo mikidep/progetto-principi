@@ -18,11 +18,8 @@ public class SessioneAmministratoreTestMagazziniere {
         String password = "Lupen";
         Nazione nazione = new Nazione("Italiana", 5.60f);
         Sede sede = new Sede("Savona", nazione);
-        Magazzino magazzino = new Magazzino(sede);
+        Magazzino magazzino = new Magazzino("ParDeCazzi", sede);
         Sistema.getInstance().aggiungiMagazziniere(name, surname, magazzino, username, password);
-        //problema nella persistenza del magazzino
-        //During synchronization a new object was found through a relationship that
-        // was not marked cascade PERSIST: com.depvin.pps.model.Magazzino@234c602d.
     }
 
     @Test

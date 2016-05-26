@@ -1,10 +1,9 @@
 package com.depvin.pps.business;
 
-import com.depvin.pps.dao.NoSuchUserException;
-import com.depvin.pps.dao.UserAlreadyExistsException;
-import com.depvin.pps.model.*;
-
-import java.security.NoSuchAlgorithmException;
+import com.depvin.pps.model.Amministratore;
+import com.depvin.pps.model.CapoProgetto;
+import com.depvin.pps.model.Magazzino;
+import com.depvin.pps.model.Sede;
 
 /**
  * Created by costantino on 05/12/15.
@@ -28,8 +27,7 @@ public class SessioneAmministratore implements Sessione {
 
     public void aggiungiMagazziniere(String name, String surname, String username, String password, Sede sede, String magazzinoNome)
             throws UserExistsException, UserLoadingException {
-        Magazzino magazzino = new Magazzino(sede);
-        magazzino.setNome(magazzinoNome);
+        Magazzino magazzino = new Magazzino(magazzinoNome, sede);
         Sistema.getInstance().aggiungiMagazziniere(name, surname, magazzino, username, password);
     }
 

@@ -16,7 +16,8 @@ public class Magazzino {
     protected Magazzino() {
     }
 
-    public Magazzino(Sede sede) {
+    public Magazzino(String nome, Sede sede) {
+        this.nome = nome;
         this.sede = sede;
     }
 
@@ -26,10 +27,6 @@ public class Magazzino {
 
     public String getNome() {
         return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
     }
 
     public List<ArticoloMagazzino> getArticoliMagazzino() {

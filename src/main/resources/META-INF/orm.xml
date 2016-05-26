@@ -32,6 +32,10 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
         <attributes>
             <one-to-many name="progetti" target-entity="Progetto">
                 <join-column name="capoprogetto"/>
+                <cascade>
+                    <cascade-persist/>
+                    <cascade-merge/>
+                </cascade>
             </one-to-many>
         </attributes>
     </entity>
@@ -40,12 +44,21 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
         <table name="Dipendente"/>
         <discriminator-value>D</discriminator-value>
         <attributes>
-            <one-to-many name="ordini" target-entity="Ordine" mapped-by="dipendente"/>
+            <one-to-many name="ordini" target-entity="Ordine" mapped-by="dipendente">
+                <cascade>
+                    <cascade-persist/>
+                    <cascade-merge/>
+                </cascade>
+            </one-to-many>
             <many-to-many name="progetti" target-entity="Progetto">
                 <join-table name="DipendentiProgetto">
                     <join-column name="dipendente"/>
                     <inverse-join-column name="progetto"/>
                 </join-table>
+                <cascade>
+                    <cascade-persist/>
+                    <cascade-merge/>
+                </cascade>
             </many-to-many>
         </attributes>
     </entity>
@@ -56,6 +69,10 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
         <attributes>
             <one-to-one name="magazzino">
                 <join-column name="magazzino"/>
+                <cascade>
+                    <cascade-persist/>
+                    <cascade-merge/>
+                </cascade>
             </one-to-one>
         </attributes>
     </entity>
@@ -72,14 +89,29 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
             <!-- nome, descrizione, prezzo -->
             <many-to-one name="prodotto">
                 <join-column name="prodotto"/>
+                <cascade>
+                    <cascade-persist/>
+                    <cascade-merge/>
+                </cascade>
             </many-to-one>
             <many-to-one name="produttore">
                 <join-column name="produttore"/>
-            </many-to-one>
-            <many-to-one name="fornitore">
-                <join-column name="fornitore"/>
+                <cascade>
+                    <cascade-persist/>
+                    <cascade-merge/>
+                </cascade>
             </many-to-one>
             <one-to-many name="inOrdine" target-entity="ArticoloOrdine" mapped-by="articolo"/>
+            <many-to-many name="fornitori">
+                <join-table name="FornitoreArticolo">
+                    <join-column name="fornitore"/>
+                    <inverse-join-column name="articolo"/>
+                </join-table>
+                <cascade>
+                    <cascade-persist/>
+                    <cascade-merge/>
+                </cascade>
+            </many-to-many>
         </attributes>
     </entity>
 
@@ -134,6 +166,10 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
                     <join-column name="prodotto"/>
                     <inverse-join-column name="categoria"/>
                 </join-table>
+                <cascade>
+                    <cascade-persist/>
+                    <cascade-merge/>
+                </cascade>
             </many-to-many>
         </attributes>
     </entity>
@@ -178,8 +214,17 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
             <!-- nome, budget -->
             <many-to-one name="sede">
                 <join-column name="sede"/>
+                <cascade>
+                    <cascade-persist/>
+                    <cascade-merge/>
+                </cascade>
             </many-to-one>
-            <one-to-many name="ordini" target-entity="Ordine" mapped-by="progetto"/>
+            <one-to-many name="ordini" target-entity="Ordine" mapped-by="progetto">
+                <cascade>
+                    <cascade-persist/>
+                    <cascade-merge/>
+                </cascade>
+            </one-to-many>
         </attributes>
     </entity>
 
@@ -202,6 +247,10 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
             <!-- nome -->
             <many-to-one name="nazione">
                 <join-column name="nazione"/>
+                <cascade>
+                    <cascade-persist/>
+                    <cascade-merge/>
+                </cascade>
             </many-to-one>
         </attributes>
     </entity>
@@ -215,6 +264,10 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
             <!-- nome -->
             <many-to-one name="sede">
                 <join-column name="sede"/>
+                <cascade>
+                    <cascade-persist/>
+                    <cascade-merge/>
+                </cascade>
             </many-to-one>
             <one-to-many name="articoliMagazzino" target-entity="ArticoloMagazzino"
                          mapped-by="magazzino">

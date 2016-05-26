@@ -55,7 +55,7 @@ public class LoginViewPresenter {
                     } catch (UserNotFoundException e) {
                         try {
                             Thread.sleep(2000);
-                        } catch (java.lang.InterruptedException es) {
+                        } catch (java.lang.InterruptedException ignored) {
                         }
                         JOptionPane.showMessageDialog(getView(), "Dati dell'account non validi, immettere correttamente le credenziali porcoddio");
                     } catch (UserLoadingException e) {
@@ -67,7 +67,7 @@ public class LoginViewPresenter {
         });
     }
 
-    public void main() {
+    public void show() {
         view.setVisible(true);
     }
 

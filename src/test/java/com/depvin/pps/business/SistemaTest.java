@@ -8,8 +8,6 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by costantino on 17/05/16.
  */
@@ -22,11 +20,13 @@ public class SistemaTest {
         Produttore p = new Produttore("Luzzio");
         Prodotto pr = new Prodotto("Cancro");
         Fornitore fo = new Fornitore("mammata");
-        Articolo a = new Articolo("Teaser", "Abbastanza cancro", 12.98f, pr, p, fo);
+        List<Fornitore> fol = new ArrayList<Fornitore>();
+        fol.add(fo);
+        Articolo a = new Articolo("Teaser", "Abbastanza cancro", 12.98f, pr, p, fol);
         Dipendente d = new Dipendente("OPPSS", "Ilik".getBytes());
         Nazione nazione = new Nazione("Fanculandia", 5.60f);
         Sede sede = new Sede("Sede di Fanculo", nazione);
-        Magazzino m = new Magazzino(sede);
+        Magazzino m = new Magazzino("ParDeCazzi", sede);
         Progetto pgg = new Progetto("Progetto1", 100.0f, sede);
         Ordine o = new Ordine("Candidio", pgg, d);
 
