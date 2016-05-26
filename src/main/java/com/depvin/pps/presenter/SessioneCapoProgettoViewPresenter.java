@@ -2,12 +2,10 @@ package com.depvin.pps.presenter;
 
 import com.depvin.pps.business.SessioneCapoProgetto;
 import com.depvin.pps.model.CapoProgetto;
-import com.depvin.pps.model.Progetto;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  * Created by costantino on 24/05/16.

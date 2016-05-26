@@ -48,7 +48,9 @@ public class LoginViewPresenter {
                             view.setVisible(false);
                             p.show();
                         } else {
-                            //Sessione Magazziniere
+                            SessioneMagazziniereViewPresenter p = new SessioneMagazziniereViewPresenter((SessioneMagazziniere) s);
+                            view.setVisible(false);
+                            p.show();
                         }
                     } catch (UserNotFoundException e) {
                         try {
