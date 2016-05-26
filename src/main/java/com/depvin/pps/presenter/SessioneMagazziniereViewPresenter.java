@@ -14,6 +14,8 @@ public class SessioneMagazziniereViewPresenter {
 
     private JFrame view;
     private JPanel rootPanel;
+    private JButton rifornisciMagazzinoButton;
+    private JButton ottieniListaOrdiniButton;
 
     public SessioneMagazziniereViewPresenter(SessioneMagazziniere sessione) {
         this.sessione = sessione;

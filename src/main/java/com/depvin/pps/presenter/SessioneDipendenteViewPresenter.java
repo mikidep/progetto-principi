@@ -14,6 +14,11 @@ public class SessioneDipendenteViewPresenter {
 
     private JFrame view;
     private JPanel rootPanel;
+    private JButton ottieniOrdiniPendentiButton;
+    private JComboBox comboBox1;
+    private JComboBox comboBox2;
+    private JButton sfogliaCataglogoButton;
+    private JComboBox comboBox3;
 
     public SessioneDipendenteViewPresenter(SessioneDipendente sessione) {
         this.sessione = sessione;
