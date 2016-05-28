@@ -21,7 +21,7 @@ public class SessioneMagazziniereViewPresenter {
         this.sessione = sessione;
         Magazziniere m = sessione.getUtente();
         view = new JFrame("Sessione: " + m.getNome() + " " + m.getCognome());
-        rootPanel.setPreferredSize(new Dimension(300, 300));
+        rootPanel.setPreferredSize(new Dimension(500, 250));
         view.setLocation(300, 300);
 
         view.setContentPane(rootPanel);
