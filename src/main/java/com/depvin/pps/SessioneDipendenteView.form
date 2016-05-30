@@ -16,7 +16,7 @@
           <text value="Ottieni Ordini Pendenti"/>
         </properties>
       </component>
-      <component id="f89c6" class="javax.swing.JComboBox" binding="comboBox3" default-binding="true">
+      <component id="f89c6" class="javax.swing.JComboBox" binding="comboMaga">
         <constraints>
           <grid row="2" column="5" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -38,13 +38,15 @@
           <text value="Sfoglia Cataglogo"/>
         </properties>
       </component>
-      <component id="a1b53" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
+      <component id="a1b53" class="javax.swing.JComboBox" binding="comboCat">
         <constraints>
           <grid row="2" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <model/>
+        </properties>
       </component>
-      <component id="502be" class="javax.swing.JComboBox" binding="comboBox2" default-binding="true">
+      <component id="502be" class="javax.swing.JComboBox" binding="comboProd">
         <constraints>
           <grid row="2" column="3" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>

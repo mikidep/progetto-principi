@@ -1,15 +1,11 @@
 package com.depvin.pps.presenter;
 
 import com.depvin.pps.business.SessioneDipendente;
-import com.depvin.pps.model.Articolo;
-import com.depvin.pps.model.Categoria;
-import com.depvin.pps.model.Dipendente;
-import com.depvin.pps.model.Prodotto;
+import com.depvin.pps.model.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
-import java.util.List;
+
 
 /**
  * Created by costantino on 24/05/16.
@@ -20,10 +16,10 @@ public class SessioneDipendenteViewPresenter {
     private JFrame view;
     private JPanel rootPanel;
     private JButton ottieniOrdiniPendentiButton;
-    private JComboBox comboBox1;
-    private JComboBox comboBox2;
+    private JComboBox comboCat;
+    private JComboBox comboProd;
     private JButton sfogliaCatalogoButton;
-    private JComboBox comboBox3;
+    private JComboBox comboMaga;
 
     public SessioneDipendenteViewPresenter(SessioneDipendente sessione) {
         this.sessione = sessione;
