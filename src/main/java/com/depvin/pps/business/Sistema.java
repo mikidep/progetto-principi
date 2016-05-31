@@ -7,13 +7,11 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
 
-import javax.persistence.EntityManager;
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by costantino on 05/12/15.
@@ -31,6 +29,7 @@ public class Sistema {
     void aggiungiProgetto(String nome, Sede sede, float budget, CapoProgetto capoProgetto) {
         Progetto progetto = new Progetto(nome, budget, sede);
         capoProgetto.getProgetti().add(progetto);
+        DBInterface.getInstance().save();
     }
 
     void rimuoviArticoloOrdine(Ordine ordine, ArticoloOrdine articoloOrdine) {

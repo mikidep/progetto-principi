@@ -21,23 +21,25 @@ public class SessioneCapoProgettoViewPresenter {
     private JPanel rootPanel;
     private JList list1;
     private JButton confermaButton;
+    private JButton stampaOrdinePerProgettoButton;
     private JComboBox comboBox1;
+    private DefaultListModel listModel;
 
 
     public SessioneCapoProgettoViewPresenter(SessioneCapoProgetto sessione) {
         this.sessione = sessione;
-        CapoProgetto cp = sessione.getUtente();
+        final CapoProgetto cp = sessione.getUtente();
         view = new JFrame("Sessione: " + cp.getNome() + " " + cp.getCognome());
         rootPanel.setPreferredSize(new Dimension(300, 300));
         view.setLocation(300, 300);
 
-        final DefaultListModel listModel;
         listModel = new DefaultListModel();
-        List<Progetto> prog = cp.getProgetti();
-        listModel.addElement(prog);
-
-        list1 = new JList(listModel);
+        final List<Progetto> progs = cp.getProgetti();
+        for (Progetto p : progs) {
+            listModel.addElement(p.getNome());
+        }
         list1.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        list1.setModel(listModel);
         list1.setVisible(true);
 
         view.setContentPane(rootPanel);
@@ -47,14 +49,25 @@ public class SessioneCapoProgettoViewPresenter {
 
         confermaButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-
-                //if(actionEvent.getSource() == confermaButton) {
-                //int index = list1.getSelectedIndex();
-                //System.out.println(index);
-                //Progetto p = (Progetto) listModel.getElementAt(index);
-                //}
+                if (actionEvent.getSource() == confermaButton) {
+                    int index = list1.getSelectedIndex();
+                    System.out.println(index);
+                    Progetto prog = cp.getProgetti().get(index);
+                    ProgettoViewPresenter proge = new ProgettoViewPresenter(prog);
+                    view.setVisible(false);
+                    proge.show();
+                }
             }
         });
+        stampaOrdinePerProgettoButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (actionEvent.getSource() == stampaOrdinePerProgettoButton) {
+                    //DA RIEMPIRE COL PRINT DEGLI ORDINI DEL PROGETTO
+                }
+            }
+        });
+
+
     }
 
     public void show() {
@@ -64,6 +77,4 @@ public class SessioneCapoProgettoViewPresenter {
     public JFrame getView() {
         return view;
     }
-
-
 }

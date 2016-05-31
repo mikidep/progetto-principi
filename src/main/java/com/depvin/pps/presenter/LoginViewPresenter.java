@@ -7,6 +7,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import static javax.swing.JOptionPane.showMessageDialog;
+
 /**
  * Created by costantino on 24/05/16.
  */
@@ -16,6 +18,7 @@ public class LoginViewPresenter {
     private JPasswordField passwordField;
     private JButton submitButton;
     private JTextField usernameTextField;
+    private JLabel charging;
 
     public LoginViewPresenter() {
         view = new JFrame("Login");
@@ -28,12 +31,13 @@ public class LoginViewPresenter {
 
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
+                //Aggiungere messaggio di caricamento del della sessione corrente
                 if (usernameTextField.getText().length() == 0 || passwordField.getPassword().length == 0) {
-                    JOptionPane.showMessageDialog(getView(), "I campi \"username\" e \"password\" non possono essere lasciati vuoti");
+                    showMessageDialog(getView(), "I campi \"username\" e \"password\" non possono essere lasciati vuoti");
                 } else {
                     try {
                         Sessione s = Sistema.getInstance().login(usernameTextField.getText(), String.valueOf(passwordField.getPassword()));
-                        JOptionPane.showMessageDialog(getView(), "Bravo, hai azzeccato le credenziali! Tacchite moi");
+                        showMessageDialog(getView(), "Bravo, hai azzeccato le credenziali! Tacchite moi");
                         if (s instanceof SessioneDipendente) {
                             SessioneDipendenteViewPresenter p = new SessioneDipendenteViewPresenter((SessioneDipendente) s);
                             view.setVisible(false);
@@ -58,9 +62,9 @@ public class LoginViewPresenter {
                             Thread.sleep(2000);
                         } catch (java.lang.InterruptedException ignored) {
                         }
-                        JOptionPane.showMessageDialog(getView(), "Dati dell'account non validi, immettere correttamente le credenziali porcoddio");
+                        showMessageDialog(getView(), "Dati dell'account non validi, immettere correttamente le credenziali porcoddio");
                     } catch (UserLoadingException e) {
-                        JOptionPane.showMessageDialog(getView(), "Errore nel caricamento della sessione");
+                        showMessageDialog(getView(), "Errore nel caricamento della sessione");
                     }
                 }
             }
