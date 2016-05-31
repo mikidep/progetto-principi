@@ -55,49 +55,17 @@ public class SessioneAmministratoreTest {
     @Test
     public void aggiungiProgetto() throws Exception {
         CapoProgetto capoProgetto = (CapoProgetto) DBInterface.getInstance().getEntityManager()
-                .createQuery("SELECT u FROM Utente AS u WHERE u.username = :username AND u.passwordHash = :hash", Utente.class)
-                .setParameter("username", "1").setParameter("hash", "".getBytes())
+                .createQuery("SELECT u FROM Utente AS u WHERE u.username = :username", Utente.class)
+                .setParameter("username", "Costa")
                 .getSingleResult();
         Nazione nazione = new Nazione("Italia", 5.60f);
         Sede sede = new Sede("Napoli", nazione);
         Progetto pgg = new Progetto("Cancro", 100.0f, sede);
-        Sistema.getInstance().aggiungiProgetto("008", sede, 0.02f, capoProgetto);
+        Sistema.getInstance().aggiungiProgetto("008", sede, 0.10f, capoProgetto);
+        //DBInterface.getInstance().save();
 
     }//Risolvere il prome del cast per ottenere il capo progetto
 
-    @Test
-    public void removeAmministratore() throws Exception {
-        Amministratore amministratore = (Amministratore) DBInterface.getInstance().getEntityManager()
-                .createQuery("SELECT u FROM Utente AS u WHERE u.username = :username AND u.passwordHash = :hash", Utente.class)
-                .setParameter("username", "1").setParameter("hash", "\203\263mi\341]y\367\241\031\034\376\337\322pv\304\220\035\246O\035r\222\341:\245r\034\315\246".getBytes())
-                .getSingleResult();
-        System.out.println("Amministratore " + amministratore.getUsername());
-    }//Non funziona il cast
 
-    @Test
-    public void removeCapoProgetto() throws Exception {
-        CapoProgetto capoProgetto = (CapoProgetto) DBInterface.getInstance().getEntityManager()
-                .createQuery("SELECT u FROM Utente AS u WHERE u.username = :username AND u.passwordHash = :hash", Utente.class)
-                .setParameter("username", "1").setParameter("hash", "".getBytes())
-                .getSingleResult();
-        System.out.println("Capo Progetto " + capoProgetto.getUsername());
-    }//Non funziona il cast per ottenere il capo progetto
-
-    @Test
-    public void removeDipendente() throws Exception {
-        Dipendente dipendente = (Dipendente) DBInterface.getInstance().getEntityManager()
-                .createQuery("SELECT u FROM Utente AS u WHERE u.username = :username AND u.passwordHash = :hash", Utente.class)
-                .setParameter("username", "1").setParameter("hash", "".getBytes());
-        System.out.println("Dipendente " + dipendente.getUsername());
-    }//Non funziona il cast
-
-    @Test
-    public void removeMagazziniere() throws Exception {
-        Magazziniere magazziniere = (Magazziniere) DBInterface.getInstance().getEntityManager()
-                .createQuery("SELECT u FROM Utente AS u WHERE u.username = :username AND u.passwordHash = :hash", Utente.class)
-                .setParameter("username", "1").setParameter("hash", "".getBytes())
-                .getSingleResult();
-        System.out.println("Magazziniere " + magazziniere.getUsername());
-    }//Non funziona il cast
 
 }

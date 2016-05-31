@@ -141,6 +141,7 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
                 <generated-value strategy="IDENTITY"/>
             </id>
             <!-- nome -->
+            <many-to-many name="prodotti" mapped-by="categorie" target-entity="Prodotto"/>
         </attributes>
     </entity>
 

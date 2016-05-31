@@ -1,5 +1,8 @@
 package com.depvin.pps.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Michele De Pascalis on 27/11/15.
  */
@@ -7,6 +10,16 @@ package com.depvin.pps.model;
 public class Categoria {
     private long id;
     private String nome;
+    private List<Prodotto> prodotti;
+
+    protected Categoria() {
+
+    }
+
+    public Categoria(String nome) {
+        this.nome = nome;
+        prodotti = new ArrayList<Prodotto>();
+    }
 
     public long getId() {
         return id;
@@ -18,5 +31,9 @@ public class Categoria {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public List<Prodotto> getProdotti() {
+        return prodotti;
     }
 }
