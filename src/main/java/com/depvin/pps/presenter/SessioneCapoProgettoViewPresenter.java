@@ -22,11 +22,10 @@ public class SessioneCapoProgettoViewPresenter {
     private JList list1;
     private JButton confermaButton;
     private JButton stampaOrdinePerProgettoButton;
-    private JComboBox comboBox1;
     private DefaultListModel listModel;
 
 
-    public SessioneCapoProgettoViewPresenter(SessioneCapoProgetto sessione) {
+    public SessioneCapoProgettoViewPresenter(final SessioneCapoProgetto sessione) {
         this.sessione = sessione;
         final CapoProgetto cp = sessione.getUtente();
         view = new JFrame("Sessione: " + cp.getNome() + " " + cp.getCognome());
@@ -53,7 +52,8 @@ public class SessioneCapoProgettoViewPresenter {
                     int index = list1.getSelectedIndex();
                     System.out.println(index);
                     Progetto prog = cp.getProgetti().get(index);
-                    ProgettoViewPresenter proge = new ProgettoViewPresenter(prog);
+
+                    ProgettoViewPresenter proge = new ProgettoViewPresenter(prog, view, sessione);
                     view.setVisible(false);
                     proge.show();
                 }

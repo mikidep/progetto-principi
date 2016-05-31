@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.ExecutionException;
 
 import static javax.swing.JOptionPane.showMessageDialog;
 
@@ -18,7 +19,7 @@ public class LoginViewPresenter {
     private JPasswordField passwordField;
     private JButton submitButton;
     private JTextField usernameTextField;
-    private JLabel charging;
+    private JLabel loadingLabel;
 
     public LoginViewPresenter() {
         view = new JFrame("Login");
@@ -31,41 +32,60 @@ public class LoginViewPresenter {
 
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                //Aggiungere messaggio di caricamento del della sessione corrente
                 if (usernameTextField.getText().length() == 0 || passwordField.getPassword().length == 0) {
                     showMessageDialog(getView(), "I campi \"username\" e \"password\" non possono essere lasciati vuoti");
                 } else {
-                    try {
-                        Sessione s = Sistema.getInstance().login(usernameTextField.getText(), String.valueOf(passwordField.getPassword()));
-                        showMessageDialog(getView(), "Bravo, hai azzeccato le credenziali! Tacchite moi");
-                        if (s instanceof SessioneDipendente) {
-                            SessioneDipendenteViewPresenter p = new SessioneDipendenteViewPresenter((SessioneDipendente) s);
-                            view.setVisible(false);
-                            p.show();
-
-                        } else if (s instanceof SessioneAmministratore) {
-                            SessioneAmministratoreViewPresenter p = new SessioneAmministratoreViewPresenter((SessioneAmministratore) s);
-                            view.setVisible(false);
-                            p.show();
-
-                        } else if (s instanceof SessioneCapoProgetto) {
-                            SessioneCapoProgettoViewPresenter p = new SessioneCapoProgettoViewPresenter((SessioneCapoProgetto) s);
-                            view.setVisible(false);
-                            p.show();
-                        } else {
-                            SessioneMagazziniereViewPresenter p = new SessioneMagazziniereViewPresenter((SessioneMagazziniere) s);
-                            view.setVisible(false);
-                            p.show();
+                    loadingLabel.setVisible(true);
+                    submitButton.setEnabled(false);
+                    SwingWorker<Sessione, Void> worker = new SwingWorker<Sessione, Void>() {
+                        @Override
+                        protected Sessione doInBackground() throws UserNotFoundException, UserLoadingException {
+                            return Sistema.getInstance().login(usernameTextField.getText(), String.valueOf(passwordField.getPassword()));
                         }
-                    } catch (UserNotFoundException e) {
-                        try {
-                            Thread.sleep(2000);
-                        } catch (java.lang.InterruptedException ignored) {
+
+                        @Override
+                        protected void done() {
+                            try {
+                                Sessione s = get();
+                                showMessageDialog(getView(), "Login effettuato con successo");
+                                if (s instanceof SessioneDipendente) {
+                                    SessioneDipendenteViewPresenter p = new SessioneDipendenteViewPresenter((SessioneDipendente) s);
+                                    view.setVisible(false);
+                                    p.show();
+
+                                } else if (s instanceof SessioneAmministratore) {
+                                    SessioneAmministratoreViewPresenter p = new SessioneAmministratoreViewPresenter((SessioneAmministratore) s);
+                                    view.setVisible(false);
+                                    p.show();
+
+                                } else if (s instanceof SessioneCapoProgetto) {
+                                    SessioneCapoProgettoViewPresenter p = new SessioneCapoProgettoViewPresenter((SessioneCapoProgetto) s);
+                                    view.setVisible(false);
+                                    p.show();
+                                } else {
+                                    SessioneMagazziniereViewPresenter p = new SessioneMagazziniereViewPresenter((SessioneMagazziniere) s);
+                                    view.setVisible(false);
+                                    p.show();
+                                }
+                            } catch (ExecutionException e) {
+                                if (e.getCause() instanceof UserNotFoundException) {
+                                    try {
+                                        Thread.sleep(2000);
+                                    } catch (java.lang.InterruptedException ignored) {
+                                    }
+                                    showMessageDialog(getView(), "Dati dell'account non validi, immettere correttamente le credenziali porcoddio");
+                                } else if (e.getCause() instanceof UserLoadingException) {
+                                    showMessageDialog(getView(), "Errore nel caricamento della sessione");
+                                }
+                            } catch (InterruptedException ignored) {
+
+                            } finally {
+                                loadingLabel.setVisible(false);
+                                submitButton.setEnabled(true);
+                            }
                         }
-                        showMessageDialog(getView(), "Dati dell'account non validi, immettere correttamente le credenziali porcoddio");
-                    } catch (UserLoadingException e) {
-                        showMessageDialog(getView(), "Errore nel caricamento della sessione");
-                    }
+                    };
+                    worker.execute();
                 }
             }
         });

@@ -65,9 +65,9 @@ public class Sistema {
     }
 
     void modificaBudget(Progetto progetto, float budget) {
-        float variab = progetto.getBudget() + budget;
-        if (variab >= 0)
-            progetto.setBudget(variab);
+        if (budget >= 0)
+            progetto.setBudget(budget);
+        DBInterface.getInstance().save();
     }
 
     ByteArrayOutputStream articoliToPDFBytes(String intestazione, List<ArticoloOrdine> aolist) throws ReportCreationFailedException {
