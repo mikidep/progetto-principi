@@ -21,51 +21,74 @@ public class SessioneCapoProgettoViewPresenter {
 
     private JFrame view;
     private JPanel rootPanel;
-    private JList list1;
-    private JButton confermaButton;
+    private JList listProgetti;
     private JButton stampaOrdinePerProgettoButton;
+    private JList listDipendenti;
+    private JButton stampaOrdinePerDipendenteButton;
+    private JTextField textDate;
+    private JLabel labelDipendenti;
+    private JLabel labelBudget;
+    private JButton modificaBudgetButton;
+    private JTextField textBudget;
+    private JLabel labelMsgBudget;
+    private JButton confermaProgettoButton;
+    private JButton confermaDipendenteButton;
+    private JLabel labelShowMsg;
+    private JLabel labelProg;
     private DefaultListModel listModel;
 
 
     public SessioneCapoProgettoViewPresenter(final SessioneCapoProgetto sessione) {
         this.sessione = sessione;
         final CapoProgetto cp = sessione.getUtente();
+
         view = new JFrame("Sessione: " + cp.getNome() + " " + cp.getCognome());
-        rootPanel.setPreferredSize(new Dimension(300, 300));
-        view.setLocation(300, 300);
+        rootPanel.setPreferredSize(new Dimension(1500, 800));
+        view.setLocation(0, 0);
 
         listModel = new DefaultListModel();
         final List<Progetto> progs = cp.getProgetti();
         for (Progetto p : progs) {
             listModel.addElement(p.getNome());
         }
-        list1.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        list1.setModel(listModel);
-        list1.setVisible(true);
 
+        listProgetti.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        modificaBudgetButton.setEnabled(false);
+        stampaOrdinePerProgettoButton.setEnabled(false);
+        stampaOrdinePerDipendenteButton.setEnabled(false);
+        listProgetti.setModel(listModel);
+        listProgetti.setVisible(true);
         view.setContentPane(rootPanel);
         view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         view.pack();
 
-        confermaButton.addActionListener(new ActionListener() {
+
+        confermaProgettoButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                if (actionEvent.getSource() == confermaButton) {
-                    //TODO:To Fix ArrayIndexOutOfBoundsException
-                    int index = list1.getSelectedIndex();
+                if (actionEvent.getSource() == confermaProgettoButton) {
+                    // TODO:To Fix ArrayIndexOutOfBoundsException
+                    // and remove the conferma button and add a listener whene a project is selected
+                    int index = listProgetti.getSelectedIndex();
                     System.out.println(index);
                     Progetto prog = cp.getProgetti().get(index);
-                    ProgettoViewPresenter proge = new ProgettoViewPresenter(prog, view, sessione);
-                    view.setVisible(false);
-                    proge.show();
+                    labelProg.setText("Progetto correntemente aperto: " + prog.getNome());
+                    // TODO:Estrarre tutti i dipendenti dal progetto
+                    labelBudget.setText(String.format("%.2f", prog.getBudget()) + " €");
+                    labelProg.setVisible(true);
+                    textBudget.setVisible(true);
+                    labelMsgBudget.setVisible(true);
+                    labelShowMsg.setVisible(true);
+                    labelBudget.setVisible(true);
+                    modificaBudgetButton.setEnabled(true);
                 }
             }
         });
+
         stampaOrdinePerProgettoButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (actionEvent.getSource() == stampaOrdinePerProgettoButton) {
                     //TODO:To Fix ArrayIndexOutOfBoundsException
-                    int index = list1.getSelectedIndex();
+                    int index = listProgetti.getSelectedIndex();
                     System.out.println(index);
                     Progetto prog = cp.getProgetti().get(index);
                     try {
@@ -77,7 +100,36 @@ public class SessioneCapoProgettoViewPresenter {
             }
         });
 
+        modificaBudgetButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (actionEvent.getSource() == modificaBudgetButton) {
+                    if (textBudget.getText().length() == 0) {
+                        showMessageDialog(getView(), "Il campo Budget non può essere lasciato vuoto");
+                    } else {
+                        int index = listProgetti.getSelectedIndex();
+                        Progetto prog = cp.getProgetti().get(index);
+                        String newBudget = textBudget.getText();
+                        newBudget = newBudget.replaceAll(",", ".");
+                        if (!newBudget.contains("."))
+                            newBudget = newBudget + ".00";
+                        float budget = Float.parseFloat(newBudget);
+                        sessione.modificaBudget(prog, budget);
+                        labelBudget.setText(String.format("%.2f", prog.getBudget()) + " €");
+                        labelBudget.setVisible(true);
+                    }
+                }
+            }
+        });
 
+        stampaOrdinePerDipendenteButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (textDate.getText().length() == 0) {
+                    showMessageDialog(getView(), "Il campo  \"data\" non può essere lasciato vuoto");
+                } else {
+                    //TODO: Chiamare il metodo della stampa dell'ordine del dipendente
+                }
+            }
+        });
     }
 
     public void show() {
