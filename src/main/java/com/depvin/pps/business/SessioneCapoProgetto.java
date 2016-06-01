@@ -36,6 +36,8 @@ public class SessioneCapoProgetto implements Sessione {
                 lista.add(ao);
             }
         }
+        /*DateTime jodaTime = new DateTime();
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss.SSS");*/
         return Sistema.getInstance().articoliToPDFBytes(progetto.getNome(), lista);
     }
 

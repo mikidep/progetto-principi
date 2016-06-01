@@ -1,5 +1,6 @@
 package com.depvin.pps.presenter;
 
+import com.depvin.pps.business.ReportCreationFailedException;
 import com.depvin.pps.business.SessioneCapoProgetto;
 import com.depvin.pps.model.CapoProgetto;
 import com.depvin.pps.model.Progetto;
@@ -8,8 +9,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.*;
 import java.util.List;
+
+import static javax.swing.JOptionPane.showMessageDialog;
 
 /**
  * Created by costantino on 24/05/16.
@@ -49,10 +51,10 @@ public class SessioneCapoProgettoViewPresenter {
         confermaButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (actionEvent.getSource() == confermaButton) {
+                    //TODO:To Fix ArrayIndexOutOfBoundsException
                     int index = list1.getSelectedIndex();
                     System.out.println(index);
                     Progetto prog = cp.getProgetti().get(index);
-
                     ProgettoViewPresenter proge = new ProgettoViewPresenter(prog, view, sessione);
                     view.setVisible(false);
                     proge.show();
@@ -62,7 +64,15 @@ public class SessioneCapoProgettoViewPresenter {
         stampaOrdinePerProgettoButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (actionEvent.getSource() == stampaOrdinePerProgettoButton) {
-                    //DA RIEMPIRE COL PRINT DEGLI ORDINI DEL PROGETTO
+                    //TODO:To Fix ArrayIndexOutOfBoundsException
+                    int index = list1.getSelectedIndex();
+                    System.out.println(index);
+                    Progetto prog = cp.getProgetti().get(index);
+                    try {
+                        sessione.stampaOrdineProgetto(prog);
+                    } catch (ReportCreationFailedException e) {
+                        showMessageDialog(getView(), "Errore nella stampa degli ordini");
+                    }
                 }
             }
         });

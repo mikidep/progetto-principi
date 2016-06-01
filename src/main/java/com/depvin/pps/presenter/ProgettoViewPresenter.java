@@ -1,15 +1,15 @@
 package com.depvin.pps.presenter;
 
 import com.depvin.pps.business.SessioneCapoProgetto;
-import com.depvin.pps.business.Sistema;
-import com.depvin.pps.model.CapoProgetto;
 import com.depvin.pps.model.Progetto;
-import sun.org.mozilla.javascript.v8dtoa.CachedPowers;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+
+import static javax.swing.JOptionPane.showMessageDialog;
 
 /**
  * Created by costantino on 31/05/16.
@@ -17,7 +17,7 @@ import java.awt.event.ActionListener;
 public class ProgettoViewPresenter {
     Progetto progetto;
     JFrame oldView;
-    SessioneCapoProgetto scp;
+    SessioneCapoProgetto sessioneCapoProgetto;
 
     private JPanel rootPanel;
     private JButton modificaBudgetButton;
@@ -25,19 +25,27 @@ public class ProgettoViewPresenter {
     private JLabel labelBudget;
     private JButton tornaIndietroButton;
     private JTextField textBudget;
-    private JTextField textNameSurname;
     private JTextField textDate;
+    private JList list1;
     private JFrame view;
+    private DefaultListModel listModel;
 
-    public ProgettoViewPresenter(final Progetto progetto, final JFrame oldView, final SessioneCapoProgetto scp) {
+    public ProgettoViewPresenter(final Progetto progetto, final JFrame oldView, final SessioneCapoProgetto sessioneCapoProgetto) {
         this.progetto = progetto;
         this.oldView = oldView;
-        this.scp = scp;
+        this.sessioneCapoProgetto = sessioneCapoProgetto;
 
         view = new JFrame("Progetto: " + progetto.getNome());
         labelBudget.setText(String.format("%.2f", progetto.getBudget()) + " €");
 
-        rootPanel.setPreferredSize(new Dimension(500, 300));
+        listModel = new DefaultListModel();
+        // TODO:Estrarre tutti i dipendenti dal progetto
+        list1.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        list1.setModel(listModel);
+        list1.setVisible(true);
+
+
+        rootPanel.setPreferredSize(new Dimension(600, 300));
         view.setLocation(300, 300);
 
         view.setContentPane(rootPanel);
@@ -53,13 +61,18 @@ public class ProgettoViewPresenter {
                 }
             }
         });
+
         modificaBudgetButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (actionEvent.getSource() == modificaBudgetButton) {
                     String newBudget = textBudget.getText();
+                    if (newBudget.length() == 0)
+                        newBudget = "0.00";
                     newBudget = newBudget.replaceAll(",", ".");
+                    if (!newBudget.contains("."))
+                        newBudget = newBudget + ".00";
                     float budget = Float.parseFloat(newBudget);
-                    scp.modificaBudget(progetto, budget);
+                    sessioneCapoProgetto.modificaBudget(progetto, budget);
                     newBudget = newBudget.replaceAll("\\.", ",");
                     labelBudget.setText(newBudget + " €");
                     labelBudget.setVisible(true);
@@ -67,6 +80,15 @@ public class ProgettoViewPresenter {
             }
         });
 
+        stampaOrdinePerDipendenteButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (textDate.getText().length() == 0) {
+                    showMessageDialog(getView(), "Il campo  \"data\" non può essere lasciato vuoto");
+                } else {
+                    //TODO: Chiamare il metodo della stampa dell'ordine del dipendente
+                }
+            }
+        });
     }
 
 
