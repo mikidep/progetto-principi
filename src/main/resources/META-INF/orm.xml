@@ -226,6 +226,16 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
                     <cascade-merge/>
                 </cascade>
             </one-to-many>
+            <many-to-many name="dipendenti" target-entity="Dipendente" mapped-by="progetti">
+                <join-table name="DipendentiProgetto">
+                    <join-column name="progetto"/>
+                    <inverse-join-column name="dipendente"/>
+                </join-table>
+                <cascade>
+                    <cascade-persist/>
+                    <cascade-merge/>
+                </cascade>
+            </many-to-many>
         </attributes>
     </entity>
 

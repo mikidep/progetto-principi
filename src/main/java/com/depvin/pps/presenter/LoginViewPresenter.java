@@ -76,6 +76,8 @@ public class LoginViewPresenter {
                                     showMessageDialog(getView(), "Dati dell'account non validi, immettere correttamente le credenziali porcoddio");
                                 } else if (e.getCause() instanceof UserLoadingException) {
                                     showMessageDialog(getView(), "Errore nel caricamento della sessione");
+                                } else {
+                                    e.getCause().printStackTrace();
                                 }
                             } catch (InterruptedException ignored) {
 

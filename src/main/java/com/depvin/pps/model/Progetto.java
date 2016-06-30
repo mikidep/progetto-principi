@@ -13,6 +13,7 @@ public class Progetto {
 
     private Sede sede;
     private List<Ordine> ordini;
+    private List<Dipendente> dipendenti;
 
     protected Progetto() {
     }
@@ -49,5 +50,9 @@ public class Progetto {
 
     public List<Ordine> getOrdini() {
         return ordini;
+    }
+
+    public List<Dipendente> getDipendenti() {
+        return dipendenti;
     }
 }

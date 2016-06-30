@@ -4,9 +4,7 @@ import com.depvin.pps.dbinterface.DBInterface;
 import com.depvin.pps.model.*;
 import org.junit.Test;
 
-import javax.persistence.EntityManager;
-
-import static org.junit.Assert.*;
+import java.util.List;
 
 /**
  * Created by costantino on 24/05/16.
@@ -66,6 +64,17 @@ public class SessioneAmministratoreTest {
 
     }//Risolvere il prome del cast per ottenere il capo progetto
 
-
+    @Test
+    public void ottieniDipendentiPerProgetto() throws Exception {
+        Progetto p = (Progetto) DBInterface.getInstance().getEntityManager()
+                .createQuery("SELECT p FROM Progetto AS p WHERE p.id = :id", Progetto.class)
+                .setParameter("id", 3)
+                .getSingleResult();
+        System.out.println(p.getNome() + ": " + p.getBudget());
+        List<Dipendente> ds = p.getDipendenti();
+        for (Dipendente d: ds) {
+            System.out.println(d.getNome() + " " + d.getCognome());
+        }
+    }
 
 }
