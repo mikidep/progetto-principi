@@ -6,8 +6,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.concurrent.ExecutionException;
 
+import static java.awt.event.KeyEvent.VK_ENTER;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 /**
@@ -26,7 +28,7 @@ public class LoginViewPresenter {
         rootPanel.setPreferredSize(new Dimension(500, 150));
         view.setLocation(450, 300);
         view.setContentPane(rootPanel);
-
+        view.getRootPane().setDefaultButton(submitButton);
         view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         view.pack();
 
@@ -42,7 +44,6 @@ public class LoginViewPresenter {
                         protected Sessione doInBackground() throws UserNotFoundException, UserLoadingException {
                             return Sistema.getInstance().login(usernameTextField.getText(), String.valueOf(passwordField.getPassword()));
                         }
-
                         @Override
                         protected void done() {
                             try {
