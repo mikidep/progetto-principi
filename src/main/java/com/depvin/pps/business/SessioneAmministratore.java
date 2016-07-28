@@ -5,6 +5,8 @@ import com.depvin.pps.model.CapoProgetto;
 import com.depvin.pps.model.Magazzino;
 import com.depvin.pps.model.Sede;
 
+import java.util.List;
+
 /**
  * Created by costantino on 05/12/15.
  */
@@ -43,5 +45,13 @@ public class SessioneAmministratore implements Sessione {
 
     public void aggiungiProgetto(String nome, Sede sede, float budget, CapoProgetto capoProgetto) {
         Sistema.getInstance().aggiungiProgetto(nome, sede, budget, capoProgetto);
+    }
+
+    public List<CapoProgetto> ottieniListaCapoProgetto() {
+        return Sistema.getInstance().ottieniListaCapoProgetto();
+    }
+
+    public List<Sede> ottieniListaSede() {
+        return Sistema.getInstance().ottieniListaSede();
     }
 }

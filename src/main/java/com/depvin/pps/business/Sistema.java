@@ -1,5 +1,6 @@
 package com.depvin.pps.business;
 
+import com.depvin.pps.dao.SedeDAO;
 import com.depvin.pps.dao.UtenteDAO;
 import com.depvin.pps.dbinterface.DBInterface;
 import com.depvin.pps.model.*;
@@ -240,4 +241,11 @@ public class Sistema {
         }
     }
 
+    List<CapoProgetto> ottieniListaCapoProgetto() {
+        return UtenteDAO.getAllCapiProgetto();
+    }
+
+    List<Sede> ottieniListaSede() {
+        return SedeDAO.getAllSedi();
+    }
 }

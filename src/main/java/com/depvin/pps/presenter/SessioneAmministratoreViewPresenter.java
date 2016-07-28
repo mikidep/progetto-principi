@@ -6,7 +6,6 @@ import com.depvin.pps.business.UserLoadingException;
 import com.depvin.pps.model.Amministratore;
 import com.depvin.pps.model.CapoProgetto;
 import com.depvin.pps.model.Sede;
-import com.depvin.pps.model.Utente;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.List;
 
 import static javax.swing.JOptionPane.showMessageDialog;
 
@@ -68,7 +68,12 @@ public class SessioneAmministratoreViewPresenter {
 
         creaDipendenteRadioButton.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent itemEvent) {
-                //TODO: inserire tutti i capi-progetto nel combobox
+
+                capoProgBox.removeAllItems();
+                List<CapoProgetto> list = sessione.ottieniListaCapoProgetto();
+                for (CapoProgetto cp : list)
+                    capoProgBox.addItem(cp.getUsername());
+
                 usernameField.setVisible(true);
                 passwordField.setVisible(true);
                 progettoField.setVisible(true);
@@ -90,6 +95,7 @@ public class SessioneAmministratoreViewPresenter {
 
         creaAmministratoreRadioButton.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent itemEvent) {
+
                 usernameField.setVisible(true);
                 passwordField.setVisible(true);
                 cognomeField.setVisible(true);
@@ -112,6 +118,7 @@ public class SessioneAmministratoreViewPresenter {
 
         creaCapoProgettoRadioButton.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent itemEvent) {
+
                 passwordField.setVisible(true);
                 usernameField.setVisible(true);
                 cognomeField.setVisible(true);
@@ -134,7 +141,11 @@ public class SessioneAmministratoreViewPresenter {
 
         creaMagazziniereRadioButton.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent itemEvent) {
-                //TODO: inserire tutte le sedi nel combo-box
+
+                sedeBox.removeAllItems();
+                List<Sede> list = sessione.ottieniListaSede();
+                for (Sede sede : list)
+                    sedeBox.addItem(sede.getNome());
 
                 nomeMagazzinoField.setVisible(true);
                 usernameField.setVisible(true);
@@ -157,7 +168,16 @@ public class SessioneAmministratoreViewPresenter {
 
         creaProgettoRadioButton.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent itemEvent) {
-                //TODO: inserire tutti i capo-progetti e le sedi nei relativi combo-box
+
+                capoProgBox.removeAllItems();
+                sedeBox.removeAllItems();
+                List<CapoProgetto> listProgetto = sessione.ottieniListaCapoProgetto();
+                for (CapoProgetto cp : listProgetto)
+                    capoProgBox.addItem(cp.getUsername());
+                List<Sede> listSede = sessione.ottieniListaSede();
+                for (Sede sede : listSede)
+                    sedeBox.addItem(sede.getNome());
+
                 nomeProgField.setVisible(true);
                 budgetField.setVisible(true);
                 capoProgBox.setVisible(true);
@@ -202,7 +222,12 @@ public class SessioneAmministratoreViewPresenter {
                     showMessageDialog(getView(), "I campi \"nome\", \"cognome\", \"username\", \"password\", \"capo progetto\" e \"progetto\"non possono essere lasciati vuoti");
                 else {
                     try {
-                        sessione.aggiungiDipendente(nomeField.getText(), cognomeField.getText(), usernameField.getText(), passwordField.getText(), (CapoProgetto) capoProgBox.getSelectedItem(), progettoField.getText());
+                        int index = 0;
+                        List<CapoProgetto> listcp = sessione.ottieniListaCapoProgetto();
+                        for (CapoProgetto cp : listcp)
+                            if ((cp.getUsername()).equals(capoProgBox.getSelectedItem()))
+                                index = listcp.indexOf(cp);
+                        sessione.aggiungiDipendente(nomeField.getText(), cognomeField.getText(), usernameField.getText(), passwordField.getText(), listcp.get(index), progettoField.getText());
                     } catch (UserExistsException e) {
                         showMessageDialog(getView(), "Utente già esistente");
                     } catch (UserLoadingException e) {
@@ -220,7 +245,12 @@ public class SessioneAmministratoreViewPresenter {
                     showMessageDialog(getView(), "I campi \"nome\", \"cognome\", \"username\", \"password\", \"sede\" e \"magazzino\" non possono essere lasciati vuoti");
                 else {
                     try {
-                        sessione.aggiungiMagazziniere(nomeField.getText(), cognomeField.getText(), usernameField.getText(), passwordField.getText(), (Sede) sedeBox.getSelectedItem(), nomeMagazzinoField.getText());
+                        int index = 0;
+                        List<Sede> lists = sessione.ottieniListaSede();
+                        for (Sede s : lists)
+                            if ((s.getNome()).equals(sedeBox.getSelectedItem()))
+                                index = lists.indexOf(s);
+                        sessione.aggiungiMagazziniere(nomeField.getText(), cognomeField.getText(), usernameField.getText(), passwordField.getText(), lists.get(index), nomeMagazzinoField.getText());
                     } catch (UserExistsException e) {
                         showMessageDialog(getView(), "Utente già esistente");
                     } catch (UserLoadingException e) {
@@ -254,12 +284,22 @@ public class SessioneAmministratoreViewPresenter {
                         capoProgBox.getSelectedItem().equals(null) || budgetField.getText().length() == 0)
                     showMessageDialog(getView(), "I campi \"nome progetto\", \"sede\", \"budget\" e \"capo progetto\" non possono essere lasciati vuoti");
                 else {
+                    int index = 0;
+                    int indecs = 0;
+                    List<Sede> lists = sessione.ottieniListaSede();
+                    for (Sede s : lists)
+                        if ((s.getNome()).equals(sedeBox.getSelectedItem()))
+                            indecs = lists.indexOf(s);
+                    List<CapoProgetto> listcp = sessione.ottieniListaCapoProgetto();
+                    for (CapoProgetto cp : listcp)
+                        if ((cp.getUsername()).equals(capoProgBox.getSelectedItem()))
+                            index = listcp.indexOf(cp);
                     String newBudget = budgetField.getText();
                     newBudget = newBudget.replaceAll(",", ".");
                     if (!newBudget.contains("."))
                         newBudget = newBudget + ".00";
                     float budget = Float.parseFloat(newBudget);
-                    sessione.aggiungiProgetto(nomeProgField.getText(), (Sede) sedeBox.getSelectedItem(), budget, (CapoProgetto) capoProgBox.getSelectedItem());
+                    sessione.aggiungiProgetto(nomeProgField.getText(), lists.get(indecs), budget, listcp.get(index));
                 }
             }
         });
