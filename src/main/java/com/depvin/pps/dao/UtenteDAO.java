@@ -10,6 +10,7 @@ import com.depvin.pps.model.*;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import java.util.List;
 
 public class UtenteDAO {
     public static Dipendente getNewDipendente(String username, byte[] hash) throws UserAlreadyExistsException {
@@ -82,4 +83,11 @@ public class UtenteDAO {
             throw new NoSuchUserException("No user with given username and password hash exists!", e);
         }
     }
+
+    public static List<CapoProgetto> getAllCapiProgetto() {
+        return (List<CapoProgetto>) DBInterface.getInstance().getEntityManager()
+                .createQuery("SELECT c from CapoProgetto c", CapoProgetto.class)
+                .getResultList();
+    }
+
 }
