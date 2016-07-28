@@ -84,43 +84,38 @@ public class SessioneCapoProgettoViewPresenter {
 
         listDipendenti.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                stampaOrdinePerProgettoButton.setEnabled(true);
                 stampaOrdinePerDipendenteButton.setEnabled(true);
             }
         });
 
         modificaBudgetButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                if (actionEvent.getSource() == modificaBudgetButton) {
-                    if (textBudget.getText().length() == 0) {
-                        showMessageDialog(getView(), "Il campo Budget non può essere lasciato vuoto");
-                    } else {
-                        int index = listProgetti.getSelectedIndex();
-                        Progetto prog = cp.getProgetti().get(index);
-                        String newBudget = textBudget.getText();
-                        newBudget = newBudget.replaceAll(",", ".");
-                        if (!newBudget.contains("."))
-                            newBudget = newBudget + ".00";
-                        float budget = Float.parseFloat(newBudget);
-                        sessione.modificaBudget(prog, budget);
-                        labelBudget.setText(String.format("%.2f", prog.getBudget()) + " €");
-                        labelBudget.setVisible(true);
-                    }
+                if (textBudget.getText().length() == 0) {
+                    showMessageDialog(getView(), "Il campo Budget non può essere lasciato vuoto");
+                } else {
+                    int index = listProgetti.getSelectedIndex();
+                    Progetto prog = cp.getProgetti().get(index);
+                    String newBudget = textBudget.getText();
+                    newBudget = newBudget.replaceAll(",", ".");
+                    if (!newBudget.contains("."))
+                        newBudget = newBudget + ".00";
+                    float budget = Float.parseFloat(newBudget);
+                    sessione.modificaBudget(prog, budget);
+                    labelBudget.setText(String.format("%.2f", prog.getBudget()) + " €");
+                    labelBudget.setVisible(true);
                 }
             }
         });
 
         stampaOrdinePerProgettoButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                if (actionEvent.getSource() == stampaOrdinePerProgettoButton) {
-                    int index = listProgetti.getSelectedIndex();
-                    System.out.println(index);
-                    Progetto prog = cp.getProgetti().get(index);
-                    try {
-                        sessione.stampaOrdineProgetto(prog);
-                    } catch (ReportCreationFailedException e) {
-                        showMessageDialog(getView(), "Errore nella stampa degli ordini");
-                    }
+                int index = listProgetti.getSelectedIndex();
+                System.out.println(index);
+                Progetto prog = cp.getProgetti().get(index);
+                try {
+                    sessione.stampaOrdineProgetto(prog);
+                } catch (ReportCreationFailedException e) {
+                    showMessageDialog(getView(), "Errore nella stampa degli ordini");
                 }
             }
         });
