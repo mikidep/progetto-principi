@@ -20,6 +20,15 @@ public class SessioneDipendenteViewPresenter {
     private JComboBox comboProd;
     private JButton sfogliaCatalogoButton;
     private JComboBox comboMaga;
+    private JList list1;
+    private JButton aggiungiArticoloAllOrdineButton;
+    private JList list2;
+    private JComboBox comboBox1;
+    private JButton chiudiOrdineButton;
+    private JButton rimuoviOrdineButton;
+    private JButton nuovoOrdineButton;
+    private JButton rimuoviArticoloDallOrdineButton;
+    private JComboBox comboBox2;
 
     public SessioneDipendenteViewPresenter(SessioneDipendente sessione) {
         this.sessione = sessione;

@@ -107,7 +107,7 @@ public class SessioneAmministratoreViewPresenter {
                 budgetField.setVisible(false);
                 capoProgBox.setVisible(false);
                 sedeBox.setVisible(true); //Viene posto prima true e poi false perchè se no non verrebbe aggiornata
-                sedeBox.setVisible(false);//la interfaccia grafica se la prima scelta è stata di creare l'amministratore
+                sedeBox.setVisible(false);//l'interfaccia grafica se la prima scelta è stata di creare l'amministratore
                 buttonAdmin.setEnabled(true);
                 buttonCapo.setEnabled(false);
                 buttonDip.setEnabled(false);
@@ -210,6 +210,7 @@ public class SessioneAmministratoreViewPresenter {
                     } catch (UserLoadingException e) {
                         showMessageDialog(getView(), "Errore nel caricamento");
                     }
+                    showMessageDialog(getView(), "Amministratore aggiunto con successo");
                 }
             }
         });
@@ -233,6 +234,7 @@ public class SessioneAmministratoreViewPresenter {
                     } catch (UserLoadingException e) {
                         showMessageDialog(getView(), "Errore nel caricamento");
                     }
+                    showMessageDialog(getView(), "Dipendente aggiunto con successo");
                 }
             }
         });
@@ -256,6 +258,7 @@ public class SessioneAmministratoreViewPresenter {
                     } catch (UserLoadingException e) {
                         showMessageDialog(getView(), "Errore nel caricamento");
                     }
+                    showMessageDialog(getView(), "Magazziniere aggiunto con successo");
                 }
             }
         });
@@ -273,6 +276,7 @@ public class SessioneAmministratoreViewPresenter {
                     } catch (UserLoadingException e) {
                         showMessageDialog(getView(), "Errore nel caricamento");
                     }
+                    showMessageDialog(getView(), "Capo Progetto aggiunto con successo");
                 }
             }
         });
@@ -300,6 +304,7 @@ public class SessioneAmministratoreViewPresenter {
                         newBudget = newBudget + ".00";
                     float budget = Float.parseFloat(newBudget);
                     sessione.aggiungiProgetto(nomeProgField.getText(), lists.get(indecs), budget, listcp.get(index));
+                    showMessageDialog(getView(), "Progetto aggiunto con successo");
                 }
             }
         });
