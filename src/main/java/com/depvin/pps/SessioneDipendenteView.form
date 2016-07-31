@@ -82,14 +82,6 @@
           <text value="Ordini pendenti"/>
         </properties>
       </component>
-      <component id="b9be3" class="javax.swing.JButton" binding="rimuoviOrdineButton" default-binding="true">
-        <constraints>
-          <grid row="5" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Rimuovi Ordine"/>
-        </properties>
-      </component>
       <component id="44527" class="javax.swing.JButton" binding="sfogliaCatalogoButton">
         <constraints>
           <grid row="2" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
@@ -141,28 +133,36 @@
         </constraints>
         <properties/>
       </component>
-      <component id="b6078" class="javax.swing.JButton" binding="chiudiOrdineButton" default-binding="true">
-        <constraints>
-          <grid row="7" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Chiudi Ordine"/>
-        </properties>
-      </component>
-      <component id="6f326" class="javax.swing.JButton" binding="nuovoOrdineButton" default-binding="true">
-        <constraints>
-          <grid row="4" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Nuovo Ordine"/>
-        </properties>
-      </component>
       <component id="6e2c9" class="javax.swing.JLabel">
         <constraints>
           <grid row="3" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Ordine n°.."/>
+        </properties>
+      </component>
+      <component id="6f326" class="javax.swing.JButton" binding="nuovoOrdineButton" default-binding="true">
+        <constraints>
+          <grid row="3" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Nuovo Ordine"/>
+        </properties>
+      </component>
+      <component id="b9be3" class="javax.swing.JButton" binding="rimuoviOrdineButton" default-binding="true">
+        <constraints>
+          <grid row="4" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Rimuovi Ordine"/>
+        </properties>
+      </component>
+      <component id="b6078" class="javax.swing.JButton" binding="chiudiOrdineButton" default-binding="true">
+        <constraints>
+          <grid row="5" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Chiudi Ordine"/>
         </properties>
       </component>
     </children>

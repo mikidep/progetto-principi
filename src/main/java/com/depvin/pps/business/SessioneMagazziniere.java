@@ -3,6 +3,7 @@ package com.depvin.pps.business;
 import com.depvin.pps.model.*;
 
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 
 /**
  * Created by costantino on 05/12/15.
@@ -36,6 +37,10 @@ public class SessioneMagazziniere implements Sessione {
 
     public ByteArrayOutputStream stampaOrdine(Ordine ordine) throws ReportCreationFailedException {
         return Sistema.getInstance().articoliToPDFBytes(ordine.getNome(), Sistema.getInstance().ottieniListaOrdine(ordine));
+    }
+
+    public List<Categoria> ottieniListaCategorie() {
+        return Sistema.getInstance().ottieniListaCategorie();
     }
 
 }
