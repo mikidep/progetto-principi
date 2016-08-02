@@ -4,13 +4,12 @@ import com.depvin.pps.business.SessioneMagazziniere;
 import com.depvin.pps.model.*;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -23,7 +22,6 @@ public class SessioneMagazziniereViewPresenter {
 
     private JFrame view;
     private JPanel rootPanel;
-    private JList listaOrdini;
     private JList listaArticoliOrdine;
     private JList listaArticoliM;
     private JTextField nomeField;
@@ -41,7 +39,7 @@ public class SessioneMagazziniereViewPresenter {
     private JButton pulisciTuttiICampiButton;
     private JButton confermaModificaButton;
     private JButton aggiungiProdottoButton;
-    private JButton aggiungiProduttoreButton;
+    private JButton modificaProduttoreButton;
     private JButton aggiungiFornitoreButton;
     private JButton aggiungiCategoriaButton;
     private JTabbedPane tabbedPane1;
@@ -53,7 +51,7 @@ public class SessioneMagazziniereViewPresenter {
     private JComboBox produttoreBox;
     private JComboBox prodottoBox;
     private JComboBox categoriaBox;
-    private DefaultListModel listModelOrdini;
+    private DefaultListModel listModelArticoliOrdini;
     private DefaultListModel listModelArticoli;
 
     public SessioneMagazziniereViewPresenter(final SessioneMagazziniere sessione) {
@@ -77,7 +75,7 @@ public class SessioneMagazziniereViewPresenter {
         confermaModificaButton.setEnabled(false);
         aggiungiProdottoButton.setEnabled(false);
         aggiungiFornitoreButton.setEnabled(false);
-        aggiungiProduttoreButton.setEnabled(false);
+        modificaProduttoreButton.setEnabled(false);
         aggiungiCategoriaButton.setEnabled(false);
 
         listModelArticoli = new DefaultListModel();
@@ -88,8 +86,13 @@ public class SessioneMagazziniereViewPresenter {
         listaArticoliM.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         listaArticoliM.setModel(listModelArticoli);
         listaArticoliM.setVisible(true);
-        listModelOrdini = new DefaultListModel();
-        //TODO: inserire gli ordini nella corrispondente lista
+
+        listModelArticoliOrdini = new DefaultListModel();
+        for (ArticoloMagazzino ams : articoloMagazzinos) {
+            //ams.getArticolo()
+        }
+        //TODO: inserire gli articoli dell'ordine nella corrispondente lista
+
         tabbedPane1.setVisible(true);
         List<Categoria> listcat = sessione.ottieniListaCategorie();
         for (Categoria cat : listcat)
@@ -107,18 +110,9 @@ public class SessioneMagazziniereViewPresenter {
             }
         });
 
-        listaOrdini.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                int index = listaOrdini.getSelectedIndex();
-                //Ordine o = .get(index);
-                //TODO:istanziare la lista di articoli del relativo ordine
-            }
-        });
-
         stampaOrdineButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                int index = listaOrdini.getSelectedIndex();
-                //TODO: collegarlo al relativo ordine
+                //TODO: collegarlo ai relativi articoli dell'ordine
             }
         });
 
@@ -140,9 +134,10 @@ public class SessioneMagazziniereViewPresenter {
                 if (categoriaField.getText().length() == 0)
                     showMessageDialog(getView(), "Il campo categoria non può rimanere vuoto");
                 else {
-
+                    Categoria cat = new Categoria(categoriaField.getText());
+                    sessione.ottieniListaCategorie().add(cat);
+                    showMessageDialog(getView(), "Categoria aggiunta con successo");
                 }
-
             }
         });
 
@@ -151,16 +146,29 @@ public class SessioneMagazziniereViewPresenter {
                 if (prodottoField.getText().length() == 0)
                     showMessageDialog(getView(), "Il campo prodotto non può rimanere vuoto");
                 else {
-
+                    int index = categoriaBox.getSelectedIndex();
+                    Categoria cat = sessione.ottieniListaCategorie().get(index);
+                    List<Prodotto> listprod = cat.getProdotti();
+                    List<Categoria> listcat = new ArrayList<Categoria>();
+                    listcat.add(cat);
+                    Prodotto prod = new Prodotto(prodottoField.getText(), listcat);
+                    listprod.add(prod);
+                    showMessageDialog(getView(), "Prodotto aggiunto con successo");
                 }
             }
         });
 
-        aggiungiProduttoreButton.addActionListener(new ActionListener() {
+        modificaProduttoreButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (produttoreField.getText().length() == 0)
                     showMessageDialog(getView(), "Il campo produttore non può rimanere vuoto");
-
+                else {
+                    Produttore produ = new Produttore(produttoreField.getText());
+                    int index = listaArticoliM.getSelectedIndex();
+                    ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
+                    am.getArticolo().setProduttore(produ);
+                    showMessageDialog(getView(), "Produttore modificato con successo");
+                }
             }
         });
 
@@ -168,7 +176,14 @@ public class SessioneMagazziniereViewPresenter {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (fornitoreField.getText().length() == 0)
                     showMessageDialog(getView(), "Il campo fornitore non può rimanere vuoto");
-
+                else {
+                    Fornitore fo = new Fornitore(fornitoreField.getText());
+                    int index = listaArticoliM.getSelectedIndex();
+                    ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
+                    List<Fornitore> listfo = am.getArticolo().getFornitori();
+                    listfo.add(fo);
+                    showMessageDialog(getView(), "Fornitore aggiunto con successo");
+                }
             }
         });
 
@@ -181,7 +196,7 @@ public class SessioneMagazziniereViewPresenter {
                 stampaOrdineButton.setEnabled(false);
                 confermaModificaButton.setEnabled(false);
                 aggiungiProdottoButton.setEnabled(true);
-                aggiungiProduttoreButton.setEnabled(true);
+                modificaProduttoreButton.setEnabled(true);
                 aggiungiFornitoreButton.setEnabled(true);
                 aggiungiCategoriaButton.setEnabled(true);
 
@@ -215,10 +230,13 @@ public class SessioneMagazziniereViewPresenter {
                     int indexcat = categoriaBox.getSelectedIndex();
                     int indexprod = prodottoBox.getSelectedIndex();
                     Prodotto prod = sessione.ottieniListaCategorie().get(indexcat).getProdotti().get(indexprod);
-
-                    /*Articolo a = new Articolo(nomeField.getText(),descrizioneField.getText(),Float.parseFloat(prezzo),prod
-                    ,      ,      );         Manca da aggiungere il produttore e fornitore
-                    sessione.aggiungiArticoloMagazzino(a,Integer.parseInt(disponibilitàField.getText()));*/
+                    Produttore produttore = new Produttore(prodottoField.getText());
+                    Fornitore fo = new Fornitore(fornitoreField.getText());
+                    List<Fornitore> lifo = new ArrayList<Fornitore>();
+                    lifo.add(fo);
+                    Articolo a = new Articolo(nomeField.getText(), descrizioneField.getText(), Float.parseFloat(prezzo),
+                            prod, produttore, lifo);
+                    sessione.aggiungiArticoloMagazzino(a, Integer.parseInt(disponibilitàField.getText()));
                     showMessageDialog(getView(), "Articolo aggiunto con successo");
                 }
             }
@@ -233,7 +251,7 @@ public class SessioneMagazziniereViewPresenter {
                 stampaOrdineButton.setEnabled(false);
                 confermaModificaButton.setEnabled(false);
                 aggiungiProdottoButton.setEnabled(false);
-                aggiungiProduttoreButton.setEnabled(false);
+                modificaProduttoreButton.setEnabled(false);
                 aggiungiFornitoreButton.setEnabled(false);
                 aggiungiCategoriaButton.setEnabled(false);
 
@@ -269,7 +287,7 @@ public class SessioneMagazziniereViewPresenter {
                 stampaOrdineButton.setEnabled(false);
                 confermaModificaButton.setEnabled(false);
                 aggiungiProdottoButton.setEnabled(false);
-                aggiungiProduttoreButton.setEnabled(false);
+                modificaProduttoreButton.setEnabled(false);
                 aggiungiFornitoreButton.setEnabled(false);
                 aggiungiCategoriaButton.setEnabled(false);
 
@@ -310,7 +328,7 @@ public class SessioneMagazziniereViewPresenter {
                 stampaOrdineButton.setEnabled(false);
                 confermaModificaButton.setEnabled(true);
                 aggiungiProdottoButton.setEnabled(true);
-                aggiungiProduttoreButton.setEnabled(true);
+                modificaProduttoreButton.setEnabled(true);
                 aggiungiFornitoreButton.setEnabled(true);
                 aggiungiCategoriaButton.setEnabled(true);
 
