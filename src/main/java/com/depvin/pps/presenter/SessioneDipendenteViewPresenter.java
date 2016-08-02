@@ -15,20 +15,25 @@ public class SessioneDipendenteViewPresenter {
 
     private JFrame view;
     private JPanel rootPanel;
-    private JButton ottieniOrdiniPendentiButton;
-    private JComboBox comboCat;
-    private JComboBox comboProd;
+    private JTabbedPane tabbedPane2;
+    private JComboBox catalogoBox;
+    private JComboBox ProdottoBox;
     private JButton sfogliaCatalogoButton;
-    private JComboBox comboMaga;
-    private JList list1;
+    private JComboBox magazzinoBox;
+    private JList articoloCatList;
     private JButton aggiungiArticoloAllOrdineButton;
-    private JList list2;
-    private JComboBox comboBox1;
-    private JButton chiudiOrdineButton;
-    private JButton rimuoviOrdineButton;
+    private JList ordiniPendentiList;
+    private JComboBox ordiniPendentiBox;
     private JButton nuovoOrdineButton;
-    private JButton rimuoviArticoloDallOrdineButton;
-    private JComboBox comboBox2;
+    private JComboBox progettiBox;
+    private JButton richiediNotificaButton;
+    private JButton modificaOrdineButton;
+    private JButton chiudiOrdineButton;
+    private JList ordineCorrenteList;
+    private JButton modificaQuantitàButton;
+    private JButton eliminaArticoloDallOrdineButton;
+    private JComboBox progettoOrdineBox;
+    private JButton chiudiOrdineButton1;
 
     public SessioneDipendenteViewPresenter(SessioneDipendente sessione) {
         this.sessione = sessione;
@@ -38,7 +43,7 @@ public class SessioneDipendenteViewPresenter {
         view.setLocation(550, 100);
         view.setContentPane(rootPanel);
         view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        tabbedPane2.setVisible(true);
         view.pack();
     }
 
