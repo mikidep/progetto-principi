@@ -70,4 +70,10 @@ public class ArticoloOrdine {
             ordine.getDipendente().notificaDisponibilitàInMagazzino(this, magazzino);
         }
     }
+
+    void notificaRichiestaAlMagazziniere() {
+        if (!getOrdine().isEvaso() && getOrdine().isInviato()) {
+            getMagazzino().getMagazziniere().notificaRichiestaArticolo(this);
+        }
+    }
 }

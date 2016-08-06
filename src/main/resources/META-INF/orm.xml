@@ -44,6 +44,7 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
         <table name="Dipendente"/>
         <discriminator-value>D</discriminator-value>
         <attributes>
+            <transient name="listeners"/>
             <one-to-many name="ordini" target-entity="Ordine" mapped-by="dipendente">
                 <cascade>
                     <cascade-persist/>
@@ -67,6 +68,7 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
         <table name="Magazziniere"/>
         <discriminator-value>M</discriminator-value>
         <attributes>
+            <transient name="listeners"/>
             <one-to-one name="magazzino">
                 <join-column name="magazzino"/>
                 <cascade>
@@ -273,6 +275,7 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
                 <generated-value strategy="IDENTITY"/>
             </id>
             <!-- nome -->
+            <one-to-one name="magazziniere" mapped-by="magazzino"/>
             <many-to-one name="sede">
                 <join-column name="sede"/>
                 <cascade>

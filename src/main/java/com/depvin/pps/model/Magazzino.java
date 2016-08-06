@@ -12,6 +12,7 @@ public class Magazzino {
 
     private List<ArticoloMagazzino> articoliMagazzino;
     private Sede sede;
+    private Magazziniere magazziniere;
 
     protected Magazzino() {
     }
@@ -35,6 +36,14 @@ public class Magazzino {
 
     public Sede getSede() {
         return sede;
+    }
+
+    public Magazziniere getMagazziniere() {
+        return magazziniere;
+    }
+
+    public void setMagazziniere(Magazziniere magazziniere) {
+        this.magazziniere = magazziniere;
     }
 
     public boolean hasArticoloWithDisponibilita(Articolo a, int d) {

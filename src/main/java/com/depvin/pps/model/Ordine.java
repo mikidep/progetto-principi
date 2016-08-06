@@ -11,6 +11,7 @@ import java.util.Set;
 public class Ordine {
     private long id;
     private String nome;
+    private boolean inviato = false;
     private boolean evaso = false;
     private Progetto progetto;
     private Dipendente dipendente;
@@ -38,6 +39,14 @@ public class Ordine {
         this.nome = nome;
     }
 
+    public boolean isInviato() {
+        return inviato;
+    }
+
+    public void setInviato(boolean inviato) {
+        this.inviato = inviato;
+    }
+
     public boolean isEvaso() {
         return evaso;
     }
@@ -59,8 +68,6 @@ public class Ordine {
     }
 
     public float getTotale() {
-        // return articoliOrdine reduce (_ + _)
-        // Java -- Y U NO REDUCE!
         float t = 0.0f;
         Set<Sede> sedi = new HashSet<Sede>();
         for (ArticoloOrdine ao : articoliOrdine) {
@@ -71,5 +78,11 @@ public class Ordine {
             t += s.calcolaSpedizionePer(progetto.getSede());
         }
         return t;
+    }
+
+    public void notificaNecessitaArticoli() {
+        for (ArticoloOrdine ao : articoliOrdine) {
+            ao.notificaRichiestaAlMagazziniere();
+        }
     }
 }
