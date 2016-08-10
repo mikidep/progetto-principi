@@ -1,5 +1,6 @@
 package com.depvin.pps.business;
 
+import com.depvin.pps.dao.ArticoloOrdineDAO;
 import com.depvin.pps.dao.CategoriaDAO;
 import com.depvin.pps.dao.SedeDAO;
 import com.depvin.pps.dao.UtenteDAO;
@@ -253,4 +254,9 @@ public class Sistema {
     List<Categoria> ottieniListaCategorie() {
         return CategoriaDAO.getAllCategorie();
     }
+
+    List<ArticoloOrdine> ottieniListaArticoliOrdine(Magazzino magazzino) {
+        return ArticoloOrdineDAO.getArticoliOrdinePerMagazzino(magazzino);
+    }
+
 }

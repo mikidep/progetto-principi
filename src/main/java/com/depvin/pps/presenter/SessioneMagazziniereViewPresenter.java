@@ -1,5 +1,6 @@
 package com.depvin.pps.presenter;
 
+import com.depvin.pps.business.ReportCreationFailedException;
 import com.depvin.pps.business.SessioneMagazziniere;
 import com.depvin.pps.model.*;
 
@@ -93,10 +94,13 @@ public class SessioneMagazziniereViewPresenter {
         listaArticoliM.setVisible(true);
 
         listModelArticoliOrdini = new DefaultListModel();
-        for (ArticoloMagazzino ams : articoloMagazzinos) {
-            //ams.getArticolo()
+        final List<ArticoloOrdine> listaAO = sessione.ottieniListaArticoliOrdine(m.getMagazzino());
+        for (ArticoloOrdine ao : listaAO) {
+            listModelArticoliOrdini.addElement(ao.getArticolo().getNome() + " " + ao.getQuantita() + " " + ao.getParziale());
         }
-        //TODO: inserire gli articoli dell'ordine nella corrispondente lista
+        listaArticoliOrdine.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        listaArticoliOrdine.setModel(listModelArticoliOrdini);
+        listaArticoliOrdine.setVisible(true);
 
         tabbedPane1.setVisible(true);
         view.pack();
@@ -114,7 +118,11 @@ public class SessioneMagazziniereViewPresenter {
 
         stampaOrdineButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                //TODO: collegarlo ai relativi articoli dell'ordine
+                try {
+                    sessione.stampaArticoliOrdine("Ordine", listaAO);
+                } catch (ReportCreationFailedException e) {
+                    showMessageDialog(getView(), "Errore nella stampa dell'ordine");
+                }
             }
         });
 
@@ -129,8 +137,6 @@ public class SessioneMagazziniereViewPresenter {
                 disponibilitàField.removeAll();
                 categoriaField.removeAll();
                 aggiungiCategoriaField.removeAll();
-                ;
-
             }
         });
 

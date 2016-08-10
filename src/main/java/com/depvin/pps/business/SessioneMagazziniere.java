@@ -35,12 +35,12 @@ public class SessioneMagazziniere implements Sessione {
         Sistema.getInstance().modificaQuantitàArticolo(articoloMagazzino, quantità);
     }
 
-    public ByteArrayOutputStream stampaOrdine(Ordine ordine) throws ReportCreationFailedException {
-        return Sistema.getInstance().articoliToPDFBytes(ordine.getNome(), Sistema.getInstance().ottieniListaOrdine(ordine));
+    public ByteArrayOutputStream stampaArticoliOrdine(String nome, List<ArticoloOrdine> listAO) throws ReportCreationFailedException {
+        return Sistema.getInstance().articoliToPDFBytes(nome, listAO);
     }
 
-    public List<Categoria> ottieniListaCategorie() {
-        return Sistema.getInstance().ottieniListaCategorie();
+    public List<ArticoloOrdine> ottieniListaArticoliOrdine(Magazzino magazzino) {
+        return Sistema.getInstance().ottieniListaArticoliOrdine(magazzino);
     }
 
 }
