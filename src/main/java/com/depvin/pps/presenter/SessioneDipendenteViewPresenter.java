@@ -85,7 +85,7 @@ public class SessioneDipendenteViewPresenter {
         nuovoOrdineButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (nomeField.getText().length() == 0 || progettoOrdineBox.getSelectedIndex() == -1)
-                    showMessageDialog(getView(), "I campi \"nome progetto \" e \"progetto\" non possono essere lasciati vuoti");
+                    showMessageDialog(getView(), "I campi \"nome ordine\" e \"progetto\" non possono essere lasciati vuoti");
                 else {
                     int index = progettoOrdineBox.getSelectedIndex();
                     sessione.aggiungiOrdineProgetto(nomeField.getText(), d.getProgetti().get(index));

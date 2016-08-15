@@ -48,7 +48,6 @@ public class LoginViewPresenter {
                         protected void done() {
                             try {
                                 Sessione s = get();
-                                showMessageDialog(getView(), "Login effettuato con successo");
                                 if (s instanceof SessioneDipendente) {
                                     SessioneDipendenteViewPresenter p = new SessioneDipendenteViewPresenter((SessioneDipendente) s);
                                     view.setVisible(false);
