@@ -1,9 +1,6 @@
 package com.depvin.pps.business;
 
-import com.depvin.pps.dao.ArticoloOrdineDAO;
-import com.depvin.pps.dao.CategoriaDAO;
-import com.depvin.pps.dao.SedeDAO;
-import com.depvin.pps.dao.UtenteDAO;
+import com.depvin.pps.dao.*;
 import com.depvin.pps.dbinterface.DBInterface;
 import com.depvin.pps.model.*;
 import com.itextpdf.text.Document;
@@ -232,6 +229,17 @@ public class Sistema {
         }
     }
 
+    Utente ottieniUtente(String username, String password) throws UserNotFoundException, UserLoadingException {
+        try {
+            return UtenteDAO.getUtenteWithUsernameAndHash(username, hashPassword(password));
+        } catch (com.depvin.pps.dao.NoSuchUserException e) {
+            throw new UserNotFoundException(e.getMessage(), e);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace(System.err);
+            throw new UserLoadingException(e.getMessage(), e);
+        }
+    }
+
     private byte[] hashPassword(String password) throws NoSuchAlgorithmException {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -241,6 +249,7 @@ public class Sistema {
         } catch (NoSuchAlgorithmException e) {
             throw new NoSuchAlgorithmException("No Provider supports a MessageDigestSpi implementation for the specified algorithm", e);
         }
+
     }
 
     List<CapoProgetto> ottieniListaCapoProgetto() {
