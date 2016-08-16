@@ -128,15 +128,15 @@ public class SessioneMagazziniereViewPresenter {
 
         pulisciTuttiICampiButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                nomeField.removeAll();
-                descrizioneField.removeAll();
-                prezzoField.removeAll();
-                prodottoField.removeAll();
-                produttoreField.removeAll();
-                fornitoreField.removeAll();
-                disponibilitàField.removeAll();
-                categoriaField.removeAll();
-                aggiungiCategoriaField.removeAll();
+                nomeField.setText("");
+                descrizioneField.setText("");
+                prezzoField.setText("");
+                prodottoField.setText("");
+                produttoreField.setText("");
+                fornitoreField.setText("");
+                disponibilitàField.setText("");
+                categoriaField.setText("");
+                aggiungiCategoriaField.setText("");
             }
         });
 
@@ -203,9 +203,8 @@ public class SessioneMagazziniereViewPresenter {
 
         aggiungiArticoloRadioButton.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent itemEvent) {
-                pulisciTuttiICampiButton.setEnabled(true);
+
                 modificaDisponibilitàButton.setEnabled(false);
-                aggiungiArticoloButton.setEnabled(true);
                 rimuoviArticoloButton.setEnabled(false);
                 stampaOrdineButton.setEnabled(false);
                 confermaModificaButton.setEnabled(false);
@@ -214,7 +213,13 @@ public class SessioneMagazziniereViewPresenter {
                 aggiungiFornitoreButton.setEnabled(false);
                 modificaCategoriaButton.setEnabled(false);
                 aggiungiCategoriaButton.setEnabled(false);
+                categoriaBox.setVisible(false);
+                fornitoreBox.setVisible(false);
+                prodottoBox.setVisible(false);
+                produttoreBox.setVisible(false);
 
+                pulisciTuttiICampiButton.setEnabled(true);
+                aggiungiArticoloButton.setEnabled(true);
                 nomeField.setVisible(true);
                 descrizioneField.setVisible(true);
                 prezzoField.setVisible(true);
@@ -222,19 +227,15 @@ public class SessioneMagazziniereViewPresenter {
                 produttoreField.setVisible(true);
                 fornitoreField.setVisible(true);
                 disponibilitàField.setVisible(true);
-                aggiungiCategoriaField.setVisible(false);
-                categoriaBox.setVisible(true);
-                fornitoreBox.setVisible(true);
-                prodottoBox.setVisible(true);
-                produttoreBox.setVisible(true);
+                aggiungiCategoriaField.setVisible(true);
             }
         });
 
         aggiungiArticoloButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (nomeField.getText().length() == 0 || descrizioneField.getText().length() == 0 ||
-                        prezzoField.getText().length() == 0 || prodottoBox.getSelectedIndex() == -1 ||
-                        produttoreBox.getSelectedIndex() == -1 || fornitoreBox.getSelectedIndex() == -1 ||
+                        prezzoField.getText().length() == 0 || prodottoField.getText().length() == 0 ||
+                        produttoreField.getText().length() == 0 || fornitoreField.getText().length() == 0 ||
                         disponibilitàField.getText().length() == 0 || categoriaField.getText().length() == 0)
                     showMessageDialog(getView(), "I campi \"nome prodotto\", \"descrizione\",\"prezzo\", \"prodotto\"," +
                             " \"produttore\", \"fornitori\", \"categoria\" e \"disponibilità\" non possono essere lasciati vuoti");
