@@ -304,6 +304,10 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
             </many-to-one>
             <many-to-one name="articolo">
                 <join-column name="articolo"/>
+                <cascade>
+                    <cascade-persist/>
+                    <cascade-merge/>
+                </cascade>
             </many-to-one>
             <!-- quantita -->
         </attributes>
