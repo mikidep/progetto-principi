@@ -32,6 +32,11 @@ public class Sistema {
         DBInterface.getInstance().save();
     }
 
+    void aggiungiArticoloMagazzino(ArticoloMagazzino articoloMagazzino, Magazzino magazzino) {
+        magazzino.getArticoliMagazzino().add(articoloMagazzino);
+        DBInterface.getInstance().save();
+    }
+
     void rimuoviArticoloOrdine(Ordine ordine, ArticoloOrdine articoloOrdine) {
         ordine.getArticoliOrdine().remove(articoloOrdine);
     }

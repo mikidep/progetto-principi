@@ -13,6 +13,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -21,45 +23,30 @@ import static javax.swing.JOptionPane.showMessageDialog;
  * Created by costantino on 24/05/16.
  */
 public class SessioneMagazziniereViewPresenter {
-    SessioneMagazziniere sessione;
 
+    SessioneMagazziniere sessione;
     private JFrame view;
     private JPanel rootPanel;
-    private JList listaArticoliOrdine;
-    private JList listaArticoliM;
+    private JTabbedPane tabbedPane;
+    private JList listArticoliOrdinati;
+    private JButton stampaArticoliOrdinatiButton;
+    private JList listArticoliMagazzino;
+    private JButton eliminaArticoloButton;
+    private JList listArticoliMagazzinoAdd;
     private JTextField nomeField;
     private JTextField descrizioneField;
+    private JTextField quantitàField;
     private JTextField prezzoField;
+    private JTextField categoriaField;
     private JTextField prodottoField;
     private JTextField produttoreField;
     private JTextField fornitoreField;
-    private JTextField disponibilitàField;
-    private JTextField categoriaField;
-    private JTextField aggiungiCategoriaField;
-    private JButton aggiungiArticoloButton;
-    private JButton rimuoviArticoloButton;
-    private JButton stampaOrdineButton;
-    private JButton modificaDisponibilitàButton;
-    private JButton pulisciTuttiICampiButton;
-    private JButton confermaModificaButton;
-    private JButton modificaProdottoButton;
-    private JButton modificaProduttoreButton;
-    private JButton aggiungiFornitoreButton;
-    private JButton modificaCategoriaButton;
-    private JButton aggiungiCategoriaButton;
-    private JTabbedPane tabbedPane1;
-    private JRadioButton aggiungiArticoloRadioButton;
-    private JRadioButton modificaDisponibilitàRadioButton;
-    private JRadioButton rimuoviArticoloRadioButton;
-    private JRadioButton modificaArticoloRadioButton;
-    private JComboBox fornitoreBox;
-    private JComboBox produttoreBox;
-    private JComboBox prodottoBox;
-    private JComboBox categoriaBox;
-    private DefaultListModel listModelArticoliOrdini;
-    private DefaultListModel listModelArticoli;
+    private JButton aggiungiArticoloNelMagazzinoButton;
+    private DefaultListModel listArticoliOrdinatiModel;
+    private DefaultListModel listArticoliMagazzinoModel;
 
     public SessioneMagazziniereViewPresenter(final SessioneMagazziniere sessione) {
+
         this.sessione = sessione;
         final Magazziniere m = sessione.getUtente();
         view = new JFrame("Sessione: " + m.getNome() + " " + m.getCognome());
@@ -67,347 +54,80 @@ public class SessioneMagazziniereViewPresenter {
         view.setLocation(200, 200);
         view.setContentPane(rootPanel);
         view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ButtonGroup btnGroup = new ButtonGroup();
-        btnGroup.add(modificaDisponibilitàRadioButton);
-        btnGroup.add(aggiungiArticoloRadioButton);
-        btnGroup.add(rimuoviArticoloRadioButton);
-        btnGroup.add(modificaArticoloRadioButton);
-        pulisciTuttiICampiButton.setEnabled(false);
-        modificaDisponibilitàButton.setEnabled(false);
-        aggiungiArticoloButton.setEnabled(false);
-        rimuoviArticoloButton.setEnabled(false);
-        stampaOrdineButton.setEnabled(false);
-        confermaModificaButton.setEnabled(false);
-        modificaProdottoButton.setEnabled(false);
-        aggiungiFornitoreButton.setEnabled(false);
-        modificaProduttoreButton.setEnabled(false);
-        modificaCategoriaButton.setEnabled(false);
-        aggiungiCategoriaButton.setEnabled(false);
-
-        listModelArticoli = new DefaultListModel();
-        final List<ArticoloMagazzino> articoloMagazzinos = m.getMagazzino().getArticoliMagazzino();
-        for (ArticoloMagazzino am : articoloMagazzinos) {
-            listModelArticoli.addElement(am.getArticolo().getNome());
-        }
-        listaArticoliM.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        listaArticoliM.setModel(listModelArticoli);
-        listaArticoliM.setVisible(true);
-
-        listModelArticoliOrdini = new DefaultListModel();
-        final List<ArticoloOrdine> listaAO = sessione.ottieniListaArticoliOrdine(m.getMagazzino());
-        for (ArticoloOrdine ao : listaAO) {
-            listModelArticoliOrdini.addElement(ao.getArticolo().getNome() + " " + ao.getQuantita() + " " + ao.getParziale());
-        }
-        listaArticoliOrdine.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        listaArticoliOrdine.setModel(listModelArticoliOrdini);
-        listaArticoliOrdine.setVisible(true);
-
-        tabbedPane1.setVisible(true);
+        listArticoliOrdinatiModel = new DefaultListModel();
+        for (ArticoloOrdine ao : sessione.ottieniListaArticoliOrdine(m.getMagazzino()))
+            listArticoliOrdinatiModel.addElement(ao.getArticolo().getNome());
+        listArticoliOrdinati.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        listArticoliOrdinati.setModel(listArticoliOrdinatiModel);
+        tabbedPane.setVisible(true);
+        listArticoliOrdinati.setVisible(true);
+        listArticoliMagazzinoModel = new DefaultListModel();
+        for (ArticoloMagazzino am : m.getMagazzino().getArticoliMagazzino())
+            listArticoliMagazzinoModel.addElement(am.getArticolo().getNome());
+        listArticoliMagazzino.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        listArticoliMagazzino.setModel(listArticoliMagazzinoModel);
+        listArticoliMagazzino.setVisible(true);
         view.pack();
 
-        listaArticoliM.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                int index = listaArticoliM.getSelectedIndex();
-                Articolo a = m.getMagazzino().getArticoliMagazzino().get(index).getArticolo();
-                for (Categoria cat : a.getProdotto().getCategorie())
-                    categoriaBox.addItem(cat.getNome());
-                prodottoBox.addItem(a.getProdotto().getNome());
-                produttoreBox.addItem(a.getProduttore().getNome());
-            }
-        });
-
-        stampaOrdineButton.addActionListener(new ActionListener() {
+        stampaArticoliOrdinatiButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
+                GregorianCalendar gc = new GregorianCalendar();
                 try {
-                    sessione.stampaArticoliOrdine("Ordine", listaAO);
+                    sessione.stampaArticoliOrdine(m.getNome() + " " + gc.get(Calendar.DATE) + gc.get(Calendar.MONTH) +
+                                    gc.get(Calendar.YEAR) + gc.get(Calendar.HOUR) + gc.get(Calendar.MINUTE),
+                            sessione.ottieniListaArticoliOrdine(m.getMagazzino()));
                 } catch (ReportCreationFailedException e) {
                     showMessageDialog(getView(), "Errore nella stampa dell'ordine");
                 }
             }
         });
 
-        pulisciTuttiICampiButton.addActionListener(new ActionListener() {
+        eliminaArticoloButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                nomeField.setText("");
-                descrizioneField.setText("");
-                prezzoField.setText("");
-                prodottoField.setText("");
-                produttoreField.setText("");
-                fornitoreField.setText("");
-                disponibilitàField.setText("");
-                categoriaField.setText("");
-                aggiungiCategoriaField.setText("");
-            }
-        });
-
-        modificaCategoriaButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (categoriaField.getText().length() == 0)
-                    showMessageDialog(getView(), "Il campo categoria non può rimanere vuoto");
-                else {
-                    int index = categoriaBox.getSelectedIndex();
-                    int indexArt = listaArticoliM.getSelectedIndex();
-                    List<Categoria> listC = m.getMagazzino().getArticoliMagazzino().get(indexArt).getArticolo().getProdotto().getCategorie();
-                    Categoria oldcat = listC.get(index);
-                    Categoria cat = new Categoria(categoriaField.getText());
-                    listC.remove(oldcat);
-                    listC.add(cat);
-                    showMessageDialog(getView(), "Categoria modificata con successo");
-                }
-            }
-        });
-
-        modificaProdottoButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (prodottoField.getText().length() == 0)
-                    showMessageDialog(getView(), "Il campo prodotto non può rimanere vuoto");
-                else {
-                    int indexArt = listaArticoliM.getSelectedIndex();
-                    Articolo a = m.getMagazzino().getArticoliMagazzino().get(indexArt).getArticolo();
-                    List<Categoria> listcat = a.getProdotto().getCategorie();
-                    Prodotto prod = new Prodotto(prodottoField.getText(), listcat);
-                    a.setProdotto(prod);
-                    showMessageDialog(getView(), "Prodotto modificato con successo");
-                }
-            }
-        });
-
-        modificaProduttoreButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (produttoreField.getText().length() == 0)
-                    showMessageDialog(getView(), "Il campo produttore non può rimanere vuoto");
-                else {
-                    Produttore produ = new Produttore(produttoreField.getText());
-                    int index = listaArticoliM.getSelectedIndex();
-                    ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
-                    am.getArticolo().setProduttore(produ);
-                    showMessageDialog(getView(), "Produttore modificato con successo");
-                }
-            }
-        });
-
-        aggiungiFornitoreButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (fornitoreField.getText().length() == 0)
-                    showMessageDialog(getView(), "Il campo fornitore non può rimanere vuoto");
-                else {
-                    Fornitore fo = new Fornitore(fornitoreField.getText());
-                    int index = listaArticoliM.getSelectedIndex();
-                    ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
-                    List<Fornitore> listfo = am.getArticolo().getFornitori();
-                    listfo.add(fo);
-                    showMessageDialog(getView(), "Fornitore aggiunto con successo");
-                }
-            }
-        });
-
-        aggiungiArticoloRadioButton.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent itemEvent) {
-
-                modificaDisponibilitàButton.setEnabled(false);
-                rimuoviArticoloButton.setEnabled(false);
-                stampaOrdineButton.setEnabled(false);
-                confermaModificaButton.setEnabled(false);
-                modificaProdottoButton.setEnabled(false);
-                modificaProduttoreButton.setEnabled(false);
-                aggiungiFornitoreButton.setEnabled(false);
-                modificaCategoriaButton.setEnabled(false);
-                aggiungiCategoriaButton.setEnabled(false);
-                categoriaBox.setVisible(false);
-                fornitoreBox.setVisible(false);
-                prodottoBox.setVisible(false);
-                produttoreBox.setVisible(false);
-
-                pulisciTuttiICampiButton.setEnabled(true);
-                aggiungiArticoloButton.setEnabled(true);
-                nomeField.setVisible(true);
-                descrizioneField.setVisible(true);
-                prezzoField.setVisible(true);
-                prodottoField.setVisible(true);
-                produttoreField.setVisible(true);
-                fornitoreField.setVisible(true);
-                disponibilitàField.setVisible(true);
-                aggiungiCategoriaField.setVisible(true);
-            }
-        });
-
-        aggiungiArticoloButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (nomeField.getText().length() == 0 || descrizioneField.getText().length() == 0 ||
-                        prezzoField.getText().length() == 0 || prodottoField.getText().length() == 0 ||
-                        produttoreField.getText().length() == 0 || fornitoreField.getText().length() == 0 ||
-                        disponibilitàField.getText().length() == 0 || categoriaField.getText().length() == 0)
-                    showMessageDialog(getView(), "I campi \"nome prodotto\", \"descrizione\",\"prezzo\", \"prodotto\"," +
-                            " \"produttore\", \"fornitori\", \"categoria\" e \"disponibilità\" non possono essere lasciati vuoti");
-                else {
-                    String prezzo = prezzoField.getText();
-                    prezzo = prezzo.replaceAll(",", ".");
-                    if (!prezzo.contains("."))
-                        prezzo = prezzo + ".00";
-                    Categoria cat = new Categoria(categoriaField.getText());
-                    List<Categoria> listcat = new ArrayList<Categoria>();
-                    listcat.add(cat);
-                    Prodotto prod = new Prodotto(produttoreField.getText(), listcat);
-                    Produttore produttore = new Produttore(prodottoField.getText());
-                    Fornitore fo = new Fornitore(fornitoreField.getText());
-                    List<Fornitore> lifo = new ArrayList<Fornitore>();
-                    lifo.add(fo);
-                    Articolo a = new Articolo(nomeField.getText(), descrizioneField.getText(), Float.parseFloat(prezzo),
-                            prod, produttore, lifo);
-                    sessione.aggiungiArticoloMagazzino(a, Integer.parseInt(disponibilitàField.getText()));
-                    showMessageDialog(getView(), "Articolo aggiunto con successo");
-                }
-            }
-        });
-
-        aggiungiCategoriaButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (aggiungiCategoriaField.getText().length() == 0)
-                    showMessageDialog(getView(), "Il campo \"aggiungi categoria\" non può rimanere vuoto");
-                else {
-                    int indexA = listaArticoliM.getSelectedIndex();
-                    Articolo a = m.getMagazzino().getArticoliMagazzino().get(indexA).getArticolo();
-                    List<Categoria> listC = a.getProdotto().getCategorie();
-                    Categoria c = new Categoria(aggiungiCategoriaField.getText());
-                    listC.add(c);
-                }
-            }
-        });
-
-        rimuoviArticoloRadioButton.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent itemEvent) {
-                pulisciTuttiICampiButton.setEnabled(false);
-                modificaDisponibilitàButton.setEnabled(false);
-                aggiungiArticoloButton.setEnabled(false);
-                rimuoviArticoloButton.setEnabled(true);
-                stampaOrdineButton.setEnabled(false);
-                confermaModificaButton.setEnabled(false);
-                modificaProdottoButton.setEnabled(false);
-                modificaProduttoreButton.setEnabled(false);
-                aggiungiFornitoreButton.setEnabled(false);
-                modificaCategoriaButton.setEnabled(false);
-                aggiungiCategoriaButton.setEnabled(false);
-
-                aggiungiCategoriaField.setVisible(false);
-                nomeField.setVisible(false);
-                descrizioneField.setVisible(false);
-                prezzoField.setVisible(false);
-                prodottoField.setVisible(false);
-                produttoreField.setVisible(false);
-                fornitoreField.setVisible(false);
-                disponibilitàField.setVisible(false);
-                categoriaBox.setVisible(false);
-                fornitoreBox.setVisible(false);
-                prodottoBox.setVisible(false);
-                produttoreBox.setVisible(false);
-            }
-        });
-
-        rimuoviArticoloButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                int index = listaArticoliM.getSelectedIndex();
+                int index = listArticoliMagazzino.getSelectedIndex();
                 ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
                 sessione.eliminaArticoloMagazzino(am);
-                showMessageDialog(getView(), "Articolo rimosso con successo");
             }
         });
 
-        modificaDisponibilitàRadioButton.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent itemEvent) {
-                pulisciTuttiICampiButton.setEnabled(true);
-                modificaDisponibilitàButton.setEnabled(true);
-                aggiungiArticoloButton.setEnabled(false);
-                rimuoviArticoloButton.setEnabled(false);
-                stampaOrdineButton.setEnabled(false);
-                confermaModificaButton.setEnabled(false);
-                modificaProdottoButton.setEnabled(false);
-                modificaProduttoreButton.setEnabled(false);
-                aggiungiFornitoreButton.setEnabled(false);
-                modificaCategoriaButton.setEnabled(false);
-                aggiungiCategoriaButton.setEnabled(false);
-
-                aggiungiCategoriaField.setVisible(false);
-                nomeField.setVisible(false);
-                descrizioneField.setVisible(false);
-                prezzoField.setVisible(false);
-                prodottoField.setVisible(false);
-                produttoreField.setVisible(false);
-                fornitoreField.setVisible(false);
-                disponibilitàField.setVisible(true);
-                categoriaBox.setVisible(false);
-                fornitoreBox.setVisible(false);
-                prodottoBox.setVisible(false);
-                produttoreBox.setVisible(false);
-            }
-        });
-
-        modificaDisponibilitàButton.addActionListener(new ActionListener() {
+        aggiungiArticoloNelMagazzinoButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                if (disponibilitàField.getText().length() == 0 && listaArticoliM.getSelectedIndex() == 0)
-                    showMessageDialog(getView(), "Il campo \"disponibilità\" non può essere lasciato vuoto e bisogna" +
-                            " aver dovuto selezionare il prodotto desiderato");
+                if (nomeField.getText().length() == 0 || descrizioneField.getText().length() == 0 ||
+                        prezzoField.getText().length() == 0 || quantitàField.getText().length() == 0 ||
+                        prodottoField.getText().length() == 0 || produttoreField.getText().length() == 0 ||
+                        fornitoreField.getText().length() == 0)
+                    showMessageDialog(getView(), "Riempire tutti i campi");
                 else {
-                    int index = listaArticoliM.getSelectedIndex();
-                    ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
-                    sessione.modificaQuantitàArticolo(am, Integer.parseInt(disponibilitàField.getText()));
-                    showMessageDialog(getView(), "Modifica avvenuta con successo");
-                }
-            }
-        });
-
-        modificaArticoloRadioButton.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent itemEvent) {
-                pulisciTuttiICampiButton.setEnabled(true);
-                modificaDisponibilitàButton.setEnabled(false);
-                aggiungiArticoloButton.setEnabled(false);
-                rimuoviArticoloButton.setEnabled(false);
-                stampaOrdineButton.setEnabled(false);
-                confermaModificaButton.setEnabled(true);
-                modificaProdottoButton.setEnabled(true);
-                modificaProduttoreButton.setEnabled(true);
-                aggiungiFornitoreButton.setEnabled(true);
-                modificaCategoriaButton.setEnabled(true);
-                aggiungiCategoriaButton.setEnabled(true);
-
-                aggiungiCategoriaField.setVisible(true);
-                nomeField.setVisible(true);
-                descrizioneField.setVisible(true);
-                prezzoField.setVisible(true);
-                prodottoField.setVisible(true);
-                produttoreField.setVisible(true);
-                fornitoreField.setVisible(true);
-                disponibilitàField.setVisible(true);
-                categoriaBox.setVisible(true);
-                fornitoreBox.setVisible(true);
-                prodottoBox.setVisible(true);
-                produttoreBox.setVisible(true);
-            }
-        });
-
-        confermaModificaButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (nomeField.getText().length() == 0 && descrizioneField.getText().length() == 0 &&
-                        prezzoField.getText().length() == 0)
-                    showMessageDialog(getView(), "I campi \"nome prodotto\", \"descrizione\" e \"prezzo\"" +
-                            " non possono essere lasciati contemporaneamente vuoti");
-                else {
-                    int index = listaArticoliM.getSelectedIndex();
-                    Articolo a = m.getMagazzino().getArticoliMagazzino().get(index).getArticolo();
-                    if (nomeField.getText().length() != 0)
-                        a.setNome(nomeField.getText());
-                    if (descrizioneField.getText().length() != 0)
-                        a.setDescrizione(descrizioneField.getText());
-                    if (prezzoField.getText().length() != 0) {
-                        String prezzo = prezzoField.getText();
-                        prezzo = prezzo.replaceAll(",", ".");
-                        if (!prezzo.contains("."))
-                            prezzo = prezzo + ".00";
-                        a.setPrezzo(Float.parseFloat(prezzo));
+                    String newBudget = prezzoField.getText();
+                    newBudget = newBudget.replaceAll(",", ".");
+                    if (!newBudget.contains("."))
+                        newBudget = newBudget + ".00";
+                    float budget = Float.parseFloat(newBudget);
+                    Categoria categoria = new Categoria(categoriaField.getText());
+                    List<Categoria> listC = new ArrayList<Categoria>();
+                    List<Categoria> listCAT = sessione.ottieniListaCategoria();
+                    for (Categoria cat : listCAT) {
+                        List<Prodotto> listP = cat.getProdotti();
+                        for (Prodotto p : listP)
+                            if (p.getNome().equals(prodottoField))
+                                listC.add(cat);
                     }
-                    showMessageDialog(getView(), "Modifica avvenuta con successo");
+                    if (listC.contains(null))
+                        listC.add(categoria);
+                    Fornitore fornitore = new Fornitore(fornitoreField.getText());
+                    List<Fornitore> listF = new ArrayList<Fornitore>();
+                    listF.add(fornitore);
+                    Produttore produttore = new Produttore(produttoreField.getText());
+                    Prodotto prodotto = new Prodotto(prodottoField.getText(), listC);
+                    Articolo articolo = new Articolo(nomeField.getText(), descrizioneField.getText(), budget, prodotto, produttore, listF);
+                    sessione.aggiungiArticoloMagazzino(articolo, Integer.parseInt(quantitàField.getText()));
+                    for (ArticoloMagazzino am : m.getMagazzino().getArticoliMagazzino())
+                        listArticoliMagazzinoModel.addElement(am.getArticolo().getNome());
+                    listArticoliMagazzino.setModel(listArticoliMagazzinoModel);
                 }
             }
         });
+
     }
 
     public void show() {

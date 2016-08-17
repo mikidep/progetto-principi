@@ -28,7 +28,7 @@ public class SessioneMagazziniere implements Sessione {
     public void aggiungiArticoloMagazzino(Articolo articolo, int disponibilità) {
         Magazzino magazzino = getUtente().getMagazzino();
         ArticoloMagazzino articoloMagazzino = new ArticoloMagazzino(magazzino, articolo, disponibilità);
-        magazzino.getArticoliMagazzino().add(articoloMagazzino);
+        Sistema.getInstance().aggiungiArticoloMagazzino(articoloMagazzino, magazzino);
     }
 
     public void modificaQuantitàArticolo(ArticoloMagazzino articoloMagazzino, int quantità) {
@@ -41,6 +41,10 @@ public class SessioneMagazziniere implements Sessione {
 
     public List<ArticoloOrdine> ottieniListaArticoliOrdine(Magazzino magazzino) {
         return Sistema.getInstance().ottieniListaArticoliOrdine(magazzino);
+    }
+
+    public List<Categoria> ottieniListaCategoria() {
+        return Sistema.getInstance().ottieniListaCategorie();
     }
 
 }
