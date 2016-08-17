@@ -10,8 +10,6 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -42,6 +40,12 @@ public class SessioneMagazziniereViewPresenter {
     private JTextField produttoreField;
     private JTextField fornitoreField;
     private JButton aggiungiArticoloNelMagazzinoButton;
+    private JButton pulisciTuttiICampiButton;
+    private JButton confermaModificaButton;
+    private JList listArticoliMagazzinoMod;
+    private JTextField quantitàFieldMod;
+    private JLabel labelquantitàDisponibile;
+    private DefaultListModel getListArticoliMagazzinoModModel;
     private DefaultListModel listArticoliOrdinatiModel;
     private DefaultListModel listArticoliMagazzinoModel;
 
@@ -65,8 +69,18 @@ public class SessioneMagazziniereViewPresenter {
         for (ArticoloMagazzino am : m.getMagazzino().getArticoliMagazzino())
             listArticoliMagazzinoModel.addElement(am.getArticolo().getNome());
         listArticoliMagazzino.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        listArticoliMagazzinoAdd.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         listArticoliMagazzino.setModel(listArticoliMagazzinoModel);
+        listArticoliMagazzinoAdd.setModel(listArticoliMagazzinoModel);
         listArticoliMagazzino.setVisible(true);
+        listArticoliMagazzinoAdd.setVisible(true);
+        getListArticoliMagazzinoModModel = new DefaultListModel();
+        for (ArticoloMagazzino am : m.getMagazzino().getArticoliMagazzino())
+            getListArticoliMagazzinoModModel.addElement(am.getArticolo().getNome() + " " + am.getArticolo().getDescrizione()
+                    + " " + am.getDisponibilita() + " " + am.getArticolo().getPrezzo());
+        listArticoliMagazzinoMod.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        listArticoliMagazzinoMod.setModel(listArticoliMagazzinoModel);
+        listArticoliMagazzinoMod.setVisible(true);
         view.pack();
 
         stampaArticoliOrdinatiButton.addActionListener(new ActionListener() {
@@ -82,13 +96,15 @@ public class SessioneMagazziniereViewPresenter {
             }
         });
 
-        eliminaArticoloButton.addActionListener(new ActionListener() {
+        /*eliminaArticoloButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 int index = listArticoliMagazzino.getSelectedIndex();
+                System.out.println(index);
                 ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
+                System.out.println(am.getArticolo().getNome());
                 sessione.eliminaArticoloMagazzino(am);
             }
-        });
+        });//Eliminerà l'articolo solo se non sarà più disponibile in quel magazzino */
 
         aggiungiArticoloNelMagazzinoButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
@@ -120,14 +136,54 @@ public class SessioneMagazziniereViewPresenter {
                     Produttore produttore = new Produttore(produttoreField.getText());
                     Prodotto prodotto = new Prodotto(prodottoField.getText(), listC);
                     Articolo articolo = new Articolo(nomeField.getText(), descrizioneField.getText(), budget, prodotto, produttore, listF);
-                    sessione.aggiungiArticoloMagazzino(articolo, Integer.parseInt(quantitàField.getText()));
-                    for (ArticoloMagazzino am : m.getMagazzino().getArticoliMagazzino())
-                        listArticoliMagazzinoModel.addElement(am.getArticolo().getNome());
-                    listArticoliMagazzino.setModel(listArticoliMagazzinoModel);
+                    ArticoloMagazzino amg = new ArticoloMagazzino(m.getMagazzino(), articolo, Integer.parseInt(quantitàField.getText()));
+                    if (m.getMagazzino().getArticoliMagazzino().contains(amg))
+                        showMessageDialog(getView(), "Impossibile aggiungere l'articolo nel magazzino. Articolo già presente");
+                    else {
+                        sessione.aggiungiArticoloMagazzino(articolo, Integer.parseInt(quantitàField.getText()));
+                        listArticoliMagazzinoModel.removeAllElements();
+                        for (ArticoloMagazzino am : m.getMagazzino().getArticoliMagazzino())
+                            listArticoliMagazzinoModel.addElement(am.getArticolo().getNome());
+                        listArticoliMagazzino.setModel(listArticoliMagazzinoModel);
+                        listArticoliMagazzinoAdd.setModel(listArticoliMagazzinoModel);
+                    }
                 }
             }
         });
 
+        pulisciTuttiICampiButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                nomeField.setText("");
+                descrizioneField.setText("");
+                prezzoField.setText("");
+                quantitàField.setText("");
+                prodottoField.setText("");
+                produttoreField.setText("");
+                fornitoreField.setText("");
+                categoriaField.setText("");
+            }
+        });
+
+        listArticoliMagazzinoMod.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent listSelectionEvent) {
+                int index = listArticoliMagazzinoMod.getSelectedIndex();
+                ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
+                labelquantitàDisponibile.setText(String.valueOf(am.getDisponibilita()));
+                labelquantitàDisponibile.setVisible(true);
+            }
+        });
+
+        confermaModificaButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                int index = listArticoliMagazzinoMod.getSelectedIndex();
+                ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
+                if (quantitàFieldMod.getText().length() != 0) {
+                    sessione.modificaQuantitàArticolo(am, Integer.parseInt(quantitàFieldMod.getText()));
+                }
+                labelquantitàDisponibile.setText(String.valueOf(am.getDisponibilita()));
+
+            }
+        });
     }
 
     public void show() {

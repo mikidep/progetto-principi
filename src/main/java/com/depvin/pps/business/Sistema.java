@@ -192,6 +192,7 @@ public class Sistema {
 
     void modificaQuantitàArticolo(ArticoloMagazzino articoloMagazzino, int quantità) {
         articoloMagazzino.setDisponibilita(quantità);
+        DBInterface.getInstance().save();
     }
 
     void aggiungiOrdineProgetto(Ordine ordine, Progetto progetto) {
@@ -201,6 +202,7 @@ public class Sistema {
     void eliminaArticoloMagazzino(ArticoloMagazzino articoloMagazzino, Magazzino magazzino) {
         if (articoloMagazzino.getDisponibilita() == 0) {
             magazzino.getArticoliMagazzino().remove(articoloMagazzino);
+            DBInterface.getInstance().save();
         }
         // TODO: Chiamerà il Presenter
         //Cose molto confuse, si vedrà in seguito
