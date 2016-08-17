@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.depvin.pps.presenter.SessioneAmministratoreViewPresenter">
-  <grid id="27dc6" binding="rootPanel" layout-manager="GridLayoutManager" row-count="20" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="rootPanel" layout-manager="GridLayoutManager" row-count="22" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="10" left="5" bottom="10" right="5"/>
     <constraints>
       <xy x="20" y="20" width="1546" height="837"/>
@@ -14,8 +14,8 @@
     <children>
       <component id="23e44" class="javax.swing.JLabel" binding="nomeLabel">
         <constraints>
-          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="4" anchor="0" fill="0" indent="1" use-parent-layout="false">
-            <preferred-size width="212" height="15"/>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <preferred-size width="200" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -25,8 +25,8 @@
       </component>
       <component id="b0071" class="javax.swing.JLabel" binding="cognomeLabel">
         <constraints>
-          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="1" use-parent-layout="false">
-            <preferred-size width="212" height="15"/>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <preferred-size width="200" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -36,8 +36,8 @@
       </component>
       <component id="26a2f" class="javax.swing.JLabel" binding="usernameLabel">
         <constraints>
-          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="1" use-parent-layout="false">
-            <preferred-size width="212" height="15"/>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <preferred-size width="200" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -47,8 +47,8 @@
       </component>
       <component id="c41bb" class="javax.swing.JLabel" binding="passwordLabel">
         <constraints>
-          <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="1" use-parent-layout="false">
-            <preferred-size width="212" height="15"/>
+          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <preferred-size width="200" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -58,8 +58,8 @@
       </component>
       <component id="d4d82" class="javax.swing.JLabel" binding="capoProgettoBoxLabel">
         <constraints>
-          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="1" use-parent-layout="false">
-            <preferred-size width="212" height="15"/>
+          <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <preferred-size width="200" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -69,8 +69,8 @@
       </component>
       <component id="96322" class="javax.swing.JLabel" binding="nuovoProgettoLabel">
         <constraints>
-          <grid row="14" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="1" use-parent-layout="false">
-            <preferred-size width="212" height="15"/>
+          <grid row="13" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <preferred-size width="200" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -78,21 +78,10 @@
           <visible value="false"/>
         </properties>
       </component>
-      <component id="fcc6e" class="javax.swing.JLabel" binding="budgetLabel">
-        <constraints>
-          <grid row="15" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="1" use-parent-layout="false">
-            <preferred-size width="212" height="15"/>
-          </grid>
-        </constraints>
-        <properties>
-          <text value="Budget"/>
-          <visible value="false"/>
-        </properties>
-      </component>
       <component id="93831" class="javax.swing.JTextField" binding="nomeUtenteField">
         <constraints>
-          <grid row="2" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
+          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -101,8 +90,8 @@
       </component>
       <component id="a599b" class="javax.swing.JTextField" binding="cognomeUtenteField">
         <constraints>
-          <grid row="3" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
+          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -112,8 +101,8 @@
       </component>
       <component id="163aa" class="javax.swing.JTextField" binding="usernameUtenteField">
         <constraints>
-          <grid row="4" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
+          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -123,8 +112,8 @@
       </component>
       <component id="914df" class="javax.swing.JTextField" binding="passwordUtenteField">
         <constraints>
-          <grid row="5" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
+          <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -133,7 +122,9 @@
       </component>
       <component id="7fc22" class="javax.swing.JComboBox" binding="capoProgettoBox">
         <constraints>
-          <grid row="6" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="5"/>
+          </grid>
         </constraints>
         <properties>
           <visible value="false"/>
@@ -141,7 +132,9 @@
       </component>
       <component id="93260" class="javax.swing.JComboBox" binding="sedeBox">
         <constraints>
-          <grid row="8" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="5"/>
+          </grid>
         </constraints>
         <properties>
           <visible value="false"/>
@@ -149,18 +142,8 @@
       </component>
       <component id="d834" class="javax.swing.JTextField" binding="nomeProgettoField">
         <constraints>
-          <grid row="14" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
-          </grid>
-        </constraints>
-        <properties>
-          <visible value="false"/>
-        </properties>
-      </component>
-      <component id="db904" class="javax.swing.JTextField" binding="budgetField">
-        <constraints>
-          <grid row="15" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
+          <grid row="13" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -169,8 +152,8 @@
       </component>
       <component id="f67a6" class="javax.swing.JLabel" binding="magazzinoLabel">
         <constraints>
-          <grid row="13" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="1" use-parent-layout="false">
-            <preferred-size width="212" height="15"/>
+          <grid row="12" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <preferred-size width="200" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -180,8 +163,8 @@
       </component>
       <component id="35394" class="javax.swing.JTextField" binding="nomeMagazzinoField">
         <constraints>
-          <grid row="13" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
+          <grid row="12" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -190,8 +173,8 @@
       </component>
       <component id="dc9cd" class="javax.swing.JLabel" binding="sedeBoxLabel">
         <constraints>
-          <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="1" use-parent-layout="false">
-            <preferred-size width="212" height="15"/>
+          <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <preferred-size width="200" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -201,8 +184,8 @@
       </component>
       <component id="f7034" class="javax.swing.JLabel" binding="progettoBoxLabel">
         <constraints>
-          <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="1" use-parent-layout="false">
-            <preferred-size width="212" height="15"/>
+          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <preferred-size width="200" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -212,7 +195,9 @@
       </component>
       <component id="7d0b2" class="javax.swing.JComboBox" binding="progettoBox">
         <constraints>
-          <grid row="7" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="5"/>
+          </grid>
         </constraints>
         <properties>
           <visible value="false"/>
@@ -220,8 +205,8 @@
       </component>
       <component id="65a13" class="javax.swing.JTextField" binding="nomeSedeField">
         <constraints>
-          <grid row="9" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
+          <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -230,8 +215,8 @@
       </component>
       <component id="132ff" class="javax.swing.JTextField" binding="nomeNazioneField">
         <constraints>
-          <grid row="10" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
+          <grid row="9" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -240,8 +225,8 @@
       </component>
       <component id="5e817" class="javax.swing.JTextField" binding="prezzoSpedizioneField">
         <constraints>
-          <grid row="12" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
+          <grid row="11" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -250,8 +235,8 @@
       </component>
       <component id="fa0bf" class="javax.swing.JLabel" binding="nazioneLabel">
         <constraints>
-          <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="1" use-parent-layout="false">
-            <preferred-size width="212" height="15"/>
+          <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <preferred-size width="200" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -261,8 +246,8 @@
       </component>
       <component id="b452f" class="javax.swing.JLabel" binding="spedizioneLabel">
         <constraints>
-          <grid row="12" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="1" use-parent-layout="false">
-            <preferred-size width="212" height="15"/>
+          <grid row="11" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <preferred-size width="200" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -272,8 +257,8 @@
       </component>
       <component id="61e85" class="javax.swing.JLabel" binding="sedeLabel">
         <constraints>
-          <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="1" use-parent-layout="false">
-            <preferred-size width="212" height="15"/>
+          <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <preferred-size width="200" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -283,8 +268,8 @@
       </component>
       <component id="76f64" class="javax.swing.JLabel" binding="nuovoMagazzinoLabel">
         <constraints>
-          <grid row="11" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="1" use-parent-layout="false">
-            <preferred-size width="212" height="15"/>
+          <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <preferred-size width="200" height="25"/>
           </grid>
         </constraints>
         <properties>
@@ -294,125 +279,146 @@
       </component>
       <component id="58ca2" class="javax.swing.JTextField" binding="nuovoMagazzinoNomeField">
         <constraints>
-          <grid row="11" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
+          <grid row="10" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="25"/>
           </grid>
         </constraints>
         <properties>
           <visible value="false"/>
         </properties>
       </component>
-      <component id="59cb1" class="javax.swing.JRadioButton" binding="creaMagazziniereMagazzinoRadioButton" default-binding="true">
+      <component id="13da3" class="javax.swing.JComboBox" binding="selezioneOpzioneBox" default-binding="true">
         <constraints>
-          <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="5"/>
+          </grid>
         </constraints>
         <properties>
-          <text value="Aggiungi Magazziniere e Sede"/>
+          <model>
+            <item value=""/>
+            <item value="Aggiungi Dipendente"/>
+            <item value="Aggiungi Amministratore"/>
+            <item value="Aggiungi Magazziniere"/>
+            <item value="Aggiungi Magazziniere e Sede"/>
+            <item value="Aggiungi Capo Progetto"/>
+            <item value="Aggiungi Progetto"/>
+            <item value="Aggiungi Dipendente ad un Progetto"/>
+          </model>
         </properties>
       </component>
-      <component id="42e8d" class="javax.swing.JRadioButton" binding="creaAmministratoreRadioButton" default-binding="true">
+      <component id="95ad2" class="javax.swing.JLabel">
         <constraints>
-          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <preferred-size width="200" height="25"/>
+          </grid>
         </constraints>
         <properties>
-          <text value="Aggiungi Amministratore"/>
+          <text value="Scegliere Cosa aggiungere"/>
         </properties>
       </component>
-      <component id="9149d" class="javax.swing.JRadioButton" binding="creaDipendenteRadioButton" default-binding="true">
+      <component id="fcc6e" class="javax.swing.JLabel" binding="budgetLabel">
         <constraints>
-          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="14" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <preferred-size width="200" height="25"/>
+          </grid>
         </constraints>
         <properties>
-          <text value="Aggiungi Dipendente"/>
+          <text value="Budget"/>
+          <visible value="false"/>
         </properties>
       </component>
-      <component id="e430d" class="javax.swing.JRadioButton" binding="creaMagazziniereRadioButton" default-binding="true">
+      <component id="db904" class="javax.swing.JTextField" binding="budgetField">
         <constraints>
-          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="14" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="25"/>
+          </grid>
         </constraints>
         <properties>
-          <text value="Aggiungi Magazziniere"/>
-        </properties>
-      </component>
-      <component id="68341" class="javax.swing.JRadioButton" binding="creaProgettoRadioButton" default-binding="true">
-        <constraints>
-          <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Aggiungi Progetto"/>
-        </properties>
-      </component>
-      <component id="918ed" class="javax.swing.JRadioButton" binding="aggiungiDipendenteAlProgettoRadioButton" default-binding="true">
-        <constraints>
-          <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Aggiungi Dipendente al Progetto"/>
-        </properties>
-      </component>
-      <component id="1a29e" class="javax.swing.JRadioButton" binding="creaCapoProgettoRadioButton" default-binding="true">
-        <constraints>
-          <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Aggiungi Capo Progetto"/>
+          <visible value="false"/>
         </properties>
       </component>
       <component id="3e9ea" class="javax.swing.JButton" binding="buttonDip">
         <constraints>
-          <grid row="16" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
+          <grid row="15" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="1" use-parent-layout="false">
+            <minimum-size width="275" height="30"/>
+            <preferred-size width="275" height="30"/>
+          </grid>
         </constraints>
         <properties>
           <text value="Aggiungi Dipendente"/>
-          <visible value="true"/>
+          <visible value="false"/>
         </properties>
       </component>
       <component id="37a9e" class="javax.swing.JButton" binding="buttonAdmin">
         <constraints>
-          <grid row="16" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
+          <grid row="16" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="1" use-parent-layout="false">
+            <minimum-size width="275" height="30"/>
+            <preferred-size width="275" height="30"/>
+          </grid>
         </constraints>
         <properties>
           <text value="Aggiungi Amministratore"/>
+          <visible value="false"/>
         </properties>
       </component>
       <component id="38bda" class="javax.swing.JButton" binding="buttonMagazziniereVecchiaS">
         <constraints>
-          <grid row="17" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
+          <grid row="17" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="1" use-parent-layout="false">
+            <minimum-size width="275" height="30"/>
+            <preferred-size width="275" height="30"/>
+          </grid>
         </constraints>
         <properties>
           <text value="Aggiungi Magazziniere"/>
+          <visible value="false"/>
         </properties>
       </component>
       <component id="55b05" class="javax.swing.JButton" binding="buttonMagazziniereNuovaS">
         <constraints>
-          <grid row="17" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
+          <grid row="18" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="1" use-parent-layout="false">
+            <minimum-size width="275" height="30"/>
+            <preferred-size width="275" height="30"/>
+          </grid>
         </constraints>
         <properties>
           <text value="Aggiungi Magazziniere e Sede"/>
-        </properties>
-      </component>
-      <component id="e50b9" class="javax.swing.JButton" binding="buttonProg">
-        <constraints>
-          <grid row="18" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Aggiungi Progetto"/>
+          <visible value="false"/>
         </properties>
       </component>
       <component id="511c0" class="javax.swing.JButton" binding="buttonCapo">
         <constraints>
-          <grid row="18" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
+          <grid row="19" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="1" use-parent-layout="false">
+            <minimum-size width="275" height="30"/>
+            <preferred-size width="275" height="30"/>
+          </grid>
         </constraints>
         <properties>
           <text value="Aggiungi Capo Progetto"/>
+          <visible value="false"/>
+        </properties>
+      </component>
+      <component id="e50b9" class="javax.swing.JButton" binding="buttonProg">
+        <constraints>
+          <grid row="20" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="1" use-parent-layout="false">
+            <minimum-size width="275" height="30"/>
+            <preferred-size width="275" height="30"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="Aggiungi Progetto"/>
+          <visible value="false"/>
         </properties>
       </component>
       <component id="75a3b" class="javax.swing.JButton" binding="buttonDipProg">
         <constraints>
-          <grid row="19" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
+          <grid row="21" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="1" use-parent-layout="false">
+            <minimum-size width="275" height="30"/>
+            <preferred-size width="275" height="30"/>
+          </grid>
         </constraints>
         <properties>
           <text value="Aggiungi Dipendente al Progetto"/>
+          <visible value="false"/>
         </properties>
       </component>
     </children>

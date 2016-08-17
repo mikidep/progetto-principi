@@ -41,17 +41,10 @@ public class SessioneAmministratoreViewPresenter {
     private JTextField prezzoSpedizioneField;
     private JTextField nuovoMagazzinoNomeField;
 
-    private JRadioButton creaDipendenteRadioButton;
-    private JRadioButton creaAmministratoreRadioButton;
-    private JRadioButton creaMagazziniereRadioButton;
-    private JRadioButton creaProgettoRadioButton;
-    private JRadioButton creaCapoProgettoRadioButton;
-    private JRadioButton creaMagazziniereMagazzinoRadioButton;
-    private JRadioButton aggiungiDipendenteAlProgettoRadioButton;
-
     private JComboBox progettoBox;
     private JComboBox sedeBox;
     private JComboBox capoProgettoBox;
+    private JComboBox selezioneOpzioneBox;
 
     private JLabel nomeLabel;
     private JLabel cognomeLabel;
@@ -73,88 +66,375 @@ public class SessioneAmministratoreViewPresenter {
         this.sessione = sessione;
         final Amministratore a = sessione.getUtente();
         view = new JFrame("Sessione: " + a.getNome() + " " + a.getCognome());
-        rootPanel.setPreferredSize(new Dimension(1400, 800));
-        view.setLocation(0, 0);
+        rootPanel.setPreferredSize(new Dimension(850, 850));
+        view.setLocation(250, 0);
         view.setContentPane(rootPanel);
         view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        ButtonGroup btnGroup = new ButtonGroup();
-        btnGroup.add(creaAmministratoreRadioButton);
-        btnGroup.add(creaDipendenteRadioButton);
-        btnGroup.add(creaMagazziniereRadioButton);
-        btnGroup.add(creaCapoProgettoRadioButton);
-        btnGroup.add(creaProgettoRadioButton);
-        btnGroup.add(creaMagazziniereMagazzinoRadioButton);
-        btnGroup.add(aggiungiDipendenteAlProgettoRadioButton);
-
-        buttonAdmin.setEnabled(false);
-        buttonCapo.setEnabled(false);
-        buttonDip.setEnabled(false);
-        buttonProg.setEnabled(false);
-        buttonMagazziniereNuovaS.setEnabled(false);
-        buttonMagazziniereVecchiaS.setEnabled(false);
-        buttonDipProg.setEnabled(false);
         view.pack();
 
-        creaDipendenteRadioButton.addItemListener(new ItemListener() {
+        selezioneOpzioneBox.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent itemEvent) {
+                if (selezioneOpzioneBox.getSelectedIndex() == 1) {
+                    nomeUtenteField.setText("");
+                    cognomeUtenteField.setText("");
+                    usernameUtenteField.setText("");
+                    passwordUtenteField.setText("");
+                    capoProgettoBox.removeAllItems();
 
-                nomeUtenteField.setText("");
-                cognomeUtenteField.setText("");
-                usernameUtenteField.setText("");
-                passwordUtenteField.setText("");
-                capoProgettoBox.removeAllItems();
+                    List<CapoProgetto> listCapoProgetto = sessione.ottieniListaCapoProgetto();
+                    for (CapoProgetto cp : listCapoProgetto)
+                        capoProgettoBox.addItem(cp.getUsername());
 
-                List<CapoProgetto> listCapoProgetto = sessione.ottieniListaCapoProgetto();
-                for (CapoProgetto cp : listCapoProgetto)
-                    capoProgettoBox.addItem(cp.getUsername());
+                    progettoBox.removeAllItems();
+                    progettoBox.setEnabled(false);
+                    progettoBox.setVisible(true);
+                    int index = capoProgettoBox.getSelectedIndex();
+                    List<Progetto> list = sessione.ottieniListaCapoProgetto().get(index).getProgetti();
+                    for (Progetto prog : list)
+                        progettoBox.addItem(prog.getNome());
 
-                progettoBox.removeAllItems();
-                progettoBox.setEnabled(false);
-                progettoBox.setVisible(true);
-                int index = capoProgettoBox.getSelectedIndex();
-                List<Progetto> list = sessione.ottieniListaCapoProgetto().get(index).getProgetti();
-                for (Progetto prog : list)
-                    progettoBox.addItem(prog.getNome());
+                    nomeUtenteField.setVisible(true);
+                    cognomeUtenteField.setVisible(true);
+                    usernameUtenteField.setVisible(true);
+                    passwordUtenteField.setVisible(true);
+                    capoProgettoBox.setVisible(true);
+                    buttonDip.setVisible(true);
 
-                nomeUtenteField.setVisible(true);
-                cognomeUtenteField.setVisible(true);
-                usernameUtenteField.setVisible(true);
-                passwordUtenteField.setVisible(true);
-                capoProgettoBox.setVisible(true);
-                buttonDip.setEnabled(true);
+                    nuovoMagazzinoNomeField.setVisible(false);
+                    nomeMagazzinoField.setVisible(false);
+                    nomeProgettoField.setVisible(false);
+                    budgetField.setVisible(false);
+                    sedeBox.setVisible(false);
+                    nomeSedeField.setVisible(false);
+                    nomeNazioneField.setVisible(false);
+                    prezzoSpedizioneField.setVisible(false);
 
-                nuovoMagazzinoNomeField.setVisible(false);
-                nomeMagazzinoField.setVisible(false);
-                nomeProgettoField.setVisible(false);
-                budgetField.setVisible(false);
-                sedeBox.setVisible(false);
-                nomeSedeField.setVisible(false);
-                nomeNazioneField.setVisible(false);
-                prezzoSpedizioneField.setVisible(false);
+                    buttonAdmin.setVisible(false);
+                    buttonMagazziniereVecchiaS.setVisible(false);
+                    buttonMagazziniereNuovaS.setVisible(false);
+                    buttonCapo.setVisible(false);
+                    buttonProg.setVisible(false);
+                    buttonDipProg.setVisible(false);
 
-                buttonAdmin.setEnabled(false);
-                buttonMagazziniereVecchiaS.setEnabled(false);
-                buttonMagazziniereNuovaS.setEnabled(false);
-                buttonCapo.setEnabled(false);
-                buttonProg.setEnabled(false);
-                buttonDipProg.setEnabled(false);
+                    nomeLabel.setVisible(true);
+                    cognomeLabel.setVisible(true);
+                    usernameLabel.setVisible(true);
+                    passwordLabel.setVisible(true);
+                    capoProgettoBoxLabel.setVisible(true);
+                    progettoBoxLabel.setVisible(true);
 
-                nomeLabel.setVisible(true);
-                cognomeLabel.setVisible(true);
-                usernameLabel.setVisible(true);
-                passwordLabel.setVisible(true);
-                capoProgettoBoxLabel.setVisible(true);
-                progettoBoxLabel.setVisible(true);
+                    sedeBoxLabel.setVisible(false);
+                    sedeLabel.setVisible(false);
+                    nazioneLabel.setVisible(false);
+                    nuovoMagazzinoLabel.setVisible(false);
+                    spedizioneLabel.setVisible(false);
+                    magazzinoLabel.setVisible(false);
+                    nuovoProgettoLabel.setVisible(false);
+                    budgetLabel.setVisible(false);
+                } else if (selezioneOpzioneBox.getSelectedIndex() == 2) {
+                    nomeUtenteField.setText("");
+                    cognomeUtenteField.setText("");
+                    usernameUtenteField.setText("");
+                    passwordUtenteField.setText("");
 
-                sedeBoxLabel.setVisible(false);
-                sedeLabel.setVisible(false);
-                nazioneLabel.setVisible(false);
-                nuovoMagazzinoLabel.setVisible(false);
-                spedizioneLabel.setVisible(false);
-                magazzinoLabel.setVisible(false);
-                nuovoProgettoLabel.setVisible(false);
-                budgetLabel.setVisible(false);
+                    nomeUtenteField.setVisible(true);
+                    cognomeUtenteField.setVisible(true);
+                    usernameUtenteField.setVisible(true);
+                    passwordUtenteField.setVisible(true);
+                    buttonAdmin.setVisible(true);
+
+                    nuovoMagazzinoNomeField.setVisible(false);
+                    progettoBox.setVisible(false);
+                    progettoBox.setEnabled(false);
+                    capoProgettoBox.setVisible(false);
+                    sedeBox.setVisible(true); //Viene posto prima true e poi false perchè se no non verrebbe aggiornata
+                    sedeBox.setVisible(false);//l'interfaccia grafica se la prima scelta è stata di creare l'amministratore
+
+                    buttonDip.setVisible(false);
+                    buttonMagazziniereVecchiaS.setVisible(false);
+                    buttonMagazziniereNuovaS.setVisible(false);
+                    buttonCapo.setVisible(false);
+                    buttonProg.setVisible(false);
+                    buttonDipProg.setVisible(false);
+
+                    nomeMagazzinoField.setVisible(false);
+                    nomeProgettoField.setVisible(false);
+                    budgetField.setVisible(false);
+                    nomeSedeField.setVisible(false);
+                    nomeNazioneField.setVisible(false);
+                    prezzoSpedizioneField.setVisible(false);
+
+                    nomeLabel.setVisible(true);
+                    cognomeLabel.setVisible(true);
+                    usernameLabel.setVisible(true);
+                    passwordLabel.setVisible(true);
+
+                    capoProgettoBoxLabel.setVisible(false);
+                    progettoBoxLabel.setVisible(false);
+                    sedeBoxLabel.setVisible(false);
+                    sedeLabel.setVisible(false);
+                    nazioneLabel.setVisible(false);
+                    nuovoMagazzinoLabel.setVisible(false);
+                    spedizioneLabel.setVisible(false);
+                    magazzinoLabel.setVisible(false);
+                    nuovoProgettoLabel.setVisible(false);
+                    budgetLabel.setVisible(false);
+                } else if (selezioneOpzioneBox.getSelectedIndex() == 3) {
+                    nomeUtenteField.setText("");
+                    cognomeUtenteField.setText("");
+                    usernameUtenteField.setText("");
+                    passwordUtenteField.setText("");
+                    sedeBox.removeAllItems();
+                    nomeMagazzinoField.setText("");
+
+                    List<Sede> list = sessione.ottieniListaSede();
+                    for (Sede sede : list)
+                        sedeBox.addItem(sede.getNome());
+
+                    nomeUtenteField.setVisible(true);
+                    cognomeUtenteField.setVisible(true);
+                    usernameUtenteField.setVisible(true);
+                    passwordUtenteField.setVisible(true);
+                    sedeBox.setVisible(true);
+                    nomeMagazzinoField.setVisible(true);
+                    buttonMagazziniereVecchiaS.setVisible(true);
+
+                    nuovoMagazzinoNomeField.setVisible(false);
+                    nomeProgettoField.setVisible(false);
+                    progettoBox.setVisible(false);
+                    progettoBox.setEnabled(false);
+                    capoProgettoBox.setVisible(false);
+                    budgetField.setVisible(false);
+
+                    buttonAdmin.setVisible(false);
+                    buttonCapo.setVisible(false);
+                    buttonDip.setVisible(false);
+                    buttonProg.setVisible(false);
+                    buttonMagazziniereNuovaS.setVisible(false);
+                    buttonDipProg.setVisible(false);
+                    nomeSedeField.setVisible(false);
+                    nomeNazioneField.setVisible(false);
+                    prezzoSpedizioneField.setVisible(false);
+
+                    nomeLabel.setVisible(true);
+                    cognomeLabel.setVisible(true);
+                    usernameLabel.setVisible(true);
+                    passwordLabel.setVisible(true);
+                    sedeBoxLabel.setVisible(true);
+                    magazzinoLabel.setVisible(true);
+
+                    capoProgettoBoxLabel.setVisible(false);
+                    progettoBoxLabel.setVisible(false);
+                    sedeLabel.setVisible(false);
+                    nazioneLabel.setVisible(false);
+                    nuovoMagazzinoLabel.setVisible(false);
+                    spedizioneLabel.setVisible(false);
+                    nuovoProgettoLabel.setVisible(false);
+                    budgetLabel.setVisible(false);
+                } else if (selezioneOpzioneBox.getSelectedIndex() == 4) {
+                    nomeUtenteField.setText("");
+                    cognomeUtenteField.setText("");
+                    usernameUtenteField.setText("");
+                    passwordUtenteField.setText("");
+                    prezzoSpedizioneField.setText("");
+                    nomeNazioneField.setText("");
+                    nomeSedeField.setText("");
+                    nuovoMagazzinoNomeField.setText("");
+
+                    nomeSedeField.setVisible(true);
+                    nomeNazioneField.setVisible(true);
+                    prezzoSpedizioneField.setVisible(true);
+                    usernameUtenteField.setVisible(true);
+                    passwordUtenteField.setVisible(true);
+                    cognomeUtenteField.setVisible(true);
+                    nomeUtenteField.setVisible(true);
+                    nuovoMagazzinoNomeField.setVisible(true);
+                    buttonMagazziniereNuovaS.setVisible(true);
+
+                    sedeBox.setVisible(false);
+                    buttonMagazziniereVecchiaS.setVisible(false);
+                    nomeProgettoField.setVisible(false);
+                    progettoBox.setVisible(false);
+                    progettoBox.setEnabled(false);
+                    capoProgettoBox.setVisible(false);
+                    budgetField.setVisible(false);
+                    buttonAdmin.setVisible(false);
+                    buttonCapo.setVisible(false);
+                    buttonDip.setVisible(false);
+                    buttonProg.setVisible(false);
+                    buttonDipProg.setVisible(false);
+                    nomeMagazzinoField.setVisible(false);
+
+                    nomeLabel.setVisible(true);
+                    cognomeLabel.setVisible(true);
+                    usernameLabel.setVisible(true);
+                    passwordLabel.setVisible(true);
+                    nuovoMagazzinoLabel.setVisible(true);
+                    spedizioneLabel.setVisible(true);
+                    sedeLabel.setVisible(true);
+                    nazioneLabel.setVisible(true);
+
+                    capoProgettoBoxLabel.setVisible(false);
+                    progettoBoxLabel.setVisible(false);
+                    sedeBoxLabel.setVisible(false);
+                    magazzinoLabel.setVisible(false);
+                    nuovoProgettoLabel.setVisible(false);
+                    budgetLabel.setVisible(false);
+                } else if (selezioneOpzioneBox.getSelectedIndex() == 5) {
+                    nomeUtenteField.setText("");
+                    cognomeUtenteField.setText("");
+                    usernameUtenteField.setText("");
+                    passwordUtenteField.setText("");
+
+                    nomeUtenteField.setVisible(true);
+                    cognomeUtenteField.setVisible(true);
+                    usernameUtenteField.setVisible(true);
+                    passwordUtenteField.setVisible(true);
+                    buttonCapo.setVisible(true);
+
+                    nuovoMagazzinoNomeField.setVisible(false);
+                    capoProgettoBox.setVisible(false);
+                    sedeBox.setVisible(false);
+                    progettoBox.setVisible(false);
+                    progettoBox.setEnabled(false);
+                    sedeBox.setVisible(false);
+                    buttonAdmin.setVisible(false);
+                    buttonDip.setVisible(false);
+                    buttonMagazziniereVecchiaS.setVisible(false);
+                    buttonProg.setVisible(false);
+                    buttonMagazziniereNuovaS.setVisible(false);
+                    buttonDipProg.setVisible(false);
+
+                    nomeMagazzinoField.setVisible(false);
+                    nomeProgettoField.setVisible(false);
+                    budgetField.setVisible(false);
+                    nomeSedeField.setVisible(false);
+                    nomeNazioneField.setVisible(false);
+                    prezzoSpedizioneField.setVisible(false);
+
+                    nomeLabel.setVisible(true);
+                    cognomeLabel.setVisible(true);
+                    usernameLabel.setVisible(true);
+                    passwordLabel.setVisible(true);
+
+                    capoProgettoBoxLabel.setVisible(false);
+                    progettoBoxLabel.setVisible(false);
+                    sedeBoxLabel.setVisible(false);
+                    sedeLabel.setVisible(false);
+                    nazioneLabel.setVisible(false);
+                    nuovoMagazzinoLabel.setVisible(false);
+                    spedizioneLabel.setVisible(false);
+                    magazzinoLabel.setVisible(false);
+                    nuovoProgettoLabel.setVisible(false);
+                    budgetLabel.setVisible(false);
+                } else if (selezioneOpzioneBox.getSelectedIndex() == 6) {
+                    nomeProgettoField.setText("");
+                    budgetField.setText("");
+                    capoProgettoBox.removeAllItems();
+                    sedeBox.removeAllItems();
+                    List<CapoProgetto> listProgetto = sessione.ottieniListaCapoProgetto();
+                    for (CapoProgetto cp : listProgetto)
+                        capoProgettoBox.addItem(cp.getUsername());
+                    List<Sede> listSede = sessione.ottieniListaSede();
+                    for (Sede sede : listSede)
+                        sedeBox.addItem(sede.getNome());
+
+                    nomeProgettoField.setVisible(true);
+                    budgetField.setVisible(true);
+                    capoProgettoBox.setVisible(true);
+                    sedeBox.setVisible(true);
+                    buttonProg.setVisible(true);
+
+                    nuovoMagazzinoNomeField.setVisible(false);
+                    progettoBox.setVisible(false);
+                    progettoBox.setEnabled(false);
+                    nomeUtenteField.setVisible(false);
+                    cognomeUtenteField.setVisible(false);
+                    usernameUtenteField.setVisible(false);
+                    passwordUtenteField.setVisible(false);
+                    nomeMagazzinoField.setVisible(false);
+                    buttonAdmin.setVisible(false);
+                    buttonCapo.setVisible(false);
+                    buttonDip.setVisible(false);
+                    buttonMagazziniereVecchiaS.setVisible(false);
+                    buttonMagazziniereNuovaS.setVisible(false);
+                    buttonDipProg.setVisible(false);
+                    nomeSedeField.setVisible(false);
+                    nomeNazioneField.setVisible(false);
+                    prezzoSpedizioneField.setVisible(false);
+
+                    nuovoProgettoLabel.setVisible(true);
+                    budgetLabel.setVisible(true);
+                    capoProgettoBoxLabel.setVisible(true);
+                    sedeBoxLabel.setVisible(true);
+
+                    nomeLabel.setVisible(false);
+                    cognomeLabel.setVisible(false);
+                    usernameLabel.setVisible(false);
+                    passwordLabel.setVisible(false);
+                    progettoBoxLabel.setVisible(false);
+                    sedeLabel.setVisible(false);
+                    nazioneLabel.setVisible(false);
+                    nuovoMagazzinoLabel.setVisible(false);
+                    spedizioneLabel.setVisible(false);
+                    magazzinoLabel.setVisible(false);
+                } else if (selezioneOpzioneBox.getSelectedIndex() == 7) {
+                    usernameUtenteField.setText("");
+                    passwordUtenteField.setText("");
+                    progettoBox.removeAllItems();
+                    capoProgettoBox.removeAllItems();
+
+                    List<CapoProgetto> listCapoProgetto = sessione.ottieniListaCapoProgetto();
+                    for (CapoProgetto cp : listCapoProgetto)
+                        capoProgettoBox.addItem(cp.getUsername());
+
+                    progettoBox.removeAllItems();
+                    progettoBox.setEnabled(false);
+                    progettoBox.setVisible(true);
+                    int index = capoProgettoBox.getSelectedIndex();
+                    List<Progetto> list = sessione.ottieniListaCapoProgetto().get(index).getProgetti();
+                    for (Progetto prog : list)
+                        progettoBox.addItem(prog.getNome());
+
+                    usernameUtenteField.setVisible(true);
+                    passwordUtenteField.setVisible(true);
+                    capoProgettoBox.setVisible(true);
+                    buttonDipProg.setVisible(true);
+
+                    nomeUtenteField.setVisible(false);
+                    cognomeUtenteField.setVisible(false);
+                    nuovoMagazzinoNomeField.setVisible(false);
+                    nomeMagazzinoField.setVisible(false);
+                    nomeProgettoField.setVisible(false);
+                    budgetField.setVisible(false);
+                    sedeBox.setVisible(false);
+                    nomeSedeField.setVisible(false);
+                    nomeNazioneField.setVisible(false);
+                    prezzoSpedizioneField.setVisible(false);
+
+                    buttonAdmin.setVisible(false);
+                    buttonMagazziniereVecchiaS.setVisible(false);
+                    buttonMagazziniereNuovaS.setVisible(false);
+                    buttonCapo.setVisible(false);
+                    buttonProg.setVisible(false);
+                    buttonDip.setVisible(false);
+
+                    usernameLabel.setVisible(true);
+                    passwordLabel.setVisible(true);
+                    capoProgettoBoxLabel.setVisible(true);
+                    progettoBoxLabel.setVisible(true);
+
+                    nomeLabel.setVisible(false);
+                    cognomeLabel.setVisible(false);
+                    sedeBoxLabel.setVisible(false);
+                    sedeLabel.setVisible(false);
+                    nazioneLabel.setVisible(false);
+                    nuovoMagazzinoLabel.setVisible(false);
+                    spedizioneLabel.setVisible(false);
+                    magazzinoLabel.setVisible(false);
+                    nuovoProgettoLabel.setVisible(false);
+                    budgetLabel.setVisible(false);
+                }
             }
         });
 
@@ -164,7 +444,7 @@ public class SessioneAmministratoreViewPresenter {
                     progettoBox.removeAllItems();
                     progettoBox.setEnabled(false);
                     progettoBox.setVisible(false);
-                    if (creaDipendenteRadioButton.isSelected() || aggiungiDipendenteAlProgettoRadioButton.isSelected()) {
+                    if (selezioneOpzioneBox.getSelectedIndex() == 1 || selezioneOpzioneBox.getSelectedIndex() == 7) {
                         progettoBox.setEnabled(true);
                         progettoBox.setVisible(true);
                     }
@@ -175,337 +455,6 @@ public class SessioneAmministratoreViewPresenter {
                 } catch (Exception e) {
                     /*"AWT-EventQueue-0" java.lang.ArrayIndexOutOfBoundsException: -1*/
                 }
-            }
-        });
-
-        creaAmministratoreRadioButton.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent itemEvent) {
-
-                nomeUtenteField.setText("");
-                cognomeUtenteField.setText("");
-                usernameUtenteField.setText("");
-                passwordUtenteField.setText("");
-
-                nomeUtenteField.setVisible(true);
-                cognomeUtenteField.setVisible(true);
-                usernameUtenteField.setVisible(true);
-                passwordUtenteField.setVisible(true);
-                buttonAdmin.setEnabled(true);
-
-                nuovoMagazzinoNomeField.setVisible(false);
-                progettoBox.setVisible(false);
-                progettoBox.setEnabled(false);
-                capoProgettoBox.setVisible(false);
-                sedeBox.setVisible(true); //Viene posto prima true e poi false perchè se no non verrebbe aggiornata
-                sedeBox.setVisible(false);//l'interfaccia grafica se la prima scelta è stata di creare l'amministratore
-                buttonCapo.setEnabled(false);
-                buttonDip.setEnabled(false);
-                buttonMagazziniereVecchiaS.setEnabled(false);
-                buttonProg.setEnabled(false);
-                buttonMagazziniereNuovaS.setEnabled(false);
-                buttonDipProg.setEnabled(false);
-                nomeMagazzinoField.setVisible(false);
-                nomeProgettoField.setVisible(false);
-                budgetField.setVisible(false);
-                nomeSedeField.setVisible(false);
-                nomeNazioneField.setVisible(false);
-                prezzoSpedizioneField.setVisible(false);
-
-                nomeLabel.setVisible(true);
-                cognomeLabel.setVisible(true);
-                usernameLabel.setVisible(true);
-                passwordLabel.setVisible(true);
-
-                capoProgettoBoxLabel.setVisible(false);
-                progettoBoxLabel.setVisible(false);
-                sedeBoxLabel.setVisible(false);
-                sedeLabel.setVisible(false);
-                nazioneLabel.setVisible(false);
-                nuovoMagazzinoLabel.setVisible(false);
-                spedizioneLabel.setVisible(false);
-                magazzinoLabel.setVisible(false);
-                nuovoProgettoLabel.setVisible(false);
-                budgetLabel.setVisible(false);
-            }
-        });
-
-        creaMagazziniereRadioButton.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent itemEvent) {
-
-                nomeUtenteField.setText("");
-                cognomeUtenteField.setText("");
-                usernameUtenteField.setText("");
-                passwordUtenteField.setText("");
-                sedeBox.removeAllItems();
-                nomeMagazzinoField.setText("");
-
-                List<Sede> list = sessione.ottieniListaSede();
-                for (Sede sede : list)
-                    sedeBox.addItem(sede.getNome());
-
-                nomeUtenteField.setVisible(true);
-                cognomeUtenteField.setVisible(true);
-                usernameUtenteField.setVisible(true);
-                passwordUtenteField.setVisible(true);
-                sedeBox.setVisible(true);
-                nomeMagazzinoField.setVisible(true);
-                buttonMagazziniereVecchiaS.setEnabled(true);
-
-                nuovoMagazzinoNomeField.setVisible(false);
-                nomeProgettoField.setVisible(false);
-                progettoBox.setVisible(false);
-                progettoBox.setEnabled(false);
-                capoProgettoBox.setVisible(false);
-                budgetField.setVisible(false);
-                buttonAdmin.setEnabled(false);
-                buttonCapo.setEnabled(false);
-                buttonDip.setEnabled(false);
-                buttonProg.setEnabled(false);
-                buttonMagazziniereNuovaS.setEnabled(false);
-                buttonDipProg.setEnabled(false);
-                nomeSedeField.setVisible(false);
-                nomeNazioneField.setVisible(false);
-                prezzoSpedizioneField.setVisible(false);
-
-                nomeLabel.setVisible(true);
-                cognomeLabel.setVisible(true);
-                usernameLabel.setVisible(true);
-                passwordLabel.setVisible(true);
-                sedeBoxLabel.setVisible(true);
-                magazzinoLabel.setVisible(true);
-
-                capoProgettoBoxLabel.setVisible(false);
-                progettoBoxLabel.setVisible(false);
-                sedeLabel.setVisible(false);
-                nazioneLabel.setVisible(false);
-                nuovoMagazzinoLabel.setVisible(false);
-                spedizioneLabel.setVisible(false);
-                nuovoProgettoLabel.setVisible(false);
-                budgetLabel.setVisible(false);
-            }
-        });
-
-        creaMagazziniereMagazzinoRadioButton.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent itemEvent) {
-
-                nomeUtenteField.setText("");
-                cognomeUtenteField.setText("");
-                usernameUtenteField.setText("");
-                passwordUtenteField.setText("");
-                prezzoSpedizioneField.setText("");
-                nomeNazioneField.setText("");
-                nomeSedeField.setText("");
-                nuovoMagazzinoNomeField.setText("");
-
-                nomeSedeField.setVisible(true);
-                nomeNazioneField.setVisible(true);
-                prezzoSpedizioneField.setVisible(true);
-                usernameUtenteField.setVisible(true);
-                passwordUtenteField.setVisible(true);
-                cognomeUtenteField.setVisible(true);
-                nomeUtenteField.setVisible(true);
-                nuovoMagazzinoNomeField.setVisible(true);
-                buttonMagazziniereNuovaS.setEnabled(true);
-
-                sedeBox.setVisible(true);
-                sedeBox.setVisible(false);
-                buttonMagazziniereVecchiaS.setEnabled(false);
-                nomeProgettoField.setVisible(false);
-                progettoBox.setVisible(false);
-                progettoBox.setEnabled(false);
-                capoProgettoBox.setVisible(false);
-                budgetField.setVisible(false);
-                buttonAdmin.setEnabled(false);
-                buttonCapo.setEnabled(false);
-                buttonDip.setEnabled(false);
-                buttonProg.setEnabled(false);
-                buttonDipProg.setEnabled(false);
-                nomeMagazzinoField.setVisible(false);
-
-                nomeLabel.setVisible(true);
-                cognomeLabel.setVisible(true);
-                usernameLabel.setVisible(true);
-                passwordLabel.setVisible(true);
-                nuovoMagazzinoLabel.setVisible(true);
-                spedizioneLabel.setVisible(true);
-                sedeLabel.setVisible(true);
-                nazioneLabel.setVisible(true);
-
-
-                capoProgettoBoxLabel.setVisible(false);
-                progettoBoxLabel.setVisible(false);
-                sedeBoxLabel.setVisible(false);
-                magazzinoLabel.setVisible(false);
-                nuovoProgettoLabel.setVisible(false);
-                budgetLabel.setVisible(false);
-            }
-        });
-
-        creaCapoProgettoRadioButton.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent itemEvent) {
-
-                nomeUtenteField.setText("");
-                cognomeUtenteField.setText("");
-                usernameUtenteField.setText("");
-                passwordUtenteField.setText("");
-
-                nomeUtenteField.setVisible(true);
-                cognomeUtenteField.setVisible(true);
-                usernameUtenteField.setVisible(true);
-                passwordUtenteField.setVisible(true);
-                buttonCapo.setEnabled(true);
-
-                nuovoMagazzinoNomeField.setVisible(false);
-                capoProgettoBox.setVisible(false);
-                sedeBox.setVisible(true);
-                progettoBox.setVisible(false);
-                progettoBox.setEnabled(false);
-                sedeBox.setVisible(false);
-                buttonAdmin.setEnabled(false);
-                buttonDip.setEnabled(false);
-                buttonMagazziniereVecchiaS.setEnabled(false);
-                buttonProg.setEnabled(false);
-                buttonMagazziniereNuovaS.setEnabled(false);
-                buttonDipProg.setEnabled(false);
-                nomeMagazzinoField.setVisible(false);
-                nomeProgettoField.setVisible(false);
-                budgetField.setVisible(false);
-                nomeSedeField.setVisible(false);
-                nomeNazioneField.setVisible(false);
-                prezzoSpedizioneField.setVisible(false);
-
-                nomeLabel.setVisible(true);
-                cognomeLabel.setVisible(true);
-                usernameLabel.setVisible(true);
-                passwordLabel.setVisible(true);
-
-                capoProgettoBoxLabel.setVisible(false);
-                progettoBoxLabel.setVisible(false);
-                sedeBoxLabel.setVisible(false);
-                sedeLabel.setVisible(false);
-                nazioneLabel.setVisible(false);
-                nuovoMagazzinoLabel.setVisible(false);
-                spedizioneLabel.setVisible(false);
-                magazzinoLabel.setVisible(false);
-                nuovoProgettoLabel.setVisible(false);
-                budgetLabel.setVisible(false);
-            }
-        });
-
-        creaProgettoRadioButton.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent itemEvent) {
-
-                nomeProgettoField.setText("");
-                budgetField.setText("");
-                capoProgettoBox.removeAllItems();
-                sedeBox.removeAllItems();
-                List<CapoProgetto> listProgetto = sessione.ottieniListaCapoProgetto();
-                for (CapoProgetto cp : listProgetto)
-                    capoProgettoBox.addItem(cp.getUsername());
-                List<Sede> listSede = sessione.ottieniListaSede();
-                for (Sede sede : listSede)
-                    sedeBox.addItem(sede.getNome());
-
-                nomeProgettoField.setVisible(true);
-                budgetField.setVisible(true);
-                capoProgettoBox.setVisible(true);
-                sedeBox.setVisible(true);
-                buttonProg.setEnabled(true);
-
-                nuovoMagazzinoNomeField.setVisible(false);
-                progettoBox.setVisible(false);
-                progettoBox.setEnabled(false);
-                nomeUtenteField.setVisible(false);
-                cognomeUtenteField.setVisible(false);
-                usernameUtenteField.setVisible(false);
-                passwordUtenteField.setVisible(false);
-                nomeMagazzinoField.setVisible(false);
-                buttonAdmin.setEnabled(false);
-                buttonCapo.setEnabled(false);
-                buttonDip.setEnabled(false);
-                buttonMagazziniereVecchiaS.setEnabled(false);
-                buttonMagazziniereNuovaS.setEnabled(false);
-                buttonDipProg.setEnabled(false);
-                nomeSedeField.setVisible(false);
-                nomeNazioneField.setVisible(false);
-                prezzoSpedizioneField.setVisible(false);
-
-                nuovoProgettoLabel.setVisible(true);
-                budgetLabel.setVisible(true);
-                capoProgettoBoxLabel.setVisible(true);
-                sedeBoxLabel.setVisible(true);
-
-                nomeLabel.setVisible(false);
-                cognomeLabel.setVisible(false);
-                usernameLabel.setVisible(false);
-                passwordLabel.setVisible(false);
-                progettoBoxLabel.setVisible(false);
-                sedeLabel.setVisible(false);
-                nazioneLabel.setVisible(false);
-                nuovoMagazzinoLabel.setVisible(false);
-                spedizioneLabel.setVisible(false);
-                magazzinoLabel.setVisible(false);
-            }
-        });
-
-        aggiungiDipendenteAlProgettoRadioButton.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent itemEvent) {
-
-                usernameUtenteField.setText("");
-                passwordUtenteField.setText("");
-                progettoBox.removeAllItems();
-                capoProgettoBox.removeAllItems();
-
-                List<CapoProgetto> listCapoProgetto = sessione.ottieniListaCapoProgetto();
-                for (CapoProgetto cp : listCapoProgetto)
-                    capoProgettoBox.addItem(cp.getUsername());
-
-                progettoBox.removeAllItems();
-                progettoBox.setEnabled(false);
-                progettoBox.setVisible(true);
-                int index = capoProgettoBox.getSelectedIndex();
-                List<Progetto> list = sessione.ottieniListaCapoProgetto().get(index).getProgetti();
-                for (Progetto prog : list)
-                    progettoBox.addItem(prog.getNome());
-
-                usernameUtenteField.setVisible(true);
-                passwordUtenteField.setVisible(true);
-                capoProgettoBox.setVisible(true);
-                buttonDipProg.setEnabled(true);
-
-                nomeUtenteField.setVisible(false);
-                cognomeUtenteField.setVisible(false);
-                nuovoMagazzinoNomeField.setVisible(false);
-                nomeMagazzinoField.setVisible(false);
-                nomeProgettoField.setVisible(false);
-                budgetField.setVisible(false);
-                sedeBox.setVisible(false);
-                nomeSedeField.setVisible(false);
-                nomeNazioneField.setVisible(false);
-                prezzoSpedizioneField.setVisible(false);
-
-                buttonAdmin.setEnabled(false);
-                buttonMagazziniereVecchiaS.setEnabled(false);
-                buttonMagazziniereNuovaS.setEnabled(false);
-                buttonCapo.setEnabled(false);
-                buttonProg.setEnabled(false);
-                buttonDip.setEnabled(false);
-
-                usernameLabel.setVisible(true);
-                passwordLabel.setVisible(true);
-                capoProgettoBoxLabel.setVisible(true);
-                progettoBoxLabel.setVisible(true);
-
-                nomeLabel.setVisible(false);
-                cognomeLabel.setVisible(false);
-                sedeBoxLabel.setVisible(false);
-                sedeLabel.setVisible(false);
-                nazioneLabel.setVisible(false);
-                nuovoMagazzinoLabel.setVisible(false);
-                spedizioneLabel.setVisible(false);
-                magazzinoLabel.setVisible(false);
-                nuovoProgettoLabel.setVisible(false);
-                budgetLabel.setVisible(false);
             }
         });
 
