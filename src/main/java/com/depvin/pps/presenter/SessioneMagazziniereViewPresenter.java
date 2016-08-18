@@ -3,7 +3,6 @@ package com.depvin.pps.presenter;
 import com.depvin.pps.business.ReportCreationFailedException;
 import com.depvin.pps.business.SessioneMagazziniere;
 import com.depvin.pps.model.*;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -13,14 +12,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.awt.image.RescaleOp;
+import java.awt.image.Raster;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-
 import static javax.swing.JOptionPane.showMessageDialog;
 
 /**
@@ -71,6 +68,8 @@ public class SessioneMagazziniereViewPresenter {
     private JButton ottieniImmagineButton;
     private JTextField vecchiaCategoriaField;
     private JButton modificaCategoriaButton;
+    private JLabel imageLabel;
+
 
     private DefaultListModel listArticoliOrdinatiModel;
     private DefaultListModel listArticoliMagazzinoModel;
@@ -258,9 +257,14 @@ public class SessioneMagazziniereViewPresenter {
 
         ottieniImmagineButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                showMessageDialog(getView(), "Pulsante ancora non implementato");
+                int index = listModificaArticoloMagazzino.getSelectedIndex();
+                ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
+                byte[] bytes = am.getArticolo().getImmagine();
+                InputStream in = new ByteArrayInputStream(bytes);
+                paintImage(in);
             }
         });
+
 
         pulisciTuttiICampiButton1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
@@ -303,7 +307,7 @@ public class SessioneMagazziniereViewPresenter {
                         baos.flush();
                         byte[] imageInByte = baos.toByteArray();
                         baos.close();
-                        am.getArticolo().setImmagine(imageInByte);
+                        sessione.modificaImmagineArticolo(am, imageInByte);
                     } catch (IOException e) {
                     }
                 }
@@ -336,4 +340,14 @@ public class SessioneMagazziniereViewPresenter {
     public JFrame getView() {
         return view;
     }
+
+    public void paintImage(InputStream in) {
+        try {
+            BufferedImage buffed = ImageIO.read(in);
+            ImageIcon icon = new ImageIcon(buffed);
+            showMessageDialog(getView(), icon);
+        } catch (IOException e) {
+        }
+    }
+
 }

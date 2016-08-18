@@ -71,6 +71,10 @@ public class SessioneMagazziniere implements Sessione {
         Sistema.getInstance().modificaProduttoreArticolo(articoloMagazzino, produttore);
     }
 
+    public void modificaImmagineArticolo(ArticoloMagazzino articoloMagazzino, byte[] bytes) {
+        Sistema.getInstance().modificaImmagineArticolo(articoloMagazzino, bytes);
+    }
+
     public void aggiungiFornitoreArticolo(ArticoloMagazzino articoloMagazzino, String nomeFornitore) {
         Fornitore fornitore = new Fornitore(nomeFornitore);
         Sistema.getInstance().aggiungiFornitoreArticolo(articoloMagazzino, fornitore);

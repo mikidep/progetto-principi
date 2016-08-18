@@ -77,6 +77,11 @@ public class Sistema {
         }
     }
 
+    void modificaImmagineArticolo(ArticoloMagazzino articoloMagazzino, byte[] bytes) {
+        articoloMagazzino.getArticolo().setImmagine(bytes);
+        DBInterface.getInstance().save();
+    }
+
     void modificaBudget(Progetto progetto, float budget) {
         if (budget >= 0)
             progetto.setBudget(budget);
