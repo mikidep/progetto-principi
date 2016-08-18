@@ -37,13 +37,21 @@ public class Sistema {
         DBInterface.getInstance().save();
     }
 
+    void aggiungiCategoriaArticolo(ArticoloMagazzino articoloMagazzino, String nomeCategoria) {
+        Categoria categoria = new Categoria(nomeCategoria);
+        articoloMagazzino.getArticolo().getProdotto().getCategorie().add(categoria);
+        DBInterface.getInstance().save();
+    }
+
     void rimuoviArticoloOrdine(Ordine ordine, ArticoloOrdine articoloOrdine) {
         ordine.getArticoliOrdine().remove(articoloOrdine);
+        DBInterface.getInstance().save();
     }
 
     void rimuoviOrdine(Ordine ordine) {
         Dipendente d = ordine.getDipendente();
         d.getOrdini().remove(ordine);
+        DBInterface.getInstance().save();
     }
 
     void confermaOrdine(Ordine ordine) {
@@ -72,6 +80,56 @@ public class Sistema {
     void modificaBudget(Progetto progetto, float budget) {
         if (budget >= 0)
             progetto.setBudget(budget);
+        DBInterface.getInstance().save();
+    }
+
+    void modificaNomeArticolo(ArticoloMagazzino articoloMagazzino, String nome) {
+        articoloMagazzino.getArticolo().setNome(nome);
+        DBInterface.getInstance().save();
+    }
+
+    void modificaDescrizioneArticolo(ArticoloMagazzino articoloMagazzino, String descrizione) {
+        articoloMagazzino.getArticolo().setDescrizione(descrizione);
+        DBInterface.getInstance().save();
+    }
+
+    void modificaPrezzoArticolo(ArticoloMagazzino articoloMagazzino, float prezzo) {
+        articoloMagazzino.getArticolo().setPrezzo(prezzo);
+        DBInterface.getInstance().save();
+    }
+
+    void modificaFornitoreArticolo(ArticoloMagazzino articoloMagazzino, String nuovoFornitore, String vecchioFornitore) {
+        List<Fornitore> listF = articoloMagazzino.getArticolo().getFornitori();
+        for (Fornitore f : listF)
+            if (f.getNome().equals(vecchioFornitore)) {
+                listF.remove(f);
+                listF.add(new Fornitore(nuovoFornitore));
+            }
+        DBInterface.getInstance().save();
+    }
+
+    void modificaCategoriaArticolo(ArticoloMagazzino articoloMagazzino, String nuovaCategoria, String vecchiaCategoria) {
+        List<Categoria> listC = articoloMagazzino.getArticolo().getProdotto().getCategorie();
+        for (Categoria categoria : listC)
+            if (categoria.getNome().equals(vecchiaCategoria)) {
+                listC.remove(categoria);
+                listC.add(new Categoria(nuovaCategoria));
+            }
+        DBInterface.getInstance().save();
+    }
+
+    void modificaProdottoCategoriaArticolo(ArticoloMagazzino articoloMagazzino, Prodotto prodotto) {
+        articoloMagazzino.getArticolo().setProdotto(prodotto);
+        DBInterface.getInstance().save();
+    }
+
+    void modificaProduttoreArticolo(ArticoloMagazzino articoloMagazzino, Produttore produttore) {
+        articoloMagazzino.getArticolo().setProduttore(produttore);
+        DBInterface.getInstance().save();
+    }
+
+    void aggiungiFornitoreArticolo(ArticoloMagazzino articoloMagazzino, Fornitore fornitore) {
+        articoloMagazzino.getArticolo().getFornitori().add(fornitore);
         DBInterface.getInstance().save();
     }
 
@@ -197,16 +255,17 @@ public class Sistema {
 
     void aggiungiOrdineProgetto(Ordine ordine, Progetto progetto) {
         progetto.getOrdini().add(ordine);
+        DBInterface.getInstance().save();
     }
 
-    void eliminaArticoloMagazzino(ArticoloMagazzino articoloMagazzino, Magazzino magazzino) {
+    /*void eliminaArticoloMagazzino(ArticoloMagazzino articoloMagazzino, Magazzino magazzino) {
         if (articoloMagazzino.getDisponibilita() == 0) {
             magazzino.getArticoliMagazzino().remove(articoloMagazzino);
             DBInterface.getInstance().save();
         }
         // TODO: Chiamerà il Presenter
         //Cose molto confuse, si vedrà in seguito
-    }// Deve inoltre avvisare il dipendente che il prodotto non sarà più disponibile in quel magazzino
+    }*/// Deve inoltre avvisare il dipendente che il prodotto non sarà più disponibile in quel magazzino
 
     public Sessione login(String username, String password) throws UserNotFoundException, UserLoadingException {
         try {
