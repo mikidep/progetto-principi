@@ -20,10 +20,10 @@ public class SessioneMagazziniere implements Sessione {
         return magazziniere;
     }
 
-    public void eliminaArticoloMagazzino(ArticoloMagazzino articoloMagazzino) {
+    /*public void eliminaArticoloMagazzino(ArticoloMagazzino articoloMagazzino) {
         Magazzino magazzino = getUtente().getMagazzino();
         Sistema.getInstance().eliminaArticoloMagazzino(articoloMagazzino, magazzino);
-    }
+    }//Non implementato*/
 
     public void aggiungiArticoloMagazzino(Articolo articolo, int disponibilità) {
         Magazzino magazzino = getUtente().getMagazzino();
