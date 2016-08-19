@@ -56,10 +56,8 @@ public class SessioneMagazziniere implements Sessione {
         List<Categoria> listC = new ArrayList<Categoria>();
         List<Categoria> listCAT = ottieniListaCategoria();
         for (Categoria cat : listCAT) {
-            List<Prodotto> listP = cat.getProdotti();
-            for (Prodotto p : listP)
-                if (p.getNome().equals(nomeProdotto))
-                    listC.add(cat);
+            if (cat.getNome().equals(categoria.getNome()))
+                listC.add(cat);
         }
         if (listC.isEmpty())
             listC.add(categoria);
@@ -73,6 +71,10 @@ public class SessioneMagazziniere implements Sessione {
 
     public void modificaImmagineArticolo(ArticoloMagazzino articoloMagazzino, byte[] bytes) {
         Sistema.getInstance().modificaImmagineArticolo(articoloMagazzino, bytes);
+    }
+
+    public void aggiungiImmagineArticolo(Articolo articolo, byte[] bytes) {
+        Sistema.getInstance().aggiungiImmagineArticolo(articolo, bytes);
     }
 
     public void aggiungiFornitoreArticolo(ArticoloMagazzino articoloMagazzino, String nomeFornitore) {

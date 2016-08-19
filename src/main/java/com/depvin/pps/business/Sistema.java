@@ -77,6 +77,11 @@ public class Sistema {
         }
     }
 
+    void aggiungiImmagineArticolo(Articolo articolo, byte[] bytes) {
+        articolo.setImmagine(bytes);
+        DBInterface.getInstance().save();
+    }
+
     void modificaImmagineArticolo(ArticoloMagazzino articoloMagazzino, byte[] bytes) {
         articoloMagazzino.getArticolo().setImmagine(bytes);
         DBInterface.getInstance().save();
@@ -115,10 +120,19 @@ public class Sistema {
 
     void modificaCategoriaArticolo(ArticoloMagazzino articoloMagazzino, String nuovaCategoria, String vecchiaCategoria) {
         List<Categoria> listC = articoloMagazzino.getArticolo().getProdotto().getCategorie();
-        for (Categoria categoria : listC)
-            if (categoria.getNome().equals(vecchiaCategoria)) {
-                listC.remove(categoria);
-                listC.add(new Categoria(nuovaCategoria));
+        int i = 0;
+        for (Categoria categoria : listC) {
+            if (i == 0)
+                if (categoria.getNome().equals(vecchiaCategoria)) {
+                    List<Prodotto> listP = categoria.getProdotti();
+                    listC.remove(categoria);
+                    Categoria cat = new Categoria(nuovaCategoria);
+                    for (Prodotto p : listP) {
+                        cat.getProdotti().add(p);
+                    }
+                    listC.add(cat);
+                    i += 1;
+                }
             }
         DBInterface.getInstance().save();
     }
