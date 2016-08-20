@@ -48,6 +48,7 @@ public class SessioneDipendenteViewPresenter {
     private JTextField ordineQuantitaField;
     private JTextField nomeField;
     private JLabel ordineNomeLabel;
+    private JList ordineArticoliNuovoList;
     private DefaultListModel listModelArticoliCatalogo;
     private DefaultListModel listModelOrdinePendente;
     private DefaultListModel listModelArticoliOrdineCorrente;
@@ -56,8 +57,8 @@ public class SessioneDipendenteViewPresenter {
         this.sessione = sessione;
         final Dipendente d = sessione.getUtente();
         view = new JFrame("Sessione: " + d.getNome() + " " + d.getCognome());
-        rootPanel.setPreferredSize(new Dimension(450, 350));
-        view.setLocation(550, 100);
+        rootPanel.setPreferredSize(new Dimension(950, 700));
+        view.setLocation(250, 100);
         view.setContentPane(rootPanel);
         view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         tabbedPane2.setVisible(true);
@@ -70,18 +71,38 @@ public class SessioneDipendenteViewPresenter {
         eliminaArticoloDallOrdineButton.setEnabled(false);
         cancellaOrdineButton.setEnabled(false);
         prodottoBox.setEnabled(false);
-
-        for (Progetto prog : d.getProgetti()) {
-            progettoOrdineBox.addItem(prog.getNome());
-            progettiBox.addItem(prog.getNome());
-        }
         for (Categoria cat : sessione.ottieniListaCategorie())
             categoriaBox.addItem(cat.getNome());
-        //TODO: Aggiungere la lista di magazzini nel relativo comboBox
-
 
         view.pack();
 
+        categoriaBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                prodottoBox.removeAllItems();
+                int index = categoriaBox.getSelectedIndex();
+                for (Prodotto prod : sessione.ottieniListaCategorie().get(index).getProdotti())
+                    prodottoBox.addItem(prod.getNome());
+                prodottoBox.setEnabled(true);
+            }
+        });
+
+        prodottoBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                sfogliaCatalogoButton.setEnabled(true);
+            }
+        });
+
+        sfogliaCatalogoButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                listModelArticoliCatalogo = new DefaultListModel();
+                List<Categoria> listC = sessione.ottieniListaCategorie();
+                Categoria c = listC.get(categoriaBox.getSelectedIndex());
+                Prodotto p = c.getProdotti().get(prodottoBox.getSelectedIndex());
+                //TODO: Infarcire con tutti gli articoli trovati (a.getProdotto.equals(p))
+            }
+        });
+
+        //Non ancora visionato
         nuovoOrdineButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (nomeField.getText().length() == 0 || progettoOrdineBox.getSelectedIndex() == -1)
@@ -90,14 +111,6 @@ public class SessioneDipendenteViewPresenter {
                     int index = progettoOrdineBox.getSelectedIndex();
                     sessione.aggiungiOrdineProgetto(nomeField.getText(), d.getProgetti().get(index));
                 }
-            }
-        });
-
-        categoriaBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                int index = categoriaBox.getSelectedIndex();
-                for (Prodotto prod : sessione.ottieniListaCategorie().get(index).getProdotti())
-                    prodottoBox.addItem(prod.getNome());
             }
         });
 
