@@ -52,16 +52,9 @@ public class SessioneMagazziniere implements Sessione {
         Sistema.getInstance().modificaFornitoreArticolo(articoloMagazzino, nuovoFornitore, vecchioFornitore);
     }
 
-    public void modificaProdottoCategoriaArticolo(ArticoloMagazzino articoloMagazzino, String nomeProdotto, Categoria categoria) {
-        List<Categoria> listC = new ArrayList<Categoria>();
-        List<Categoria> listCAT = ottieniListaCategoria();
-        for (Categoria cat : listCAT) {
-            if (cat.getNome().equals(categoria.getNome()))
-                listC.add(cat);
-        }
-        if (listC.isEmpty())
-            listC.add(categoria);
-        Sistema.getInstance().modificaProdottoCategoriaArticolo(articoloMagazzino, new Prodotto(nomeProdotto, listC));
+    public void modificaProdottoArticolo(ArticoloMagazzino articoloMagazzino, String nomeProdotto) {
+        List<Categoria> listCAT = articoloMagazzino.getArticolo().getProdotto().getCategorie();
+        Sistema.getInstance().modificaProdottoArticolo(articoloMagazzino, new Prodotto(nomeProdotto, listCAT));
     }
 
     public void modificaProduttoreArticolo(ArticoloMagazzino articoloMagazzino, String nomeProduttore) {

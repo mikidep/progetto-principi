@@ -50,6 +50,11 @@ public class SessioneMagazziniereViewPresenter {
     private JTextField prodottoModificaField;
     private JTextField produttoreModificaField;
     private JTextField fornitoreModificaField;
+    private JTextField nuovoFornitorefield;
+    private JTextField categoriaModificaField;
+    private JTextField vecchioFornitoreField;
+    private JTextField immagineModificaField;
+    private JTextField immagineField;
 
     private JButton aggiungiArticoloNelMagazzinoButton;
     private JButton pulisciTuttiICampiButton;
@@ -57,15 +62,10 @@ public class SessioneMagazziniereViewPresenter {
     private JButton ottieniInformazioniButton;
     private JButton confermaModificheButton;
     private JButton stampaArticoliOrdinatiButton;
-    private JTextField immagineModificaField;
-    private JTextField immagineField;
     private JButton pulisciTuttiICampiButton1;
     private JButton modificaFornitoreButton;
-    private JTextField vecchioFornitoreField;
     private JButton ottieniImmagineButton;
-    private JTextField categoriaModificaField;
     private JButton modificaCategoriaButton;
-
 
     private DefaultListModel listArticoliOrdinatiModel;
     private DefaultListModel listArticoliMagazzinoModel;
@@ -75,8 +75,8 @@ public class SessioneMagazziniereViewPresenter {
         this.sessione = sessione;
         final Magazziniere m = sessione.getUtente();
         view = new JFrame("Sessione: " + m.getNome() + " " + m.getCognome());
-        rootPanel.setPreferredSize(new Dimension(1000, 750));
-        view.setLocation(200, 200);
+        rootPanel.setPreferredSize(new Dimension(900, 750));
+        view.setLocation(200, 0);
         view.setContentPane(rootPanel);
         view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -99,7 +99,35 @@ public class SessioneMagazziniereViewPresenter {
         listModificaArticoloMagazzino.setVisible(true);
         listModificaDisponibilitàArticoloMagazzino.setVisible(true);
         tabbedPane.setVisible(true);
+
+        ottieniImmagineButton.setEnabled(false);
+        ottieniInformazioniButton.setEnabled(false);
+        confermaModificheButton.setEnabled(false);
+        modificaCategoriaButton.setEnabled(false);
+        modificaFornitoreButton.setEnabled(false);
+        confermaModificaButton.setEnabled(false);
+
         view.pack();
+
+        listModificaDisponibilitàArticoloMagazzino.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent listSelectionEvent) {
+                int index = listModificaDisponibilitàArticoloMagazzino.getSelectedIndex();
+                ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
+                labelquantitàDisponibile.setText(String.valueOf(am.getDisponibilita()));
+                labelquantitàDisponibile.setVisible(true);
+                confermaModificaButton.setEnabled(true);
+            }
+        });
+
+        listModificaArticoloMagazzino.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent listSelectionEvent) {
+                ottieniImmagineButton.setEnabled(true);
+                ottieniInformazioniButton.setEnabled(true);
+                confermaModificheButton.setEnabled(true);
+                modificaCategoriaButton.setEnabled(true);
+                modificaFornitoreButton.setEnabled(true);
+            }
+        });
 
         stampaArticoliOrdinatiButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
@@ -190,14 +218,7 @@ public class SessioneMagazziniereViewPresenter {
             }
         });
 
-        listModificaDisponibilitàArticoloMagazzino.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                int index = listModificaDisponibilitàArticoloMagazzino.getSelectedIndex();
-                ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
-                labelquantitàDisponibile.setText(String.valueOf(am.getDisponibilita()));
-                labelquantitàDisponibile.setVisible(true);
-            }
-        });
+
 
         confermaModificaButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
@@ -205,7 +226,8 @@ public class SessioneMagazziniereViewPresenter {
                 ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
                 if (quantitàFieldMod.getText().length() != 0) {
                     sessione.modificaQuantitàArticolo(am, Integer.parseInt(quantitàFieldMod.getText()));
-                }
+                } else
+                    showMessageDialog(getView(), "Il campo \"modifica disponibilità\" non può rimanere vuoto");
                 labelquantitàDisponibile.setText(String.valueOf(am.getDisponibilita()));
             }
         });
@@ -261,39 +283,71 @@ public class SessioneMagazziniereViewPresenter {
                 categoriaAggiungiField.setText("");
                 immagineModificaField.setText("");
                 vecchioFornitoreField.setText("");
+                categoriaModificaField.setText("");
+                nuovoFornitorefield.setText("");
             }
         });
 
         confermaModificheButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                int index = listModificaArticoloMagazzino.getSelectedIndex();
-                ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
-                if (categoriaAggiungiField.getText().length() != 0)
-                    sessione.aggiungiCategoriaArticolo(am, categoriaAggiungiField.getText());
-                if (prodottoModificaField.getText().length() != 0 && categoriaAggiungiField.getText().length() != 0)
-                    sessione.modificaProdottoCategoriaArticolo(am, prodottoModificaField.getText(),
-                            new Categoria(categoriaAggiungiField.getText()));
-                if (produttoreModificaField.getText().length() != 0)
-                    sessione.modificaProduttoreArticolo(am, produttoreModificaField.getText());
-                if (nomeModificaField.getText().length() != 0)
-                    sessione.modificaNomeArticolo(am, nomeModificaField.getText());
-                if (prezzoModificaField.getText().length() != 0)
-                    sessione.modificaPrezzoArticolo(am, Float.parseFloat(prezzoModificaField.getText()));
-                if (fornitoreModificaField.getText().length() != 0)
-                    sessione.aggiungiFornitoreArticolo(am, fornitoreModificaField.getText());
-                if (descrizioneModificaField.getText().length() != 0)
-                    sessione.modificaDescrizioneArticolo(am, descrizioneModificaField.getText());
-                if (immagineModificaField.getText().length() != 0) {
-                    try {
-                        BufferedImage img = ImageIO.read(new File("/home/costantino/Scaricati/Progetto_Softwar_Immagini/" +
-                                immagineModificaField.getText()));
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        ImageIO.write(img, "jpg", baos);
-                        baos.flush();
-                        byte[] imageInByte = baos.toByteArray();
-                        baos.close();
-                        sessione.modificaImmagineArticolo(am, imageInByte);
-                    } catch (IOException e) {
+                if (categoriaAggiungiField.getText().length() == 0 && prodottoModificaField.getText().length() == 0 &&
+                        produttoreModificaField.getText().length() == 0 && nomeModificaField.getText().length() == 0 &&
+                        prezzoModificaField.getText().length() == 0 && fornitoreModificaField.getText().length() == 0 &&
+                        descrizioneModificaField.getText().length() == 0 && immagineModificaField.getText().length() == 0) {
+                    showMessageDialog(getView(), "Nessuna modifica compiuta, tutti i campi sono vuoti");
+                } else {
+                    int index = listModificaArticoloMagazzino.getSelectedIndex();
+                    ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
+                    if (categoriaAggiungiField.getText().length() != 0) {
+                        List<Categoria> listc = sessione.ottieniListaCategoria();
+                        int ind = 0;
+                        for (Categoria cat : listc)
+                            if (cat.getNome().equals(categoriaAggiungiField.getText()))
+                                ind = 10;
+                        if (ind == 0) {
+                            sessione.aggiungiCategoriaArticolo(am, categoriaAggiungiField.getText());
+                            showMessageDialog(getView(), "Modica avvenuta con successo");
+                        } else
+                            showMessageDialog(getView(), "Categoria già presente");
+                    }
+                    if (prodottoModificaField.getText().length() != 0) {
+                        sessione.modificaProdottoArticolo(am, prodottoModificaField.getText());
+                        showMessageDialog(getView(), "Modica avvenuta con successo");
+
+                    }
+                    if (produttoreModificaField.getText().length() != 0) {
+                        sessione.modificaProduttoreArticolo(am, produttoreModificaField.getText());
+                        showMessageDialog(getView(), "Modica avvenuta con successo");
+                    }
+                    if (nomeModificaField.getText().length() != 0) {
+                        sessione.modificaNomeArticolo(am, nomeModificaField.getText());
+                        showMessageDialog(getView(), "Modica avvenuta con successo");
+                    }
+                    if (prezzoModificaField.getText().length() != 0) {
+                        sessione.modificaPrezzoArticolo(am, Float.parseFloat(prezzoModificaField.getText()));
+                        showMessageDialog(getView(), "Modica avvenuta con successo");
+                    }
+                    if (fornitoreModificaField.getText().length() != 0) {
+                        sessione.aggiungiFornitoreArticolo(am, fornitoreModificaField.getText());
+                        showMessageDialog(getView(), "Modica avvenuta con successo");
+                    }
+                    if (descrizioneModificaField.getText().length() != 0) {
+                        sessione.modificaDescrizioneArticolo(am, descrizioneModificaField.getText());
+                        showMessageDialog(getView(), "Modica avvenuta con successo");
+                    }
+                    if (immagineModificaField.getText().length() != 0) {
+                        try {
+                            BufferedImage img = ImageIO.read(new File("/home/costantino/Scaricati/Progetto_Softwar_Immagini/" +
+                                    immagineModificaField.getText()));
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            ImageIO.write(img, "jpg", baos);
+                            baos.flush();
+                            byte[] imageInByte = baos.toByteArray();
+                            baos.close();
+                            sessione.modificaImmagineArticolo(am, imageInByte);
+                            showMessageDialog(getView(), "Modica avvenuta con successo");
+                        } catch (IOException e) {
+                        }
                     }
                 }
             }
@@ -301,17 +355,24 @@ public class SessioneMagazziniereViewPresenter {
 
         modificaFornitoreButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                int index = listModificaArticoloMagazzino.getSelectedIndex();
-                ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
-                sessione.modificaFornitoreArticolo(am, fornitoreModificaField.getText(), vecchioFornitoreField.getText());
+                if (nuovoFornitorefield.getText().length() != 0 && vecchioFornitoreField.getText().length() != 0) {
+                    int index = listModificaArticoloMagazzino.getSelectedIndex();
+                    ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
+                    sessione.modificaFornitoreArticolo(am, nuovoFornitorefield.getText(), vecchioFornitoreField.getText());
+                } else
+                    showMessageDialog(getView(), "I campi \"Vecchio fornitore\" e \"Nuovo fornitore\" non possono" +
+                            " rimanere vuoti");
             }
         });
 
         modificaCategoriaButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                int index = listModificaArticoloMagazzino.getSelectedIndex();
-                ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
-                sessione.modificaCategoriaArticolo(am, categoriaModificaField.getText());
+                if (categoriaModificaField.getText().length() != 0) {
+                    int index = listModificaArticoloMagazzino.getSelectedIndex();
+                    ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
+                    sessione.modificaCategoriaArticolo(am, categoriaModificaField.getText());
+                } else
+                    showMessageDialog(getView(), "Il campo \"Modifica Categoria\" non può rimanere vuoto");
             }
         });
 

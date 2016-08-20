@@ -122,11 +122,20 @@ public class Sistema {
         List<Categoria> listC = articoloMagazzino.getArticolo().getProdotto().getCategorie();
         Categoria cat = new Categoria(nomeCategoria);
         listC.clear();
-        articoloMagazzino.getArticolo().getProdotto().getCategorie().add(cat);
+        int index = -10;
+        for (Categoria cate : ottieniListaCategorie())
+            if (cate.getNome().equals(cat.getNome())) {
+                index = ottieniListaCategorie().indexOf(cate);
+                break;
+            }
+        if (index == -10)
+            articoloMagazzino.getArticolo().getProdotto().getCategorie().add(cat);
+        else
+            articoloMagazzino.getArticolo().getProdotto().getCategorie().add(ottieniListaCategorie().get(index));
         DBInterface.getInstance().save();
     }
 
-    void modificaProdottoCategoriaArticolo(ArticoloMagazzino articoloMagazzino, Prodotto prodotto) {
+    void modificaProdottoArticolo(ArticoloMagazzino articoloMagazzino, Prodotto prodotto) {
         articoloMagazzino.getArticolo().setProdotto(prodotto);
         DBInterface.getInstance().save();
     }
