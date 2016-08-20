@@ -53,7 +53,6 @@ public class SessioneCapoProgettoViewPresenter {
         stampaOrdinePerProgettoButton.setEnabled(false);
         stampaOrdinePerDipendenteButton.setEnabled(false);
         listProgetti.setModel(listModelProg);
-        listProgetti.setSize(100, 100);
         listProgetti.setVisible(true);
         view.setContentPane(rootPanel);
         view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -71,7 +70,6 @@ public class SessioneCapoProgettoViewPresenter {
                 }
                 listDipendenti.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                 listDipendenti.setModel(listModelDip);
-                listDipendenti.setSize(100, 100);
                 labelBudget.setText(String.format("%.2f", prog.getBudget()) + " €");
                 listDipendenti.setVisible(true);
                 textBudget.setVisible(true);
@@ -114,10 +112,16 @@ public class SessioneCapoProgettoViewPresenter {
                 int index = listProgetti.getSelectedIndex();
                 System.out.println(index);
                 Progetto prog = cp.getProgetti().get(index);
-                try {
-                    sessione.stampaOrdineProgetto(prog);
-                } catch (ReportCreationFailedException e) {
-                    showMessageDialog(getView(), "Errore nella stampa degli ordini");
+                if (prog.getOrdini().isEmpty())
+                    showMessageDialog(getView(), "Il seguente progetto non ha nessun ordine a suo carico");
+                else {
+                    try {
+                        sessione.stampaOrdineProgetto(prog);
+                        showMessageDialog(getView(), "Stampa svolta con successo");
+
+                    } catch (ReportCreationFailedException e) {
+                        showMessageDialog(getView(), "Errore nella stampa degli ordini");
+                    }
                 }
             }
         });
@@ -130,10 +134,15 @@ public class SessioneCapoProgettoViewPresenter {
                 System.out.println(indexProg);
                 Progetto prog = cp.getProgetti().get(indexProg);
                 Dipendente dip = prog.getDipendenti().get(indexDip);
-                try {
-                    sessione.stampaOrdineDipendente(dip, prog);
-                } catch (ReportCreationFailedException e) {
-                    showMessageDialog(getView(), "Errore nella stampa degli ordini");
+                if (prog.getOrdini().isEmpty())
+                    showMessageDialog(getView(), "Il dipendente in questione non ha effettuato nessun ordine");
+                else {
+                    try {
+                        sessione.stampaOrdineDipendente(dip, prog);
+                        showMessageDialog(getView(), "Stampa svolta con successo");
+                    } catch (ReportCreationFailedException e) {
+                        showMessageDialog(getView(), "Errore nella stampa degli ordini");
+                    }
                 }
             }
         });

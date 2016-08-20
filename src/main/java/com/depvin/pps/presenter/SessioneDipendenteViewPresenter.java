@@ -32,9 +32,13 @@ public class SessioneDipendenteViewPresenter {
     private JComboBox magazzinoBox;
     private JComboBox progettiBox;
     private JComboBox progettoOrdineBox;
+
     private JList articoloCatList;
     private JList ordineCorrenteList;
     private JList ordiniPendentiList;
+    private JList ordineArticoliNuovoList;
+
+
     private JButton aggiungiArticoloAllOrdineButton;
     private JButton sfogliaCatalogoButton;
     private JButton nuovoOrdineButton;
@@ -44,11 +48,13 @@ public class SessioneDipendenteViewPresenter {
     private JButton modificaQuantitàButton;
     private JButton eliminaArticoloDallOrdineButton;
     private JButton cancellaOrdineButton;
+
     private JTextField catalogoQuantitaField;
     private JTextField ordineQuantitaField;
     private JTextField nomeField;
     private JLabel ordineNomeLabel;
-    private JList ordineArticoliNuovoList;
+    private JLabel prezzoTotaleLabel;
+
     private DefaultListModel listModelArticoliCatalogo;
     private DefaultListModel listModelOrdinePendente;
     private DefaultListModel listModelArticoliOrdineCorrente;
@@ -57,8 +63,8 @@ public class SessioneDipendenteViewPresenter {
         this.sessione = sessione;
         final Dipendente d = sessione.getUtente();
         view = new JFrame("Sessione: " + d.getNome() + " " + d.getCognome());
-        rootPanel.setPreferredSize(new Dimension(950, 700));
-        view.setLocation(250, 100);
+        rootPanel.setPreferredSize(new Dimension(1100, 700));
+        view.setLocation(200, 100);
         view.setContentPane(rootPanel);
         view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         tabbedPane2.setVisible(true);
@@ -71,8 +77,14 @@ public class SessioneDipendenteViewPresenter {
         eliminaArticoloDallOrdineButton.setEnabled(false);
         cancellaOrdineButton.setEnabled(false);
         prodottoBox.setEnabled(false);
+
         for (Categoria cat : sessione.ottieniListaCategorie())
             categoriaBox.addItem(cat.getNome());
+
+        for (Progetto p : d.getProgetti()) {
+            progettoOrdineBox.addItem(p.getNome());
+            progettiBox.addItem(p.getNome());
+        }
 
         view.pack();
 
@@ -102,27 +114,17 @@ public class SessioneDipendenteViewPresenter {
             }
         });
 
-        //Non ancora visionato
-        nuovoOrdineButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (nomeField.getText().length() == 0 || progettoOrdineBox.getSelectedIndex() == -1)
-                    showMessageDialog(getView(), "I campi \"nome ordine\" e \"progetto\" non possono essere lasciati vuoti");
-                else {
-                    int index = progettoOrdineBox.getSelectedIndex();
-                    sessione.aggiungiOrdineProgetto(nomeField.getText(), d.getProgetti().get(index));
-                }
-            }
-        });
-
         progettiBox.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent itemEvent) {
                 int index = progettiBox.getSelectedIndex();
                 Progetto prog = d.getProgetti().get(index);
                 listModelOrdinePendente = new DefaultListModel();
                 for (Ordine o : prog.getOrdini())
-                    listModelOrdinePendente.addElement(o.getNome());
+                    if (o.getDipendente().getNome().equals(d.getNome()))
+                        listModelOrdinePendente.addElement(o.getNome());
                 ordiniPendentiList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                 ordiniPendentiList.setModel(listModelOrdinePendente);
+                ordiniPendentiList.setVisible(true);
             }
         });
 
@@ -166,22 +168,6 @@ public class SessioneDipendenteViewPresenter {
             }
         });
 
-        chiudiOrdineButton1.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                int index = -1;
-                for (Ordine o : d.getOrdini())
-                    if (o.getNome().equals(ordineNomeLabel))
-                        index = d.getOrdini().indexOf(o);
-                Ordine ordine = d.getOrdini().get(index);
-                sessione.confermaOrdine(ordine);
-                try {
-                    sessione.stampaOrdine(ordine);
-                } catch (ReportCreationFailedException e) {
-                    showMessageDialog(getView(), "Errore nella stampa dell'ordine");
-                }
-            }
-        });
-
         eliminaArticoloDallOrdineButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 int index = -1;
@@ -197,18 +183,18 @@ public class SessioneDipendenteViewPresenter {
 
         modificaQuantitàButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                int index = -1;
-                for (Ordine o : d.getOrdini())
-                    if (o.getNome().equals(ordineNomeLabel))
-                        index = d.getOrdini().indexOf(o);
-                Ordine ordine = d.getOrdini().get(index);
-                int indexArt = ordineCorrenteList.getSelectedIndex();
-                ArticoloOrdine ao = ordine.getArticoliOrdine().get(indexArt);
                 if (ordineQuantitaField.getText().length() == 0)
                     showMessageDialog(getView(), "Il campo \"Inserire nuopva quantità\" non può essere lasciato vuoto");
-                else if (ordineQuantitaField.getText().contains(",") || ordineQuantitaField.getText().contains("."))
-                    showMessageDialog(getView(), "La quantità deve essere un numero intero!");
-                else if (ao.getQuantita() >= Integer.parseInt(ordineQuantitaField.getText())) {
+                else if (ordineQuantitaField.getText().contains(",") || ordineQuantitaField.getText().contains(".") || Integer.parseInt(ordineQuantitaField.getText()) < 0)
+                    showMessageDialog(getView(), "La quantità deve essere un numero intero positivo!");
+                else {
+                    int index = 0;
+                    for (Ordine o : d.getOrdini())
+                        if (o.getNome().equals(ordineNomeLabel))
+                            index = d.getOrdini().indexOf(o);
+                    Ordine ordine = d.getOrdini().get(index);
+                    int indexArt = ordineCorrenteList.getSelectedIndex();
+                    ArticoloOrdine ao = ordine.getArticoliOrdine().get(indexArt);
                     ao.setQuantita(Integer.parseInt(ordineQuantitaField.getText()));
                     listModelArticoliOrdineCorrente = new DefaultListModel();
                     for (ArticoloOrdine aor : ordine.getArticoliOrdine()) {
@@ -221,8 +207,49 @@ public class SessioneDipendenteViewPresenter {
             }
         });
 
+        nuovoOrdineButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (nomeField.getText().length() == 0 || progettoOrdineBox.getSelectedIndex() == -1)
+                    showMessageDialog(getView(), "I campi \"nome ordine\" e \"progetto\" non possono essere lasciati vuoti");
+                else {
+                    int index = progettoOrdineBox.getSelectedIndex();
+                    sessione.aggiungiOrdineProgetto(nomeField.getText(), d.getProgetti().get(index));
+                }
+            }
+        });
 
 
+        aggiungiArticoloAllOrdineButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                int indexA = articoloCatList.getSelectedIndex();
+                // TODO: Da continuare quando si avranno gli articoli
+            }
+        });
+
+        ordineCorrenteList.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent listSelectionEvent) {
+                chiudiOrdineButton1.setEnabled(true);
+                eliminaArticoloDallOrdineButton.setEnabled(true);
+                modificaQuantitàButton.setEnabled(true);
+            }
+        });
+
+        chiudiOrdineButton1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                int index = -1;
+                for (Ordine o : d.getOrdini())
+                    if (o.getNome().equals(ordineNomeLabel))
+                        index = d.getOrdini().indexOf(o);
+                Ordine ordine = d.getOrdini().get(index);
+                sessione.confermaOrdine(ordine);
+                try {
+                    sessione.stampaOrdine(ordine);
+                    showMessageDialog(getView(), "Ordine stampato con successo");
+                } catch (ReportCreationFailedException e) {
+                    showMessageDialog(getView(), "Errore nella stampa dell'ordine");
+                }
+            }
+        });
 
     }
 
