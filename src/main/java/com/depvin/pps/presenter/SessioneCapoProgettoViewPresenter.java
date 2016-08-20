@@ -41,8 +41,8 @@ public class SessioneCapoProgettoViewPresenter {
         final CapoProgetto cp = sessione.getUtente();
 
         view = new JFrame("Sessione: " + cp.getNome() + " " + cp.getCognome());
-        rootPanel.setPreferredSize(new Dimension(1000, 600));
-        view.setLocation(180, 50);
+        rootPanel.setPreferredSize(new Dimension(800, 600));
+        view.setLocation(275, 50);
         listModelProg = new DefaultListModel();
         final List<Progetto> progs = cp.getProgetti();
         for (Progetto p : progs) {
@@ -53,6 +53,7 @@ public class SessioneCapoProgettoViewPresenter {
         stampaOrdinePerProgettoButton.setEnabled(false);
         stampaOrdinePerDipendenteButton.setEnabled(false);
         listProgetti.setModel(listModelProg);
+        listProgetti.setSize(100, 100);
         listProgetti.setVisible(true);
         view.setContentPane(rootPanel);
         view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -70,6 +71,7 @@ public class SessioneCapoProgettoViewPresenter {
                 }
                 listDipendenti.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                 listDipendenti.setModel(listModelDip);
+                listDipendenti.setSize(100, 100);
                 labelBudget.setText(String.format("%.2f", prog.getBudget()) + " €");
                 listDipendenti.setVisible(true);
                 textBudget.setVisible(true);
