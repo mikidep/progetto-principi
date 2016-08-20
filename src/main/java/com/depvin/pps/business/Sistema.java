@@ -118,22 +118,11 @@ public class Sistema {
         DBInterface.getInstance().save();
     }
 
-    void modificaCategoriaArticolo(ArticoloMagazzino articoloMagazzino, String nuovaCategoria, String vecchiaCategoria) {
+    void modificaCategoriaArticolo(ArticoloMagazzino articoloMagazzino, String nomeCategoria) {
         List<Categoria> listC = articoloMagazzino.getArticolo().getProdotto().getCategorie();
-        int i = 0;
-        for (Categoria categoria : listC) {
-            if (i == 0)
-                if (categoria.getNome().equals(vecchiaCategoria)) {
-                    List<Prodotto> listP = categoria.getProdotti();
-                    listC.remove(categoria);
-                    Categoria cat = new Categoria(nuovaCategoria);
-                    for (Prodotto p : listP) {
-                        cat.getProdotti().add(p);
-                    }
-                    listC.add(cat);
-                    i += 1;
-                }
-            }
+        Categoria cat = new Categoria(nomeCategoria);
+        listC.clear();
+        articoloMagazzino.getArticolo().getProdotto().getCategorie().add(cat);
         DBInterface.getInstance().save();
     }
 

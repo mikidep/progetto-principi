@@ -46,7 +46,7 @@ public class SessioneMagazziniereViewPresenter {
     private JTextField nomeModificaField;
     private JTextField descrizioneModificaField;
     private JTextField prezzoModificaField;
-    private JTextField categoriaModificaField;
+    private JTextField categoriaAggiungiField;
     private JTextField prodottoModificaField;
     private JTextField produttoreModificaField;
     private JTextField fornitoreModificaField;
@@ -63,7 +63,7 @@ public class SessioneMagazziniereViewPresenter {
     private JButton modificaFornitoreButton;
     private JTextField vecchioFornitoreField;
     private JButton ottieniImmagineButton;
-    private JTextField vecchiaCategoriaField;
+    private JTextField categoriaModificaField;
     private JButton modificaCategoriaButton;
 
 
@@ -250,7 +250,6 @@ public class SessioneMagazziniereViewPresenter {
             }
         });
 
-
         pulisciTuttiICampiButton1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 nomeModificaField.setText("");
@@ -259,8 +258,9 @@ public class SessioneMagazziniereViewPresenter {
                 prodottoModificaField.setText("");
                 produttoreModificaField.setText("");
                 fornitoreModificaField.setText("");
-                categoriaModificaField.setText("");
+                categoriaAggiungiField.setText("");
                 immagineModificaField.setText("");
+                vecchioFornitoreField.setText("");
             }
         });
 
@@ -268,12 +268,11 @@ public class SessioneMagazziniereViewPresenter {
             public void actionPerformed(ActionEvent actionEvent) {
                 int index = listModificaArticoloMagazzino.getSelectedIndex();
                 ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
-                if (categoriaModificaField.getText().length() != 0 && vecchiaCategoriaField.getText().length() == 0)
-                    sessione.aggiungiCategoriaArticolo(am, categoriaModificaField.getText());
-                if (prodottoModificaField.getText().length() != 0 && categoriaModificaField.getText().length() != 0 &&
-                        vecchiaCategoriaField.getText().length() == 0)
-                    sessione.modificaProdottoCategoriaArticolo(am, vecchiaCategoriaField.getText(),
-                            new Categoria(categoriaModificaField.getText()));
+                if (categoriaAggiungiField.getText().length() != 0)
+                    sessione.aggiungiCategoriaArticolo(am, categoriaAggiungiField.getText());
+                if (prodottoModificaField.getText().length() != 0 && categoriaAggiungiField.getText().length() != 0)
+                    sessione.modificaProdottoCategoriaArticolo(am, prodottoModificaField.getText(),
+                            new Categoria(categoriaAggiungiField.getText()));
                 if (produttoreModificaField.getText().length() != 0)
                     sessione.modificaProduttoreArticolo(am, produttoreModificaField.getText());
                 if (nomeModificaField.getText().length() != 0)
@@ -310,13 +309,12 @@ public class SessioneMagazziniereViewPresenter {
 
         modificaCategoriaButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                if (categoriaModificaField.getText().length() != 0 && vecchiaCategoriaField.getText().length() != 0) {
-                    int index = listModificaArticoloMagazzino.getSelectedIndex();
-                    ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
-                    sessione.modificaCategoriaArticolo(am, categoriaModificaField.getText(), vecchiaCategoriaField.getText());
-                }
+                int index = listModificaArticoloMagazzino.getSelectedIndex();
+                ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
+                sessione.modificaCategoriaArticolo(am, categoriaModificaField.getText());
             }
         });
+
     }
 
     public void show() {

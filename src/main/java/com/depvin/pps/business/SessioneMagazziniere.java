@@ -86,8 +86,8 @@ public class SessioneMagazziniere implements Sessione {
         Sistema.getInstance().aggiungiCategoriaArticolo(articoloMagazzino, nomeCategoria);
     }
 
-    public void modificaCategoriaArticolo(ArticoloMagazzino articoloMagazzino, String nuovaCategoria, String vecchiaCategoria) {
-        Sistema.getInstance().modificaCategoriaArticolo(articoloMagazzino, nuovaCategoria, vecchiaCategoria);
+    public void modificaCategoriaArticolo(ArticoloMagazzino articoloMagazzino, String nomeCategoria) {
+        Sistema.getInstance().modificaCategoriaArticolo(articoloMagazzino, nomeCategoria);
     }
 
     public ByteArrayOutputStream stampaArticoliOrdine(String nome, List<ArticoloOrdine> listAO) throws ReportCreationFailedException {
