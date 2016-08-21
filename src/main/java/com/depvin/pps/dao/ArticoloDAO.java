@@ -10,7 +10,7 @@ import java.util.List;
 public class ArticoloDAO {
     public static List<Articolo> getArticoliPerCategoria(Categoria c) {
         return DBInterface.getInstance().getEntityManager()
-                .createQuery("SELECT a FROM Articolo AS a WHERE a.prodotto.categoria.id = :cId", Articolo.class)
+                .createQuery("SELECT a FROM Articolo a JOIN a.prodotto.categorie c WHERE c.id = :cId", Articolo.class)
                 .setParameter("cId", c.getId())
                 .getResultList();
     }
