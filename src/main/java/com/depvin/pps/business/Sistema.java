@@ -362,4 +362,9 @@ public class Sistema {
     List<Articolo> ottieniListaArticoliPerRicerca(String ricerca) {
         return ArticoloDAO.getArticoliPerRicerca(ricerca);
     }
+
+    List<Prodotto> ottieniListaProdottiPerCategoria(Categoria categoria) {
+        return ProdottoDAO.getProdottiPerCategoria(categoria);
+    }
+
 }

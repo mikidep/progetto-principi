@@ -5,6 +5,8 @@ import com.depvin.pps.business.SessioneDipendente;
 import com.depvin.pps.model.*;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
@@ -40,7 +42,6 @@ public class SessioneDipendenteViewPresenter {
 
 
     private JButton aggiungiArticoloAllOrdineButton;
-    private JButton sfogliaCatalogoButton;
     private JButton nuovoOrdineButton;
     private JButton richiediNotificaButton;
     private JButton modificaOrdineButton;
@@ -59,13 +60,14 @@ public class SessioneDipendenteViewPresenter {
     private DefaultListModel listModelArticoliCatalogo;
     private DefaultListModel listModelOrdinePendente;
     private DefaultListModel listModelArticoliOrdineCorrente;
+    private DefaultListModel listModelAppoggio;
 
     public SessioneDipendenteViewPresenter(final SessioneDipendente sessione) {
         this.sessione = sessione;
         final Dipendente d = sessione.getUtente();
         view = new JFrame("Sessione: " + d.getNome() + " " + d.getCognome());
-        rootPanel.setPreferredSize(new Dimension(1100, 700));
-        view.setLocation(200, 100);
+        rootPanel.setPreferredSize(new Dimension(1200, 700));
+        view.setLocation(50, 100);
         view.setContentPane(rootPanel);
         view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         tabbedPane2.setVisible(true);
@@ -73,16 +75,22 @@ public class SessioneDipendenteViewPresenter {
         modificaQuantitàButton.setEnabled(false);
         richiediNotificaButton.setEnabled(false);
         chiudiOrdineButton1.setEnabled(false);
-        sfogliaCatalogoButton.setEnabled(false);
         aggiungiArticoloAllOrdineButton.setEnabled(false);
         eliminaArticoloDallOrdineButton.setEnabled(false);
         cancellaOrdineButton.setEnabled(false);
         prodottoBox.setEnabled(false);
         magazzinoBox.setEnabled(false);
 
+        listModelArticoliCatalogo = new DefaultListModel();
+        listModelArticoliCatalogo.addElement(null);
+        articoloCatList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        articoloCatList.setModel(listModelArticoliCatalogo);
+        articoloCatList.setVisible(true);
+
 
         for (Categoria cat : sessione.ottieniListaCategorie())
             categoriaBox.addItem(cat.getNome());
+        categoriaBox.setSelectedIndex(-1);
 
         for (Progetto p : d.getProgetti()) {
             progettoOrdineBox.addItem(p.getNome());
@@ -95,32 +103,34 @@ public class SessioneDipendenteViewPresenter {
             public void actionPerformed(ActionEvent actionEvent) {
                 prodottoBox.removeAllItems();
                 int index = categoriaBox.getSelectedIndex();
-                for (Prodotto prod : sessione.ottieniListaCategorie().get(index).getProdotti())
+                for (Prodotto prod : sessione.ottieniListaCategorie().get(index).getProdotti()) {
                     prodottoBox.addItem(prod.getNome());
+                    listModelArticoliCatalogo.removeAllElements();
+                }
                 prodottoBox.setEnabled(true);
+                prodottoBox.setSelectedIndex(-1);
             }
         });
 
         prodottoBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                sfogliaCatalogoButton.setEnabled(true);
-            }
-        });
-
-        sfogliaCatalogoButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                articoloCatList.removeAll();
-                listModelArticoliCatalogo = new DefaultListModel();
-                List<Categoria> listC = sessione.ottieniListaCategorie();
-                Categoria c = listC.get(categoriaBox.getSelectedIndex());
-                Prodotto p = c.getProdotti().get(prodottoBox.getSelectedIndex());
-                List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(c);
-                for (Articolo a : listA)
-                    if (a.getProdotto().getNome().equals(p.getNome()))
-                        listModelArticoliCatalogo.addElement(a.getNome());
-                articoloCatList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-                articoloCatList.setModel(listModelArticoliCatalogo);
-                articoloCatList.setVisible(true);
+                if (prodottoBox.getSelectedIndex() != -1) {
+                    listModelArticoliCatalogo = new DefaultListModel();
+                    listModelAppoggio = new DefaultListModel();
+                    List<Categoria> listC = sessione.ottieniListaCategorie();
+                    Categoria categoria = listC.get(categoriaBox.getSelectedIndex());
+                    Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
+                    List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
+                    for (Articolo a : listA)
+                        if (a.getProdotto().getNome().equals(p.getNome())) {
+                            listModelArticoliCatalogo.addElement(a.getNome());
+                            listModelAppoggio.addElement(a.getNome());
+                        }
+                    articoloCatList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+                    articoloCatList.setModel(listModelArticoliCatalogo);
+                    articoloCatList.setVisible(true);
+                } else {
+                }
             }
         });
 
@@ -130,6 +140,59 @@ public class SessioneDipendenteViewPresenter {
                 aggiungiArticoloAllOrdineButton.setEnabled(true);
                 magazzinoBox.setEnabled(true);
             }
+        });
+
+        magazzinoBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                int index = articoloCatList.getSelectedIndex();
+                if (ricercaPerNomeField.getText().length() != 0) {
+                    List<Articolo> listA = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
+                    Articolo a = listA.get(index);
+                    //TODO:Estrarre i magazzini in cui è presente
+                } else {
+                    List<Categoria> listC = sessione.ottieniListaCategorie();
+                    Categoria c = listC.get(categoriaBox.getSelectedIndex());
+                    List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(c);
+                    Prodotto p = c.getProdotti().get(prodottoBox.getSelectedIndex());
+                    List<Articolo> nListA = new ArrayList<Articolo>();
+                    for (Articolo a : listA)
+                        if (a.getProdotto().getNome().equals(p.getNome()))
+                            nListA.add(a);
+                    Articolo a = nListA.get(index);
+                    //TODO:Estrarre i magazzini in cui è presente
+                }
+            }
+        });
+
+        ricercaPerNomeField.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void insertUpdate(DocumentEvent documentEvent) {
+                listModelArticoliCatalogo = new DefaultListModel();
+                listModelArticoliCatalogo.clear();
+                articoloCatList.removeAll();
+                List<Articolo> listA = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
+                for (Articolo a : listA)
+                    listModelArticoliCatalogo.addElement(a.getNome());
+                articoloCatList.setModel(listModelArticoliCatalogo);
+            }
+
+            public void removeUpdate(DocumentEvent documentEvent) {
+                if (ricercaPerNomeField.getText().length() != 0) {
+                    listModelArticoliCatalogo.clear();
+                    articoloCatList.removeAll();
+                    List<Articolo> listA = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
+                    for (Articolo a : listA)
+                        listModelArticoliCatalogo.addElement(a.getNome());
+                    articoloCatList.setModel(listModelArticoliCatalogo);
+                } else {
+                    articoloCatList.setModel(listModelAppoggio);
+                }
+            }
+
+            public void changedUpdate(DocumentEvent documentEvent) {
+
+            }
+
         });
 
         progettiBox.addItemListener(new ItemListener() {

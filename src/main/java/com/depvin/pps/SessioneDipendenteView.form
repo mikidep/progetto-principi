@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="rootPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="10" left="5" bottom="10" right="5"/>
     <constraints>
-      <xy x="20" y="20" width="1210" height="505"/>
+      <xy x="20" y="20" width="1210" height="528"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -44,14 +44,6 @@
                 <properties>
                   <text value="Scegli il Prodotto"/>
                 </properties>
-              </component>
-              <component id="21a5f" class="javax.swing.JList" binding="articoloCatList">
-                <constraints>
-                  <grid row="4" column="0" row-span="6" col-span="2" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="1" use-parent-layout="false">
-                    <preferred-size width="200" height="50"/>
-                  </grid>
-                </constraints>
-                <properties/>
               </component>
               <component id="6f326" class="javax.swing.JButton" binding="nuovoOrdineButton" default-binding="true">
                 <constraints>
@@ -116,16 +108,6 @@
                   </grid>
                 </constraints>
                 <properties/>
-              </component>
-              <component id="5779b" class="javax.swing.JLabel">
-                <constraints>
-                  <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
-                    <preferred-size width="150" height="20"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <text value="Inserire la quantità"/>
-                </properties>
               </component>
               <component id="d75a4" class="javax.swing.JButton" binding="aggiungiArticoloAllOrdineButton" default-binding="true">
                 <constraints>
@@ -211,14 +193,22 @@
                   <text value="Ricerca per nome"/>
                 </properties>
               </component>
-              <component id="44527" class="javax.swing.JButton" binding="sfogliaCatalogoButton">
+              <component id="21a5f" class="javax.swing.JList" binding="articoloCatList">
                 <constraints>
-                  <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false">
-                    <preferred-size width="200" height="20"/>
+                  <grid row="4" column="0" row-span="6" col-span="2" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="1" use-parent-layout="false">
+                    <preferred-size width="300" height="50"/>
+                  </grid>
+                </constraints>
+                <properties/>
+              </component>
+              <component id="5779b" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+                    <preferred-size width="150" height="20"/>
                   </grid>
                 </constraints>
                 <properties>
-                  <text value="Sfoglia Catalogo"/>
+                  <text value="Inserire la quantità"/>
                 </properties>
               </component>
             </children>
