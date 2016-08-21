@@ -54,6 +54,7 @@ public class SessioneDipendenteViewPresenter {
     private JTextField nomeField;
     private JLabel ordineNomeLabel;
     private JLabel prezzoTotaleLabel;
+    private JTextField ricercaPerNomeField;
 
     private DefaultListModel listModelArticoliCatalogo;
     private DefaultListModel listModelOrdinePendente;
@@ -77,6 +78,8 @@ public class SessioneDipendenteViewPresenter {
         eliminaArticoloDallOrdineButton.setEnabled(false);
         cancellaOrdineButton.setEnabled(false);
         prodottoBox.setEnabled(false);
+        magazzinoBox.setEnabled(false);
+
 
         for (Categoria cat : sessione.ottieniListaCategorie())
             categoriaBox.addItem(cat.getNome());
@@ -106,11 +109,26 @@ public class SessioneDipendenteViewPresenter {
 
         sfogliaCatalogoButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
+                articoloCatList.removeAll();
                 listModelArticoliCatalogo = new DefaultListModel();
                 List<Categoria> listC = sessione.ottieniListaCategorie();
                 Categoria c = listC.get(categoriaBox.getSelectedIndex());
                 Prodotto p = c.getProdotti().get(prodottoBox.getSelectedIndex());
-                //TODO: Infarcire con tutti gli articoli trovati (a.getProdotto.equals(p))
+                List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(c);
+                for (Articolo a : listA)
+                    if (a.getProdotto().getNome().equals(p.getNome()))
+                        listModelArticoliCatalogo.addElement(a.getNome());
+                articoloCatList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+                articoloCatList.setModel(listModelArticoliCatalogo);
+                articoloCatList.setVisible(true);
+            }
+        });
+
+        articoloCatList.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent listSelectionEvent) {
+                richiediNotificaButton.setEnabled(true);
+                aggiungiArticoloAllOrdineButton.setEnabled(true);
+                magazzinoBox.setEnabled(true);
             }
         });
 

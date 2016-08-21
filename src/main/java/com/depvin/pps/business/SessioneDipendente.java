@@ -49,4 +49,17 @@ public class SessioneDipendente implements Sessione {
     public List<Categoria> ottieniListaCategorie() {
         return Sistema.getInstance().ottieniListaCategorie();
     }
+
+    public List<Articolo> ottieniListaArticoliPerCategoria(Categoria categoria) {
+        return Sistema.getInstance().ottieniListaArticoliPerCategoria(categoria);
+    }
+
+    public List<Articolo> ottieniListaArticoliPerProdotto(Prodotto prodotto) {
+        return Sistema.getInstance().ottieniListaArticoliPerProdotto(prodotto);
+    }
+
+    public List<Articolo> ottieniListaArticoliPerRicerca(String ricerca) {
+        return Sistema.getInstance().ottieniListaArticoliPerRicerca(ricerca);
+    }
+
 }

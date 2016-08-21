@@ -351,4 +351,15 @@ public class Sistema {
         return ArticoloOrdineDAO.getArticoliOrdinePerMagazzino(magazzino);
     }
 
+    List<Articolo> ottieniListaArticoliPerCategoria(Categoria categoria) {
+        return ArticoloDAO.getArticoliPerCategoria(categoria);
+    }
+
+    List<Articolo> ottieniListaArticoliPerProdotto(Prodotto prodotto) {
+        return ArticoloDAO.getArticoliPerProdotto(prodotto);
+    }
+
+    List<Articolo> ottieniListaArticoliPerRicerca(String ricerca) {
+        return ArticoloDAO.getArticoliPerRicerca(ricerca);
+    }
 }
