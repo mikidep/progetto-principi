@@ -80,6 +80,7 @@ public class SessioneDipendenteViewPresenter {
         cancellaOrdineButton.setEnabled(false);
         prodottoBox.setEnabled(false);
         magazzinoBox.setEnabled(false);
+        catalogoQuantitaField.setEnabled(false);
 
         listModelArticoliCatalogo = new DefaultListModel();
         listModelArticoliCatalogo.addElement(null);
@@ -107,6 +108,7 @@ public class SessioneDipendenteViewPresenter {
                     prodottoBox.addItem(prod.getNome());
                     listModelArticoliCatalogo.removeAllElements();
                 }
+                catalogoQuantitaField.setEnabled(false);
                 prodottoBox.setEnabled(true);
                 prodottoBox.setSelectedIndex(-1);
             }
@@ -136,31 +138,9 @@ public class SessioneDipendenteViewPresenter {
 
         articoloCatList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
+                catalogoQuantitaField.setEnabled(true);
                 richiediNotificaButton.setEnabled(true);
                 aggiungiArticoloAllOrdineButton.setEnabled(true);
-                magazzinoBox.setEnabled(true);
-            }
-        });
-
-        magazzinoBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                int index = articoloCatList.getSelectedIndex();
-                if (ricercaPerNomeField.getText().length() != 0) {
-                    List<Articolo> listA = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
-                    Articolo a = listA.get(index);
-                    //TODO:Estrarre i magazzini in cui è presente
-                } else {
-                    List<Categoria> listC = sessione.ottieniListaCategorie();
-                    Categoria c = listC.get(categoriaBox.getSelectedIndex());
-                    List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(c);
-                    Prodotto p = c.getProdotti().get(prodottoBox.getSelectedIndex());
-                    List<Articolo> nListA = new ArrayList<Articolo>();
-                    for (Articolo a : listA)
-                        if (a.getProdotto().getNome().equals(p.getNome()))
-                            nListA.add(a);
-                    Articolo a = nListA.get(index);
-                    //TODO:Estrarre i magazzini in cui è presente
-                }
             }
         });
 

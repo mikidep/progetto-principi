@@ -34,6 +34,14 @@ public class Sistema {
 
     void aggiungiArticoloMagazzino(ArticoloMagazzino articoloMagazzino, Magazzino magazzino) {
         magazzino.getArticoliMagazzino().add(articoloMagazzino);
+        /*Articolo a = articoloMagazzino.getArticolo();
+        a.getInMagazzino().add(articoloMagazzino);*/
+        DBInterface.getInstance().save();
+    }
+
+    void linkaArticoliMagazzino(ArticoloMagazzino articoloMagazzino, Magazzino magazzino) {
+        Articolo a = articoloMagazzino.getArticolo();
+        a.getInMagazzino().add(articoloMagazzino);
         DBInterface.getInstance().save();
     }
 
@@ -265,8 +273,16 @@ public class Sistema {
         }
     }
 
-    void modificaQuantitàArticolo(ArticoloMagazzino articoloMagazzino, int quantità) {
+    void modificaQuantitàArticolo(ArticoloMagazzino articoloMagazzino, int quantità, Magazzino magazzino) {
         articoloMagazzino.setDisponibilita(quantità);
+        if (quantità == 0) {
+            List<ArticoloMagazzino> listAM = articoloMagazzino.getArticolo().getInMagazzino();
+            int index = -1;
+            for (ArticoloMagazzino am : listAM)
+                if (am.getMagazzino().getNome().equals(magazzino.getNome()))
+                    index = listAM.indexOf(am);
+            listAM.remove(listAM.get(index));
+        }
         DBInterface.getInstance().save();
     }
 
@@ -274,15 +290,6 @@ public class Sistema {
         progetto.getOrdini().add(ordine);
         DBInterface.getInstance().save();
     }
-
-    /*void eliminaArticoloMagazzino(ArticoloMagazzino articoloMagazzino, Magazzino magazzino) {
-        if (articoloMagazzino.getDisponibilita() == 0) {
-            magazzino.getArticoliMagazzino().remove(articoloMagazzino);
-            DBInterface.getInstance().save();
-        }
-        // TODO: Chiamerà il Presenter
-        //Cose molto confuse, si vedrà in seguito
-    }*/// Deve inoltre avvisare il dipendente che il prodotto non sarà più disponibile in quel magazzino
 
     public Sessione login(String username, String password) throws UserNotFoundException, UserLoadingException {
         try {
@@ -365,6 +372,12 @@ public class Sistema {
 
     List<Prodotto> ottieniListaProdottiPerCategoria(Categoria categoria) {
         return ProdottoDAO.getProdottiPerCategoria(categoria);
+    }
+
+    void aggiungiArticoloInArticoloMagazzino(ArticoloMagazzino articoloMagazzino, Magazzino magazzino) {
+        Articolo a = articoloMagazzino.getArticolo();
+        a.getInMagazzino().add(articoloMagazzino);
+        DBInterface.getInstance().save();
     }
 
 }

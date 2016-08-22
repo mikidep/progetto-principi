@@ -21,19 +21,14 @@ public class SessioneMagazziniere implements Sessione {
         return magazziniere;
     }
 
-    /*public void eliminaArticoloMagazzino(ArticoloMagazzino articoloMagazzino) {
-        Magazzino magazzino = getUtente().getMagazzino();
-        Sistema.getInstance().eliminaArticoloMagazzino(articoloMagazzino, magazzino);
-    }//Non implementato*/
-
     public void aggiungiArticoloMagazzino(Articolo articolo, int disponibilità) {
         Magazzino magazzino = getUtente().getMagazzino();
         ArticoloMagazzino articoloMagazzino = new ArticoloMagazzino(magazzino, articolo, disponibilità);
         Sistema.getInstance().aggiungiArticoloMagazzino(articoloMagazzino, magazzino);
     }
 
-    public void modificaQuantitàArticolo(ArticoloMagazzino articoloMagazzino, int quantità) {
-        Sistema.getInstance().modificaQuantitàArticolo(articoloMagazzino, quantità);
+    public void modificaQuantitàArticolo(ArticoloMagazzino articoloMagazzino, int quantità, Magazzino magazzino) {
+        Sistema.getInstance().modificaQuantitàArticolo(articoloMagazzino, quantità, magazzino);
     }
 
     public void modificaNomeArticolo(ArticoloMagazzino articoloMagazzino, String nome) {
@@ -95,4 +90,21 @@ public class SessioneMagazziniere implements Sessione {
         return Sistema.getInstance().ottieniListaCategorie();
     }
 
+    public List<Articolo> ottieniListaArticoli() {
+        List<Categoria> listC = ottieniListaCategoria();
+        List<Articolo> listF = new ArrayList<Articolo>();
+        for (Categoria c : listC)
+            for (Articolo a : Sistema.getInstance().ottieniListaArticoliPerCategoria(c))
+                if (!listF.contains(a))
+                    listF.add(a);
+        return listF;
+    }
+
+    public void aggiungiArticoloInArticoloMagazzino(ArticoloMagazzino articoloMagazzino, Magazzino magazzino) {
+        Sistema.getInstance().aggiungiArticoloInArticoloMagazzino(articoloMagazzino, magazzino);
+    }
+
+    public void linkaArticoliMagazzino(ArticoloMagazzino articoloMagazzino, Magazzino magazzino) {
+        Sistema.getInstance().linkaArticoliMagazzino(articoloMagazzino, magazzino);
+    }
 }
