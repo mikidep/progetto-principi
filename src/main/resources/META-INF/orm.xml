@@ -104,6 +104,7 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
                 </cascade>
             </many-to-one>
             <one-to-many name="inOrdine" target-entity="ArticoloOrdine" mapped-by="articolo"/>
+            <one-to-many name="inMagazzino" target-entity="ArticoloMagazzino" mapped-by="articolo"/>
             <many-to-many name="fornitori">
                 <join-table name="FornitoreArticolo">
                     <join-column name="fornitore"/>

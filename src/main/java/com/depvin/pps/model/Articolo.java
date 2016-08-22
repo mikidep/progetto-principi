@@ -16,6 +16,7 @@ public class Articolo {
     private Produttore produttore;
     private List<Fornitore> fornitori;
     private List<ArticoloOrdine> inOrdine;
+    private List<ArticoloMagazzino> inMagazzino;
 
     public Articolo(String nome, String descrizione, float prezzo, Prodotto prodotto, Produttore produttore, List<Fornitore> fornitori) {
         this.nome = nome;
@@ -84,6 +85,10 @@ public class Articolo {
 
     public List<Fornitore> getFornitori() {
         return fornitori;
+    }
+
+    public List<ArticoloMagazzino> getInMagazzino() {
+        return inMagazzino;
     }
 
     void verificaRichiestePerMagazzino(Magazzino magazzino) {
