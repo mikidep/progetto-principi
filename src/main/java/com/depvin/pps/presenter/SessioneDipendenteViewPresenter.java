@@ -10,15 +10,13 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.util.*;
 import java.util.List;
 
 import static javax.swing.JOptionPane.showMessageDialog;
 
+import java.awt.Color;
 
 /**
  * Created by costantino on 24/05/16.
@@ -56,11 +54,13 @@ public class SessioneDipendenteViewPresenter {
     private JLabel ordineNomeLabel;
     private JLabel prezzoTotaleLabel;
     private JTextField ricercaPerNomeField;
+    private JComboBox magazzinoNonBox;
 
     private DefaultListModel listModelArticoliCatalogo;
     private DefaultListModel listModelOrdinePendente;
     private DefaultListModel listModelArticoliOrdineCorrente;
     private DefaultListModel listModelAppoggio;
+
 
     public SessioneDipendenteViewPresenter(final SessioneDipendente sessione) {
         this.sessione = sessione;
@@ -97,12 +97,17 @@ public class SessioneDipendenteViewPresenter {
             progettoOrdineBox.addItem(p.getNome());
             progettiBox.addItem(p.getNome());
         }
-
         view.pack();
 
         categoriaBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 prodottoBox.removeAllItems();
+                magazzinoBox.setEnabled(false);
+                magazzinoBox.removeAllItems();
+                magazzinoBox.setSelectedIndex(-1);
+                magazzinoNonBox.setEnabled(false);
+                magazzinoNonBox.removeAllItems();
+                magazzinoNonBox.setSelectedIndex(-1);
                 int index = categoriaBox.getSelectedIndex();
                 for (Prodotto prod : sessione.ottieniListaCategorie().get(index).getProdotti()) {
                     prodottoBox.addItem(prod.getNome());
@@ -111,12 +116,62 @@ public class SessioneDipendenteViewPresenter {
                 catalogoQuantitaField.setEnabled(false);
                 prodottoBox.setEnabled(true);
                 prodottoBox.setSelectedIndex(-1);
+                articoloCatList.setEnabled(false);
+            }
+        });
+
+        prodottoBox.addMouseListener(new MouseListener() {
+            public void mouseClicked(MouseEvent mouseEvent) {
+                magazzinoBox.setEnabled(false);
+                magazzinoBox.removeAllItems();
+                magazzinoBox.setSelectedIndex(-1);
+                listModelArticoliCatalogo = new DefaultListModel();
+                articoloCatList.setModel(listModelArticoliCatalogo);
+            }
+
+            public void mousePressed(MouseEvent mouseEvent) {
+                /*magazzinoBox.setEnabled(false);
+                magazzinoBox.removeAllItems();
+                magazzinoBox.setSelectedIndex(-1);
+                listModelArticoliCatalogo = new DefaultListModel();
+                articoloCatList.setModel(listModelArticoliCatalogo);*/
+            }
+
+            public void mouseReleased(MouseEvent mouseEvent) {
+                /*magazzinoBox.setEnabled(false);
+                magazzinoBox.removeAllItems();
+                magazzinoBox.setSelectedIndex(-1);
+                listModelArticoliCatalogo = new DefaultListModel();
+                articoloCatList.setModel(listModelArticoliCatalogo);*/
+            }
+
+            public void mouseEntered(MouseEvent mouseEvent) {
+                /*magazzinoBox.setEnabled(false);
+                magazzinoBox.removeAllItems();
+                magazzinoBox.setSelectedIndex(-1);
+                listModelArticoliCatalogo = new DefaultListModel();
+                articoloCatList.setModel(listModelArticoliCatalogo);*/
+            }
+
+            public void mouseExited(MouseEvent mouseEvent) {
+                /*magazzinoBox.setEnabled(false);
+                magazzinoBox.removeAllItems();
+                magazzinoBox.setSelectedIndex(-1);
+                listModelArticoliCatalogo = new DefaultListModel();
+                articoloCatList.setModel(listModelArticoliCatalogo);*/
             }
         });
 
         prodottoBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (prodottoBox.getSelectedIndex() != -1) {
+                    catalogoQuantitaField.setEnabled(false);
+                    magazzinoBox.setEnabled(false);
+                    magazzinoBox.removeAllItems();
+                    magazzinoBox.setSelectedIndex(-1);
+                    magazzinoNonBox.setEnabled(false);
+                    magazzinoNonBox.removeAllItems();
+                    magazzinoNonBox.setSelectedIndex(-1);
                     listModelArticoliCatalogo = new DefaultListModel();
                     listModelAppoggio = new DefaultListModel();
                     List<Categoria> listC = sessione.ottieniListaCategorie();
@@ -125,22 +180,60 @@ public class SessioneDipendenteViewPresenter {
                     List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
                     for (Articolo a : listA)
                         if (a.getProdotto().getNome().equals(p.getNome())) {
-                            listModelArticoliCatalogo.addElement(a.getNome());
-                            listModelAppoggio.addElement(a.getNome());
+                            listModelArticoliCatalogo.addElement(a.getNome() + "    " + a.getPrezzo());
+                            listModelAppoggio.addElement(a.getNome() + "    " + a.getPrezzo());
                         }
                     articoloCatList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                     articoloCatList.setModel(listModelArticoliCatalogo);
                     articoloCatList.setVisible(true);
+                    articoloCatList.setEnabled(true);
                 } else {
                 }
             }
         });
 
-        articoloCatList.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                catalogoQuantitaField.setEnabled(true);
-                richiediNotificaButton.setEnabled(true);
-                aggiungiArticoloAllOrdineButton.setEnabled(true);
+        articoloCatList.addMouseListener(new MouseListener() {
+            public void mouseClicked(MouseEvent mouseEvent) {
+                try {
+                    magazzinoBox.removeAllItems();
+                    magazzinoNonBox.removeAllItems();
+                    List<Categoria> listC = sessione.ottieniListaCategorie();
+                    Categoria categoria = listC.get(categoriaBox.getSelectedIndex());
+                    Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
+                    List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
+                    List<Articolo> listAAA = new ArrayList<Articolo>();
+                    for (Articolo a : listA)
+                        if (a.getProdotto().getNome().equals(p.getNome()))
+                            listAAA.add(a);
+                    Articolo articolo = listAAA.get(articoloCatList.getSelectedIndex());
+                    List<ArticoloMagazzino> listAM = articolo.getInMagazzino();
+                    riempiMagazzino(listAM);
+                    magazzinoBox.setEnabled(true);
+                    magazzinoBox.setSelectedIndex(-1);
+                    magazzinoNonBox.setEnabled(true);
+                    magazzinoNonBox.setSelectedIndex(-1);
+                    catalogoQuantitaField.setEnabled(true);
+                    aggiungiArticoloAllOrdineButton.setEnabled(true);
+
+                    articoloCatList.clearSelection();
+                } catch (ArrayIndexOutOfBoundsException e) {
+                }
+            }
+
+            public void mousePressed(MouseEvent mouseEvent) {
+
+            }
+
+            public void mouseReleased(MouseEvent mouseEvent) {
+
+            }
+
+            public void mouseEntered(MouseEvent mouseEvent) {
+
+            }
+
+            public void mouseExited(MouseEvent mouseEvent) {
+
             }
         });
 
@@ -312,6 +405,20 @@ public class SessioneDipendenteViewPresenter {
             }
         });
 
+    }
+
+    public void riempiMagazzino(List<ArticoloMagazzino> articoloMagazzinos) {
+        for (ArticoloMagazzino am : articoloMagazzinos) {
+            magazzinoNonBox.setForeground(new Color(0xff0000));
+            magazzinoBox.setForeground(new Color(0x00ff00));
+            if (am.getDisponibilita() > 0) {
+                magazzinoBox.addItem(am.getMagazzino().getNome());
+                System.out.println(am.getDisponibilita());
+            } else {
+                magazzinoNonBox.addItem(am.getMagazzino().getNome());
+                System.out.println(am.getDisponibilita());
+            }
+        }
     }
 
     public void show() {
