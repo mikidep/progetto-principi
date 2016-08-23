@@ -38,8 +38,8 @@ public class SessioneDipendente implements Sessione {
 
     public void aggiungiOrdineProgetto(String nome, Progetto progetto) {
         Ordine o = new Ordine(nome, progetto, getUtente());
-        Sistema.getInstance().aggiungiOrdineProgetto(o, progetto);
         getUtente().getOrdini().add(o);
+        Sistema.getInstance().aggiungiOrdineProgetto(o, progetto);
     }
 
     public ByteArrayOutputStream stampaOrdine(Ordine ordine) throws ReportCreationFailedException {
@@ -66,4 +66,7 @@ public class SessioneDipendente implements Sessione {
         return Sistema.getInstance().ottieniListaProdottiPerCategoria(categoria);
     }
 
+    public void aggiungiArticoloOrdine(ArticoloOrdine articoloOrdine, Ordine ordine) {
+        Sistema.getInstance().aggiungiArticoloOrdine(articoloOrdine, ordine);
+    }
 }

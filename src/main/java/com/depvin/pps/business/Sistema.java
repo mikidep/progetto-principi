@@ -380,4 +380,9 @@ public class Sistema {
         DBInterface.getInstance().save();
     }
 
+    void aggiungiArticoloOrdine(ArticoloOrdine articoloOrdine, Ordine ordine) {
+        ordine.getArticoliOrdine().add(articoloOrdine);
+        DBInterface.getInstance().save();
+    }
+
 }
