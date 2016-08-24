@@ -541,7 +541,6 @@ public class SessioneDipendenteViewPresenter {
             }
         });
 
-        //TODO: Aggiungere il fatto che, se già presente, deve aumentare solo la quantità
         aggiungiArticoloAllOrdineButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (ricercaPerNomeField.getText().length() == 0) {
@@ -577,7 +576,19 @@ public class SessioneDipendenteViewPresenter {
                             innd = d.getOrdini().indexOf(o);
                     ArticoloOrdine ao = new ArticoloOrdine(d.getOrdini().get(innd), articM.getArticolo(),
                             limite, magazzino);
-                    sessione.aggiungiArticoloOrdine(ao, ao.getOrdine());
+                    int max = 0;
+                    int indexAO = 0;
+                    for (ArticoloOrdine aol : d.getOrdini().get(innd).getArticoliOrdine())
+                        if (aol.getArticolo().getNome().equals(ao.getArticolo().getNome()) && magazzino.getNome().equals(aol.getMagazzino().getNome())) {
+                            max = max + 1;
+                            indexAO = d.getOrdini().get(innd).getArticoliOrdine().indexOf(aol);
+                        }
+                    if (max > 0) {
+                        //d.getOrdini().get(innd).getArticoliOrdine().get(indexAO).setQuantita(Integer.parseInt(catalogoQuantitaField.getText()));
+                        sessione.modificaDisponibilitàArticoloOrdine(d.getOrdini().get(innd).getArticoliOrdine().get(indexAO), Integer.parseInt(catalogoQuantitaField.getText()));
+                    } else {
+                        sessione.aggiungiArticoloOrdine(ao, ao.getOrdine());
+                    }
 
                     String newBudget = Float.toString(ao.getArticolo().getPrezzo());
                     newBudget = newBudget.replaceAll(",", ".");
@@ -590,8 +601,11 @@ public class SessioneDipendenteViewPresenter {
                     float totale = 0;
                     for (ArticoloOrdine aos : d.getOrdini().get(innd).getArticoliOrdine())
                         totale = totale + aos.getParziale();
-                    prezzoTotaleLabel.setText(Float.toString(totale));
 
+                    prezzoTotaleLabel.setText(Float.toString(totale));
+                    labelEvadiPrezzo.setText(Float.toString(totale));
+
+                    listModelArticoliOrdineCorrente.clear();
                     listOrdineArticoliNuovo.clear();
                     for (ArticoloOrdine aoos : d.getOrdini().get(innd).getArticoliOrdine()) {
 
@@ -603,8 +617,11 @@ public class SessioneDipendenteViewPresenter {
 
                         listOrdineArticoliNuovo.addElement(aoos.getArticolo().getNome() + "   x " +
                                 aoos.getQuantita() + "     : " + buddget + " €");
+                        listModelArticoliOrdineCorrente.addElement(aoos.getArticolo().getNome() + "   x " +
+                                aoos.getQuantita() + "     : " + buddget + " €");
                     }
                     ordineArticoliNuovoList.setModel(listOrdineArticoliNuovo);
+                    ordineCorrenteList.setModel(listModelArticoliOrdineCorrente);
                 }
             }
         });
