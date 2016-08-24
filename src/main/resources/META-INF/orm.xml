@@ -45,13 +45,13 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
         <discriminator-value>D</discriminator-value>
         <attributes>
             <transient name="listeners"/>
-            <one-to-many name="ordini" target-entity="Ordine" mapped-by="dipendente">
+            <one-to-many name="ordini" target-entity="Ordine" mapped-by="dipendente" fetch="EAGER">
                 <cascade>
                     <cascade-persist/>
                     <cascade-merge/>
                 </cascade>
             </one-to-many>
-            <many-to-many name="progetti" target-entity="Progetto">
+            <many-to-many name="progetti" target-entity="Progetto" fetch="EAGER">
                 <join-table name="DipendentiProgetto">
                     <join-column name="dipendente"/>
                     <inverse-join-column name="progetto"/>
@@ -103,8 +103,8 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
                     <cascade-merge/>
                 </cascade>
             </many-to-one>
-            <one-to-many name="inOrdine" target-entity="ArticoloOrdine" mapped-by="articolo"/>
-            <one-to-many name="inMagazzino" target-entity="ArticoloMagazzino" mapped-by="articolo"/>
+            <one-to-many name="inOrdine" target-entity="ArticoloOrdine" mapped-by="articolo" fetch="EAGER"/>
+            <one-to-many name="inMagazzino" target-entity="ArticoloMagazzino" mapped-by="articolo" fetch="EAGER"/>
             <many-to-many name="fornitori">
                 <join-table name="FornitoreArticolo">
                     <join-column name="fornitore"/>
@@ -201,7 +201,7 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
             <many-to-one name="progetto">
                 <join-column name="progetto"/>
             </many-to-one>
-            <one-to-many name="articoliOrdine" target-entity="ArticoloOrdine" mapped-by="ordine">
+            <one-to-many name="articoliOrdine" target-entity="ArticoloOrdine" mapped-by="ordine" orphan-removal="true">
                 <cascade>
                     <cascade-all/>
                 </cascade>
@@ -277,6 +277,12 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
             </id>
             <!-- nome -->
             <one-to-one name="magazziniere" mapped-by="magazzino"/>
+            <one-to-many name="articoliMagazzino" target-entity="ArticoloMagazzino"
+                         mapped-by="magazzino" orphan-removal="true">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
             <many-to-one name="sede">
                 <join-column name="sede"/>
                 <cascade>
@@ -284,12 +290,6 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
                     <cascade-merge/>
                 </cascade>
             </many-to-one>
-            <one-to-many name="articoliMagazzino" target-entity="ArticoloMagazzino"
-                         mapped-by="magazzino">
-                <cascade>
-                    <cascade-all/>
-                </cascade>
-            </one-to-many>
         </attributes>
     </entity>
 
