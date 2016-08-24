@@ -84,6 +84,7 @@ public class SessioneDipendenteViewPresenter {
         cancellaOrdineButton.setEnabled(false);
         prodottoBox.setEnabled(false);
         magazzinoBox.setEnabled(false);
+        magazzinoNonBox.setEnabled(false);
         catalogoQuantitaField.setEnabled(false);
         abilitaNuovoOrdineButton.setEnabled(false);
 
@@ -110,6 +111,9 @@ public class SessioneDipendenteViewPresenter {
             progettoOrdineBox.addItem(p.getNome());
             progettiBox.addItem(p.getNome());
         }
+
+        final List<Categoria> listCategoria = sessione.ottieniListaCategorie();
+
         progettiBox.setSelectedIndex(-1);
         progettoOrdineBox.setSelectedIndex(-1);
         view.pack();
@@ -128,7 +132,7 @@ public class SessioneDipendenteViewPresenter {
                 magazzinoNonBox.removeAllItems();
                 magazzinoNonBox.setSelectedIndex(-1);
                 int index = categoriaBox.getSelectedIndex();
-                for (Prodotto prod : sessione.ottieniListaCategorie().get(index).getProdotti()) {
+                for (Prodotto prod : listCategoria.get(index).getProdotti()) {
                     prodottoBox.addItem(prod.getNome());
                     listModelArticoliCatalogo.removeAllElements();
                 }
@@ -184,8 +188,7 @@ public class SessioneDipendenteViewPresenter {
                     listModelArticoliCatalogo.clear();
                     listModelAppoggio.clear();
 
-                    List<Categoria> listC = sessione.ottieniListaCategorie();
-                    Categoria categoria = listC.get(categoriaBox.getSelectedIndex());
+                    Categoria categoria = listCategoria.get(categoriaBox.getSelectedIndex());
                     Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
                     List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
                     for (Articolo a : listA)
@@ -215,8 +218,7 @@ public class SessioneDipendenteViewPresenter {
                     quantitàMagazzinoLabel.setText("");
                     magazzinoBox.removeAllItems();
                     magazzinoNonBox.removeAllItems();
-                    List<Categoria> listC = sessione.ottieniListaCategorie();
-                    Categoria categoria = listC.get(categoriaBox.getSelectedIndex());
+                    Categoria categoria = listCategoria.get(categoriaBox.getSelectedIndex());
                     Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
                     List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
                     List<Articolo> listAAA = new ArrayList<Articolo>();
@@ -291,8 +293,16 @@ public class SessioneDipendenteViewPresenter {
                 articoloCatList.removeAll();
                 List<Articolo> listA = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
                 for (Articolo a : listA)
-                    listModelArticoliCatalogo.addElement(a.getNome());
+                    listModelArticoliCatalogo.addElement(a.getNome() + "      " + a.getPrezzo() + " €");
                 articoloCatList.setModel(listModelArticoliCatalogo);
+                magazzinoBox.setEnabled(false);
+                magazzinoBox.removeAllItems();
+                magazzinoBox.setSelectedIndex(-1);
+                magazzinoNonBox.setEnabled(false);
+                magazzinoNonBox.removeAllItems();
+                magazzinoNonBox.setSelectedIndex(-1);
+                aggiungiArticoloAllOrdineButton.setEnabled(false);
+                catalogoQuantitaField.setText("");
             }
 
             public void removeUpdate(DocumentEvent documentEvent) {
@@ -302,8 +312,16 @@ public class SessioneDipendenteViewPresenter {
                     articoloCatList.removeAll();
                     List<Articolo> listA = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
                     for (Articolo a : listA)
-                        listModelArticoliCatalogo.addElement(a.getNome());
+                        listModelArticoliCatalogo.addElement(a.getNome() + "      " + a.getPrezzo() + " €");
                     articoloCatList.setModel(listModelArticoliCatalogo);
+                    magazzinoBox.setEnabled(false);
+                    magazzinoBox.removeAllItems();
+                    magazzinoBox.setSelectedIndex(-1);
+                    magazzinoNonBox.setEnabled(false);
+                    magazzinoNonBox.removeAllItems();
+                    magazzinoNonBox.setSelectedIndex(-1);
+                    aggiungiArticoloAllOrdineButton.setEnabled(false);
+                    catalogoQuantitaField.setText("");
                 } else {
                     articoloCatList.setModel(listModelAppoggio);
                     richiediNotificaButton.setEnabled(false);
@@ -320,8 +338,7 @@ public class SessioneDipendenteViewPresenter {
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
                     quantitàMagazzinoLabel.setText("");
-                    List<Categoria> listC = sessione.ottieniListaCategorie();
-                    Categoria categoria = listC.get(categoriaBox.getSelectedIndex());
+                    Categoria categoria = listCategoria.get(categoriaBox.getSelectedIndex());
                     Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
                     List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
                     List<Articolo> listAAA = new ArrayList<Articolo>();
@@ -435,7 +452,13 @@ public class SessioneDipendenteViewPresenter {
                 prezzoTotaleLabel.setText(Float.toString(totale));
 
                 prodottoBox.removeAllItems();
+
+                for (Prodotto p : listCategoria.get(categoriaBox.getSelectedIndex()).getProdotti())
+                    prodottoBox.addItem(p.getNome());
                 prodottoBox.setSelectedIndex(-1);
+
+                listModelArticoliCatalogo.clear();
+                articoloCatList.setModel(listModelArticoliCatalogo);
 
                 labelEvadiPrezzo.setText(Float.toString(totale) + " €");
             }
@@ -457,7 +480,6 @@ public class SessioneDipendenteViewPresenter {
                 int indexArt = ordineCorrenteList.getSelectedIndex();
                 ArticoloOrdine ao = ordine.getArticoliOrdine().get(indexArt);
                 sessione.rimuoviArticoloOrdine(ordine, ao);
-                //TODO: Rimuovere per bene gli articoli dall'ordine
                 listOrdineArticoliNuovo.clear();
                 listModelArticoliOrdineCorrente = new DefaultListModel();
                 float app = 0;
@@ -543,16 +565,20 @@ public class SessioneDipendenteViewPresenter {
 
         aggiungiArticoloAllOrdineButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
+                Articolo articolo = null;
                 if (ricercaPerNomeField.getText().length() == 0) {
-                    List<Categoria> listC = sessione.ottieniListaCategorie();
-                    Categoria categoria = listC.get(categoriaBox.getSelectedIndex());
+                    Categoria categoria = listCategoria.get(categoriaBox.getSelectedIndex());
                     Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
                     List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
                     List<Articolo> listAAA = new ArrayList<Articolo>();
                     for (Articolo a : listA)
                         if (a.getProdotto().getNome().equals(p.getNome()))
                             listAAA.add(a);
-                    Articolo articolo = listAAA.get(articoloCatList.getSelectedIndex());
+                    articolo = listAAA.get(articoloCatList.getSelectedIndex());
+                } else {
+                    List<Articolo> listArtcl = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
+                    articolo = listArtcl.get(articoloCatList.getSelectedIndex());
+                }
                     List<ArticoloMagazzino> listAM = articolo.getInMagazzino();
                     int index = magazzinoBox.getSelectedIndex();
                     List<Magazzino> listMa = new ArrayList<Magazzino>();
@@ -584,7 +610,6 @@ public class SessioneDipendenteViewPresenter {
                             indexAO = d.getOrdini().get(innd).getArticoliOrdine().indexOf(aol);
                         }
                     if (max > 0) {
-                        //d.getOrdini().get(innd).getArticoliOrdine().get(indexAO).setQuantita(Integer.parseInt(catalogoQuantitaField.getText()));
                         sessione.modificaDisponibilitàArticoloOrdine(d.getOrdini().get(innd).getArticoliOrdine().get(indexAO), Integer.parseInt(catalogoQuantitaField.getText()));
                     } else {
                         sessione.aggiungiArticoloOrdine(ao, ao.getOrdine());
@@ -622,7 +647,7 @@ public class SessioneDipendenteViewPresenter {
                     }
                     ordineArticoliNuovoList.setModel(listOrdineArticoliNuovo);
                     ordineCorrenteList.setModel(listModelArticoliOrdineCorrente);
-                }
+
             }
         });
 
