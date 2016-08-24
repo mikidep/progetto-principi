@@ -165,7 +165,7 @@ public class SessioneDipendenteViewPresenter {
 
         prodottoBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                if (prodottoBox.getSelectedIndex() != -1) {
+                if (prodottoBox.getSelectedIndex() != -1 && ricercaPerNomeField.getText().length() == 0) {
 
                     listModelArticoliCatalogo.clear();
                     articoloCatList.setModel(listModelArticoliCatalogo);
@@ -202,6 +202,29 @@ public class SessioneDipendenteViewPresenter {
                     articoloCatList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                     articoloCatList.setModel(listModelArticoliCatalogo);
                     articoloCatList.setVisible(true);
+                    articoloCatList.setEnabled(true);
+                } else if (prodottoBox.getSelectedIndex() != -1 && ricercaPerNomeField.getText().length() != 0) {
+
+                    listModelArticoliCatalogo.clear();
+                    articoloCatList.setModel(listModelArticoliCatalogo);
+                    richiediNotificaButton.setEnabled(false);
+                    quantitàMagazzinoLabel.setText("");
+                    catalogoQuantitaField.setEnabled(false);
+                    articoloCatList.removeAll();
+
+                    List<Articolo> listA = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
+                    for (Articolo a : listA)
+                        listModelArticoliCatalogo.addElement(a.getNome() + "      " + a.getPrezzo() + " €");
+                    articoloCatList.setModel(listModelArticoliCatalogo);
+
+                    magazzinoBox.setEnabled(false);
+                    magazzinoBox.removeAllItems();
+                    magazzinoBox.setSelectedIndex(-1);
+                    magazzinoNonBox.setEnabled(false);
+                    magazzinoNonBox.removeAllItems();
+                    magazzinoNonBox.setSelectedIndex(-1);
+                    aggiungiArticoloAllOrdineButton.setEnabled(false);
+                    catalogoQuantitaField.setText("");
                     articoloCatList.setEnabled(true);
                 } else {
                 }
@@ -299,6 +322,7 @@ public class SessioneDipendenteViewPresenter {
                 magazzinoNonBox.setSelectedIndex(-1);
                 aggiungiArticoloAllOrdineButton.setEnabled(false);
                 catalogoQuantitaField.setText("");
+                articoloCatList.setEnabled(true);
             }
 
             public void removeUpdate(DocumentEvent documentEvent) {
@@ -318,8 +342,10 @@ public class SessioneDipendenteViewPresenter {
                     magazzinoNonBox.setSelectedIndex(-1);
                     aggiungiArticoloAllOrdineButton.setEnabled(false);
                     catalogoQuantitaField.setText("");
+                    articoloCatList.setEnabled(true);
                 } else {
                     articoloCatList.setModel(listModelAppoggio);
+                    articoloCatList.setEnabled(true);
                     richiediNotificaButton.setEnabled(false);
                 }
             }
