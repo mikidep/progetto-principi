@@ -75,7 +75,7 @@
               </component>
               <component id="de53c" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="13" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="13" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <text value="Prezzo totale"/>
@@ -127,7 +127,7 @@
               </component>
               <component id="d75a4" class="javax.swing.JButton" binding="aggiungiArticoloAllOrdineButton" default-binding="true">
                 <constraints>
-                  <grid row="14" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="1" use-parent-layout="false">
+                  <grid row="14" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false">
                     <preferred-size width="250" height="20"/>
                   </grid>
                 </constraints>
@@ -259,7 +259,7 @@
               </component>
               <component id="a8c47" class="javax.swing.JButton" binding="abilitaNuovoOrdineButton" default-binding="true">
                 <constraints>
-                  <grid row="3" column="3" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="3" column="3" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <text value="Abilita nuovo Ordine"/>
@@ -267,7 +267,7 @@
               </component>
             </children>
           </grid>
-          <grid id="316dd" layout-manager="GridLayoutManager" row-count="3" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="316dd" layout-manager="GridLayoutManager" row-count="5" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <tabbedpane title="Ordini Pendenti"/>
@@ -277,7 +277,7 @@
             <children>
               <component id="b63ab" class="javax.swing.JButton" binding="cancellaOrdineButton" default-binding="true">
                 <constraints>
-                  <grid row="1" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="1" use-parent-layout="false">
+                  <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="1" use-parent-layout="false">
                     <preferred-size width="150" height="20"/>
                   </grid>
                 </constraints>
@@ -287,7 +287,7 @@
               </component>
               <component id="e3236" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
                     <preferred-size width="150" height="20"/>
                   </grid>
                 </constraints>
@@ -297,7 +297,7 @@
               </component>
               <component id="60a29" class="javax.swing.JButton" binding="modificaOrdineButton" default-binding="true">
                 <constraints>
-                  <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="1" use-parent-layout="false">
+                  <grid row="3" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="1" use-parent-layout="false">
                     <preferred-size width="150" height="20"/>
                   </grid>
                 </constraints>
@@ -307,7 +307,7 @@
               </component>
               <component id="19c7a" class="javax.swing.JList" binding="ordiniPendentiList">
                 <constraints>
-                  <grid row="0" column="0" row-span="3" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                  <grid row="0" column="0" row-span="5" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
                     <preferred-size width="100" height="50"/>
                   </grid>
                 </constraints>
@@ -317,25 +317,35 @@
               </component>
               <component id="7813d" class="javax.swing.JComboBox" binding="progettiBox">
                 <constraints>
-                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="0" fill="1" indent="1" use-parent-layout="false">
+                  <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="0" fill="1" indent="1" use-parent-layout="false">
                     <preferred-size width="70" height="15"/>
                   </grid>
                 </constraints>
                 <properties/>
               </component>
+              <vspacer id="8a135">
+                <constraints>
+                  <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </vspacer>
+              <vspacer id="11b6f">
+                <constraints>
+                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </vspacer>
             </children>
           </grid>
-          <grid id="d40a8" layout-manager="GridLayoutManager" row-count="5" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="d40a8" layout-manager="GridLayoutManager" row-count="8" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <tabbedpane title="Ordine Corrente"/>
+              <tabbedpane title="Evadi Ordine"/>
             </constraints>
             <properties/>
             <border type="none"/>
             <children>
               <component id="c25f5" class="javax.swing.JList" binding="ordineCorrenteList">
                 <constraints>
-                  <grid row="1" column="0" row-span="4" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                  <grid row="1" column="0" row-span="7" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
                     <preferred-size width="238" height="50"/>
                   </grid>
                 </constraints>
@@ -351,7 +361,7 @@
               </component>
               <component id="778f6" class="javax.swing.JButton" binding="eliminaArticoloDallOrdineButton" default-binding="true">
                 <constraints>
-                  <grid row="3" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="1" use-parent-layout="false">
+                  <grid row="5" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="1" use-parent-layout="false">
                     <preferred-size width="225" height="20"/>
                   </grid>
                 </constraints>
@@ -361,7 +371,7 @@
               </component>
               <component id="9cdb5" class="javax.swing.JButton" binding="modificaQuantitàButton" default-binding="true">
                 <constraints>
-                  <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="1" use-parent-layout="false">
+                  <grid row="4" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="1" use-parent-layout="false">
                     <preferred-size width="225" height="20"/>
                   </grid>
                 </constraints>
@@ -371,7 +381,7 @@
               </component>
               <component id="ed01e" class="javax.swing.JButton" binding="chiudiOrdineButton1" default-binding="true">
                 <constraints>
-                  <grid row="4" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="1" use-parent-layout="false">
+                  <grid row="6" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="1" use-parent-layout="false">
                     <preferred-size width="225" height="20"/>
                   </grid>
                 </constraints>
@@ -381,7 +391,7 @@
               </component>
               <component id="a333" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+                  <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
                     <preferred-size width="200" height="20"/>
                   </grid>
                 </constraints>
@@ -391,7 +401,7 @@
               </component>
               <component id="d27b9" class="javax.swing.JTextField" binding="ordineQuantitaField">
                 <constraints>
-                  <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="1" use-parent-layout="false">
+                  <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="1" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
@@ -399,6 +409,36 @@
                   <text value=""/>
                 </properties>
               </component>
+              <component id="a39c8" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+                    <preferred-size width="238" height="50"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <text value="Prezzo totale"/>
+                </properties>
+              </component>
+              <component id="db2e5" class="javax.swing.JLabel" binding="labelEvadiPrezzo">
+                <constraints>
+                  <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+                    <preferred-size width="238" height="50"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <text value=""/>
+                </properties>
+              </component>
+              <vspacer id="b3e64">
+                <constraints>
+                  <grid row="7" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </vspacer>
+              <vspacer id="d1aa6">
+                <constraints>
+                  <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </vspacer>
             </children>
           </grid>
         </children>

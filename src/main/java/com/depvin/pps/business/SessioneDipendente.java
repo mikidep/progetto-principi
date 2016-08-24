@@ -69,4 +69,9 @@ public class SessioneDipendente implements Sessione {
     public void aggiungiArticoloOrdine(ArticoloOrdine articoloOrdine, Ordine ordine) {
         Sistema.getInstance().aggiungiArticoloOrdine(articoloOrdine, ordine);
     }
+
+    public void modificaDisponibilitàArticoloOrdine(ArticoloOrdine articoloOrdine, int disponibilità) {
+        Sistema.getInstance().modificaDisponibilitàArticoloOrdine(articoloOrdine, disponibilità);
+    }
+
 }

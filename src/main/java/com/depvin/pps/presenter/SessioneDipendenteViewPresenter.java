@@ -57,6 +57,7 @@ public class SessioneDipendenteViewPresenter {
     private JComboBox magazzinoNonBox;
     private JLabel quantitàMagazzinoLabel;
     private JLabel nuovoOrdineLabel;
+    private JLabel labelEvadiPrezzo;
 
     private DefaultListModel listModelArticoliCatalogo;
     private DefaultListModel listModelOrdinePendente;
@@ -70,7 +71,7 @@ public class SessioneDipendenteViewPresenter {
         final Dipendente d = sessione.getUtente();
         view = new JFrame("Sessione: " + d.getNome() + " " + d.getCognome());
         rootPanel.setPreferredSize(new Dimension(1200, 700));
-        view.setLocation(0, 100);
+        view.setLocation(80, 0);
         view.setContentPane(rootPanel);
         view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         tabbedPane2.setVisible(true);
@@ -189,8 +190,15 @@ public class SessioneDipendenteViewPresenter {
                     List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
                     for (Articolo a : listA)
                         if (a.getProdotto().getNome().equals(p.getNome())) {
-                            listModelArticoliCatalogo.addElement(a.getNome() + "    " + a.getPrezzo());
-                            listModelAppoggio.addElement(a.getNome() + "    " + a.getPrezzo());
+
+                            String newBudget = Float.toString(a.getPrezzo());
+                            newBudget = newBudget.replaceAll(",", ".");
+                            if (!newBudget.contains("."))
+                                newBudget = newBudget + ".00";
+                            float budget = Float.parseFloat(newBudget);
+
+                            listModelArticoliCatalogo.addElement(a.getNome() + "       " + budget + " €");
+                            listModelAppoggio.addElement(a.getNome() + "       " + budget + " €");
                         }
                     articoloCatList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                     articoloCatList.setModel(listModelArticoliCatalogo);
@@ -399,8 +407,15 @@ public class SessioneDipendenteViewPresenter {
                 Ordine ord = prog.getOrdini().get(indexOrd);
                 listModelArticoliOrdineCorrente = new DefaultListModel();
                 for (ArticoloOrdine ao : ord.getArticoliOrdine()) {
-                    listModelArticoliOrdineCorrente.addElement(ao.getArticolo().getNome() + "   x " + ao.getQuantita() +
-                            "   : " + ao.getParziale());
+
+                    String newBudget = Float.toString(ao.getArticolo().getPrezzo());
+                    newBudget = newBudget.replaceAll(",", ".");
+                    if (!newBudget.contains("."))
+                        newBudget = newBudget + ".00";
+                    float budget = Float.parseFloat(newBudget);
+
+                    listModelArticoliOrdineCorrente.addElement(ao.getArticolo().getNome() + "     x " + ao.getQuantita() +
+                            "     : " + budget + " €");
                 }
                 ordineCorrenteList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                 ordineArticoliNuovoList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -418,6 +433,11 @@ public class SessioneDipendenteViewPresenter {
                 for (ArticoloOrdine aos : ord.getArticoliOrdine())
                     totale = totale + aos.getParziale();
                 prezzoTotaleLabel.setText(Float.toString(totale));
+
+                prodottoBox.removeAllItems();
+                prodottoBox.setSelectedIndex(-1);
+
+                labelEvadiPrezzo.setText(Float.toString(totale) + " €");
             }
         });
 
@@ -431,37 +451,79 @@ public class SessioneDipendenteViewPresenter {
             public void actionPerformed(ActionEvent actionEvent) {
                 int index = -1;
                 for (Ordine o : d.getOrdini())
-                    if (o.getNome().equals(ordineNomeLabel))
+                    if (o.getNome().equals(ordineNomeLabel.getText()))
                         index = d.getOrdini().indexOf(o);
                 Ordine ordine = d.getOrdini().get(index);
                 int indexArt = ordineCorrenteList.getSelectedIndex();
                 ArticoloOrdine ao = ordine.getArticoliOrdine().get(indexArt);
                 sessione.rimuoviArticoloOrdine(ordine, ao);
+                //TODO: Rimuovere per bene gli articoli dall'ordine
+                listOrdineArticoliNuovo.clear();
+                listModelArticoliOrdineCorrente = new DefaultListModel();
+                float app = 0;
+                for (ArticoloOrdine aor : ordine.getArticoliOrdine()) {
+
+                    String newBudget = Float.toString(aor.getArticolo().getPrezzo());
+                    newBudget = newBudget.replaceAll(",", ".");
+                    if (!newBudget.contains("."))
+                        newBudget = newBudget + ".00";
+                    float budget = Float.parseFloat(newBudget);
+
+                    listModelArticoliOrdineCorrente.addElement(aor.getArticolo().getNome() + "     x " + aor.getQuantita() +
+                            "     : " + budget + " €");
+                    listOrdineArticoliNuovo.addElement(aor.getArticolo().getNome() + "     x " + aor.getQuantita() +
+                            "     : " + budget + " €");
+                    app = app + (budget * aor.getQuantita());
+
+                }
+                labelEvadiPrezzo.setText(Float.toString(app) + " €");
+                prezzoTotaleLabel.setText(Float.toString(app) + " €");
+
+                ordineCorrenteList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+                ordineCorrenteList.setModel(listModelArticoliOrdineCorrente);
+                ordineArticoliNuovoList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+                ordineArticoliNuovoList.setModel(listOrdineArticoliNuovo);
             }
         });
 
         modificaQuantitàButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (ordineQuantitaField.getText().length() == 0)
-                    showMessageDialog(getView(), "Il campo \"Inserire nuopva quantità\" non può essere lasciato vuoto");
+                    showMessageDialog(getView(), "Il campo \"Inserire nuoova quantità\" non può essere lasciato vuoto");
                 else if (ordineQuantitaField.getText().contains(",") || ordineQuantitaField.getText().contains(".") || Integer.parseInt(ordineQuantitaField.getText()) < 0)
                     showMessageDialog(getView(), "La quantità deve essere un numero intero positivo!");
                 else {
                     int index = 0;
                     for (Ordine o : d.getOrdini())
-                        if (o.getNome().equals(ordineNomeLabel))
+                        if (o.getNome().equals(ordineNomeLabel.getText()))
                             index = d.getOrdini().indexOf(o);
                     Ordine ordine = d.getOrdini().get(index);
                     int indexArt = ordineCorrenteList.getSelectedIndex();
                     ArticoloOrdine ao = ordine.getArticoliOrdine().get(indexArt);
-                    ao.setQuantita(Integer.parseInt(ordineQuantitaField.getText()));
+                    sessione.modificaDisponibilitàArticoloOrdine(ao, Integer.parseInt(ordineQuantitaField.getText()));
                     listModelArticoliOrdineCorrente = new DefaultListModel();
+                    listOrdineArticoliNuovo.clear();
+                    float app = 0;
                     for (ArticoloOrdine aor : ordine.getArticoliOrdine()) {
-                        listModelArticoliOrdineCorrente.addElement(aor.getArticolo().getNome() + " " + aor.getQuantita() +
-                                " " + aor.getParziale());
+
+                        String newBudget = Float.toString(aor.getArticolo().getPrezzo());
+                        newBudget = newBudget.replaceAll(",", ".");
+                        if (!newBudget.contains("."))
+                            newBudget = newBudget + ".00";
+                        float budget = Float.parseFloat(newBudget);
+
+                        listModelArticoliOrdineCorrente.addElement(aor.getArticolo().getNome() + "     x " + aor.getQuantita() +
+                                "     : " + budget + " €");
+                        listOrdineArticoliNuovo.addElement(aor.getArticolo().getNome() + "     x " + aor.getQuantita() +
+                                "     : " + budget + " €");
+                        app = app + (budget * aor.getQuantita());
                     }
+                    labelEvadiPrezzo.setText(Float.toString(app) + " €");
+                    prezzoTotaleLabel.setText(Float.toString(app) + " €");
                     ordineCorrenteList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+                    ordineArticoliNuovoList.setModel(listOrdineArticoliNuovo);
                     ordineCorrenteList.setModel(listModelArticoliOrdineCorrente);
+                    modificaQuantitàButton.setEnabled(false);
                 }
             }
         });
@@ -479,6 +541,7 @@ public class SessioneDipendenteViewPresenter {
             }
         });
 
+        //TODO: Aggiungere il fatto che, se già presente, deve aumentare solo la quantità
         aggiungiArticoloAllOrdineButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (ricercaPerNomeField.getText().length() == 0) {
@@ -515,17 +578,32 @@ public class SessioneDipendenteViewPresenter {
                     ArticoloOrdine ao = new ArticoloOrdine(d.getOrdini().get(innd), articM.getArticolo(),
                             limite, magazzino);
                     sessione.aggiungiArticoloOrdine(ao, ao.getOrdine());
-                    listOrdineArticoliNuovo.addElement(ao.getArticolo().getNome() + "   x " +
-                            limite + "    : " + ao.getParziale());
+
+                    String newBudget = Float.toString(ao.getArticolo().getPrezzo());
+                    newBudget = newBudget.replaceAll(",", ".");
+                    if (!newBudget.contains("."))
+                        newBudget = newBudget + ".00";
+                    float budget = Float.parseFloat(newBudget);
+
+                    listOrdineArticoliNuovo.addElement(ao.getArticolo().getNome() + "     x " +
+                            limite + "     : " + budget + " €");
                     float totale = 0;
                     for (ArticoloOrdine aos : d.getOrdini().get(innd).getArticoliOrdine())
                         totale = totale + aos.getParziale();
                     prezzoTotaleLabel.setText(Float.toString(totale));
 
                     listOrdineArticoliNuovo.clear();
-                    for (ArticoloOrdine aoos : d.getOrdini().get(innd).getArticoliOrdine())
+                    for (ArticoloOrdine aoos : d.getOrdini().get(innd).getArticoliOrdine()) {
+
+                        String newwBudget = Float.toString(aoos.getArticolo().getPrezzo());
+                        newwBudget = newwBudget.replaceAll(",", ".");
+                        if (!newwBudget.contains("."))
+                            newwBudget = newwBudget + ".00";
+                        float buddget = Float.parseFloat(newwBudget);
+
                         listOrdineArticoliNuovo.addElement(aoos.getArticolo().getNome() + "   x " +
-                                aoos.getQuantita() + "     : " + aoos.getParziale());
+                                aoos.getQuantita() + "     : " + buddget + " €");
+                    }
                     ordineArticoliNuovoList.setModel(listOrdineArticoliNuovo);
                 }
             }

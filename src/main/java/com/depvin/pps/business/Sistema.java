@@ -53,6 +53,7 @@ public class Sistema {
 
     void rimuoviArticoloOrdine(Ordine ordine, ArticoloOrdine articoloOrdine) {
         ordine.getArticoliOrdine().remove(articoloOrdine);
+        articoloOrdine.setMagazzino(null);
         DBInterface.getInstance().save();
     }
 
@@ -382,6 +383,11 @@ public class Sistema {
 
     void aggiungiArticoloOrdine(ArticoloOrdine articoloOrdine, Ordine ordine) {
         ordine.getArticoliOrdine().add(articoloOrdine);
+        DBInterface.getInstance().save();
+    }
+
+    void modificaDisponibilitàArticoloOrdine(ArticoloOrdine articoloOrdine, int disponibilità) {
+        articoloOrdine.setQuantita(disponibilità);
         DBInterface.getInstance().save();
     }
 
