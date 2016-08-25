@@ -97,7 +97,8 @@ public class SessioneDipendenteViewPresenter {
         articoloCatList.setModel(listModelArticoliCatalogo);
         articoloCatList.setVisible(true);
 
-        listModelArticoliCatalogo = new DefaultListModel();
+        listModelArticoliOrdineCorrente = new DefaultListModel();
+        listModelOrdinePendente = new DefaultListModel();
         listModelAppoggio = new DefaultListModel();
 
         for (Categoria cat : sessione.ottieniListaCategorie())
@@ -307,7 +308,6 @@ public class SessioneDipendenteViewPresenter {
 
             public void insertUpdate(DocumentEvent documentEvent) {
                 richiediNotificaButton.setEnabled(false);
-                listModelArticoliCatalogo = new DefaultListModel();
                 listModelArticoliCatalogo.clear();
                 articoloCatList.removeAll();
                 List<Articolo> listA = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
@@ -400,7 +400,7 @@ public class SessioneDipendenteViewPresenter {
             public void actionPerformed(ActionEvent actionEvent) {
                 int index = progettiBox.getSelectedIndex();
                 Progetto prog = d.getProgetti().get(index);
-                listModelOrdinePendente = new DefaultListModel();
+                listModelOrdinePendente.clear();
                 for (Ordine o : prog.getOrdini())
                     if (o.getDipendente().getNome().equals(d.getNome()))
                         listModelOrdinePendente.addElement(o.getNome());
@@ -444,7 +444,7 @@ public class SessioneDipendenteViewPresenter {
 
                 Progetto prog = d.getProgetti().get(indexProg);
                 Ordine ord = prog.getOrdini().get(indexOrd);
-                listModelArticoliOrdineCorrente = new DefaultListModel();
+                listModelArticoliOrdineCorrente.clear();
                 for (ArticoloOrdine ao : ord.getArticoliOrdine()) {
 
                     String newBudget = Float.toString(ao.getArticolo().getPrezzo());
@@ -474,15 +474,16 @@ public class SessioneDipendenteViewPresenter {
                 prezzoTotaleLabel.setText(Float.toString(totale));
 
                 prodottoBox.removeAllItems();
+                prodottoBox.setEnabled(false);
 
-                for (Prodotto p : listCategoria.get(categoriaBox.getSelectedIndex()).getProdotti())
-                    prodottoBox.addItem(p.getNome());
-                prodottoBox.setSelectedIndex(-1);
+                catalogoQuantitaField.setEnabled(false);
+                eliminaArticoloDallOrdineButton.setEnabled(false);
 
                 listModelArticoliCatalogo.clear();
                 articoloCatList.setModel(listModelArticoliCatalogo);
 
                 labelEvadiPrezzo.setText(Float.toString(totale) + " €");
+                modificaQuantitàButton.setEnabled(false);
             }
         });
 
@@ -545,7 +546,8 @@ public class SessioneDipendenteViewPresenter {
                     int indexArt = ordineCorrenteList.getSelectedIndex();
                     ArticoloOrdine ao = ordine.getArticoliOrdine().get(indexArt);
                     sessione.modificaDisponibilitàArticoloOrdine(ao, Integer.parseInt(ordineQuantitaField.getText()));
-                    listModelArticoliOrdineCorrente = new DefaultListModel();
+                    //listModelArticoliOrdineCorrente = new DefaultListModel();
+                    listModelArticoliOrdineCorrente.clear();
                     listOrdineArticoliNuovo.clear();
                     float app = 0;
                     for (ArticoloOrdine aor : ordine.getArticoliOrdine()) {
