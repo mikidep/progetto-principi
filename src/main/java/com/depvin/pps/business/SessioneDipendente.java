@@ -20,7 +20,7 @@ public class SessioneDipendente implements Sessione {
         return dipendente;
     }
 
-    public void confermaOrdine(Ordine ordine) {
+    public void confermaOrdine(Ordine ordine) throws EvasionException {
         Sistema.getInstance().confermaOrdine(ordine);
     }
 

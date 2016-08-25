@@ -1,5 +1,6 @@
 package com.depvin.pps.presenter;
 
+import com.depvin.pps.business.EvasionException;
 import com.depvin.pps.business.ReportCreationFailedException;
 import com.depvin.pps.business.SessioneDipendente;
 import com.depvin.pps.model.*;
@@ -690,7 +691,11 @@ public class SessioneDipendenteViewPresenter {
                     if (o.getNome().equals(ordineNomeLabel))
                         index = d.getOrdini().indexOf(o);
                 Ordine ordine = d.getOrdini().get(index);
-                sessione.confermaOrdine(ordine);
+                try {
+                    sessione.confermaOrdine(ordine);
+                } catch (EvasionException e) {
+                    showMessageDialog(getView(), "Non tutti gli elementi ordinati sono disponibili");
+                }
                 try {
                     sessione.stampaOrdine(ordine);
                     showMessageDialog(getView(), "Ordine stampato con successo");

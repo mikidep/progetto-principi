@@ -63,7 +63,7 @@ public class Sistema {
         DBInterface.getInstance().save();
     }
 
-    void confermaOrdine(Ordine ordine) {
+    void confermaOrdine(Ordine ordine) throws EvasionException {
         int t = 0;
         for (ArticoloOrdine ao : ordine.getArticoliOrdine()) {
             if (!ao.isDisponibile())
@@ -74,16 +74,20 @@ public class Sistema {
                 float appoggio = ordine.getProgetto().getBudget() - ordine.getTotale();
                 ordine.getProgetto().setBudget(appoggio);
                 ordine.setEvaso(true);
-            }
-        }
-        for (ArticoloOrdine ao : ordine.getArticoliOrdine()) {
-            for (ArticoloMagazzino am : ao.getMagazzino().getArticoliMagazzino()) {
-                if (ao.getArticolo().equals(am.getArticolo())) {
-                    int appoggioqt = am.getDisponibilita() - ao.getQuantita();
-                    am.setDisponibilita(appoggioqt);
+                for (ArticoloOrdine ao : ordine.getArticoliOrdine()) {
+                    for (ArticoloMagazzino am : ao.getMagazzino().getArticoliMagazzino()) {
+                        if (ao.getArticolo().equals(am.getArticolo())) {
+                            int appoggioqt = am.getDisponibilita() - ao.getQuantita();
+                            am.setDisponibilita(appoggioqt);
+                        }
+                    }
                 }
+                DBInterface.getInstance().save();
             }
+        } else {
+            throw new EvasionException("Non tutti gli articoli dell'ordine sono disponibili");
         }
+
     }
 
     void aggiungiImmagineArticolo(Articolo articolo, byte[] bytes) {
