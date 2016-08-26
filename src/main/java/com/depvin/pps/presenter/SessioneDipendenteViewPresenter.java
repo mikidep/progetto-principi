@@ -119,25 +119,52 @@ public class SessioneDipendenteViewPresenter {
 
         categoriaBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
+                if (ricercaPerNomeField.getText().length() == 0) {
+                    richiediNotificaButton.setEnabled(false);
+                    aggiungiArticoloAllOrdineButton.setEnabled(false);
+                    quantitàMagazzinoLabel.setText("");
+                    prodottoBox.removeAllItems();
+                    magazzinoBox.setEnabled(false);
+                    magazzinoBox.removeAllItems();
+                    magazzinoBox.setSelectedIndex(-1);
+                    magazzinoNonBox.setEnabled(false);
+                    magazzinoNonBox.removeAllItems();
+                    magazzinoNonBox.setSelectedIndex(-1);
+                    int index = categoriaBox.getSelectedIndex();
+                    for (Prodotto prod : listCategoria.get(index).getProdotti()) {
+                        prodottoBox.addItem(prod.getNome());
+                        listModelArticoliCatalogo.removeAllElements();
+                    }
+                    catalogoQuantitaField.setText("");
+                    catalogoQuantitaField.setEnabled(false);
+                    prodottoBox.setEnabled(true);
+                    prodottoBox.setSelectedIndex(-1);
+                    articoloCatList.setEnabled(false);
+                } else {
+                    richiediNotificaButton.setEnabled(false);
+                    listModelArticoliCatalogo.clear();
 
-                richiediNotificaButton.setEnabled(false);
-                quantitàMagazzinoLabel.setText("");
-                prodottoBox.removeAllItems();
-                magazzinoBox.setEnabled(false);
-                magazzinoBox.removeAllItems();
-                magazzinoBox.setSelectedIndex(-1);
-                magazzinoNonBox.setEnabled(false);
-                magazzinoNonBox.removeAllItems();
-                magazzinoNonBox.setSelectedIndex(-1);
-                int index = categoriaBox.getSelectedIndex();
-                for (Prodotto prod : listCategoria.get(index).getProdotti()) {
-                    prodottoBox.addItem(prod.getNome());
-                    listModelArticoliCatalogo.removeAllElements();
+                    articoloCatList.setModel(listModelArticoliCatalogo);
+                    listModelArticoliCatalogo = new DefaultListModel();
+
+                    List<Articolo> listA = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
+                    for (Articolo a : listA)
+                        listModelArticoliCatalogo.addElement(a.getNome() + "      " + a.getPrezzo() + " €");
+
+                    articoloCatList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+                    articoloCatList.setModel(listModelArticoliCatalogo);
+                    articoloCatList.setVisible(true);
+
+                    magazzinoBox.setEnabled(false);
+                    magazzinoBox.removeAllItems();
+                    magazzinoBox.setSelectedIndex(-1);
+                    magazzinoNonBox.setEnabled(false);
+                    magazzinoNonBox.removeAllItems();
+                    magazzinoNonBox.setSelectedIndex(-1);
+                    aggiungiArticoloAllOrdineButton.setEnabled(false);
+                    catalogoQuantitaField.setText("");
+                    articoloCatList.setEnabled(true);
                 }
-                catalogoQuantitaField.setEnabled(false);
-                prodottoBox.setEnabled(true);
-                prodottoBox.setSelectedIndex(-1);
-                articoloCatList.setEnabled(false);
             }
         });
 
@@ -169,12 +196,9 @@ public class SessioneDipendenteViewPresenter {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (prodottoBox.getSelectedIndex() != -1 && ricercaPerNomeField.getText().length() == 0) {
 
-                    listModelArticoliCatalogo.clear();
-                    articoloCatList.setModel(listModelArticoliCatalogo);
-
                     richiediNotificaButton.setEnabled(false);
                     quantitàMagazzinoLabel.setText("");
-
+                    catalogoQuantitaField.setText("");
                     catalogoQuantitaField.setEnabled(false);
                     magazzinoBox.setEnabled(false);
                     magazzinoBox.removeAllItems();
@@ -205,9 +229,12 @@ public class SessioneDipendenteViewPresenter {
                     articoloCatList.setModel(listModelArticoliCatalogo);
                     articoloCatList.setVisible(true);
                     articoloCatList.setEnabled(true);
+                    aggiungiArticoloAllOrdineButton.setEnabled(false);
+
                 } else if (prodottoBox.getSelectedIndex() != -1 && ricercaPerNomeField.getText().length() != 0) {
 
                     listModelArticoliCatalogo.clear();
+                    listModelArticoliCatalogo = new DefaultListModel();
                     articoloCatList.setModel(listModelArticoliCatalogo);
                     richiediNotificaButton.setEnabled(false);
                     quantitàMagazzinoLabel.setText("");
@@ -217,7 +244,9 @@ public class SessioneDipendenteViewPresenter {
                     List<Articolo> listA = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
                     for (Articolo a : listA)
                         listModelArticoliCatalogo.addElement(a.getNome() + "      " + a.getPrezzo() + " €");
+                    articoloCatList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                     articoloCatList.setModel(listModelArticoliCatalogo);
+                    articoloCatList.setVisible(true);
 
                     magazzinoBox.setEnabled(false);
                     magazzinoBox.removeAllItems();
@@ -233,29 +262,63 @@ public class SessioneDipendenteViewPresenter {
             }
         });
 
-        catalogoQuantitaField.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
+        catalogoQuantitaField.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent documentEvent) {
                 try {
-                    quantitàMagazzinoLabel.setText("");
-                    magazzinoBox.removeAllItems();
-                    magazzinoNonBox.removeAllItems();
-                    Categoria categoria = listCategoria.get(categoriaBox.getSelectedIndex());
-                    Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
-                    List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
-                    List<Articolo> listAAA = new ArrayList<Articolo>();
-                    for (Articolo a : listA)
-                        if (a.getProdotto().getNome().equals(p.getNome()))
-                            listAAA.add(a);
-                    Articolo articolo = listAAA.get(articoloCatList.getSelectedIndex());
-                    List<ArticoloMagazzino> listAM = articolo.getInMagazzino();
-                    riempiMagazzino(listAM, Integer.parseInt(catalogoQuantitaField.getText()));
-                    magazzinoBox.setEnabled(true);
-                    magazzinoBox.setSelectedIndex(-1);
-                    magazzinoNonBox.setEnabled(true);
-                    magazzinoNonBox.setSelectedIndex(-1);
-                    catalogoQuantitaField.setEnabled(true);
+                    Runnable run = new Runnable() {
+                        public void run() {
+                            Articolo articolo = null;
+                            String nomeBox = (String) magazzinoBox.getSelectedItem();
+                            magazzinoBox.removeAllItems();
+                            magazzinoNonBox.removeAllItems();
+                            if (ricercaPerNomeField.getText().length() == 0) {
+                                Categoria categoria = listCategoria.get(categoriaBox.getSelectedIndex());
+                                Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
+                                List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
+                                List<Articolo> listAAA = new ArrayList<Articolo>();
+                                for (Articolo a : listA)
+                                    if (a.getProdotto().getNome().equals(p.getNome()))
+                                        listAAA.add(a);
+                                articolo = listAAA.get(articoloCatList.getSelectedIndex());
+                            } else {  //ricercaPerNomeField != 0
+                                List<Articolo> listArtcl = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
+                                articolo = listArtcl.get(articoloCatList.getSelectedIndex());
+                            }
+                            List<ArticoloMagazzino> listAM = articolo.getInMagazzino();
+                            riempiMagazzino(listAM, Integer.parseInt(catalogoQuantitaField.getText()));
+                            int j = 0;
+                            int index = 0;
+                            for (int x = 0; x < magazzinoBox.getItemCount(); x++) {
+                                if (magazzinoBox.getItemAt(x).equals(nomeBox)) {
+                                    j++;
+                                    index = magazzinoBox.getSelectedIndex();
+                                }
+                            }
+                            if (j == 0) {
+                                magazzinoBox.setSelectedIndex(-1);
+                                magazzinoBox.setEnabled(true);
+                                quantitàMagazzinoLabel.setText("");
+                                aggiungiArticoloAllOrdineButton.setEnabled(false);
+                            } else {
+                                magazzinoBox.setSelectedIndex(index);
+                                magazzinoBox.setEnabled(true);
+                                aggiungiArticoloAllOrdineButton.setEnabled(true);
+                            }
+                            magazzinoNonBox.setSelectedIndex(-1);
+                            magazzinoNonBox.setEnabled(true);
+                        }
+                    };
+                    SwingUtilities.invokeLater(run);
                 } catch (ArrayIndexOutOfBoundsException e) {
                 }
+            }
+
+            public void removeUpdate(DocumentEvent documentEvent) {
+
+            }
+
+            public void changedUpdate(DocumentEvent documentEvent) {
+
             }
         });
 
@@ -267,17 +330,28 @@ public class SessioneDipendenteViewPresenter {
                     quantitàMagazzinoLabel.setText("");
                     magazzinoBox.removeAllItems();
                     magazzinoNonBox.removeAllItems();
-                    List<Categoria> listC = sessione.ottieniListaCategorie();
-                    Categoria categoria = listC.get(categoriaBox.getSelectedIndex());
-                    Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
-                    List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
-                    List<Articolo> listAAA = new ArrayList<Articolo>();
-                    for (Articolo a : listA)
-                        if (a.getProdotto().getNome().equals(p.getNome()))
-                            listAAA.add(a);
-                    Articolo articolo = listAAA.get(articoloCatList.getSelectedIndex());
+                    Articolo articolo = null;
+                    if (ricercaPerNomeField.getText().length() == 0) {
+
+                        List<Categoria> listC = sessione.ottieniListaCategorie();
+                        Categoria categoria = listC.get(categoriaBox.getSelectedIndex());
+                        Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
+                        List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
+                        List<Articolo> listAAA = new ArrayList<Articolo>();
+                        for (Articolo a : listA)
+                            if (a.getProdotto().getNome().equals(p.getNome()))
+                                listAAA.add(a);
+                        articolo = listAAA.get(articoloCatList.getSelectedIndex());
+                        /*List<ArticoloMagazzino> listAM = articolo.getInMagazzino();
+                        riempiMagazzino(listAM, 0);*/
+                    } else {
+                        List<Articolo> listArtcl = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
+                        articolo = listArtcl.get(articoloCatList.getSelectedIndex());
+                    }
+
                     List<ArticoloMagazzino> listAM = articolo.getInMagazzino();
                     riempiMagazzino(listAM, 0);
+
                     magazzinoBox.setEnabled(true);
                     magazzinoBox.setSelectedIndex(-1);
                     magazzinoNonBox.setEnabled(true);
@@ -285,6 +359,7 @@ public class SessioneDipendenteViewPresenter {
                     catalogoQuantitaField.setEnabled(true);
                     catalogoQuantitaField.setText("");
                 } catch (ArrayIndexOutOfBoundsException e) {
+                    articoloCatList.setSelectedIndex(-1);
                 }
             }
 
@@ -310,11 +385,18 @@ public class SessioneDipendenteViewPresenter {
             public void insertUpdate(DocumentEvent documentEvent) {
                 richiediNotificaButton.setEnabled(false);
                 listModelArticoliCatalogo.clear();
-                articoloCatList.removeAll();
+
+                articoloCatList.setModel(listModelArticoliCatalogo);
+                listModelArticoliCatalogo = new DefaultListModel();
+
                 List<Articolo> listA = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
                 for (Articolo a : listA)
                     listModelArticoliCatalogo.addElement(a.getNome() + "      " + a.getPrezzo() + " €");
+
+                articoloCatList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                 articoloCatList.setModel(listModelArticoliCatalogo);
+                articoloCatList.setVisible(true);
+
                 magazzinoBox.setEnabled(false);
                 magazzinoBox.removeAllItems();
                 magazzinoBox.setSelectedIndex(-1);
@@ -330,11 +412,18 @@ public class SessioneDipendenteViewPresenter {
                 if (ricercaPerNomeField.getText().length() != 0) {
                     richiediNotificaButton.setEnabled(false);
                     listModelArticoliCatalogo.clear();
-                    articoloCatList.removeAll();
+
+                    articoloCatList.setModel(listModelArticoliCatalogo);
+                    listModelArticoliCatalogo = new DefaultListModel();
+
                     List<Articolo> listA = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
                     for (Articolo a : listA)
                         listModelArticoliCatalogo.addElement(a.getNome() + "      " + a.getPrezzo() + " €");
+
+                    articoloCatList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                     articoloCatList.setModel(listModelArticoliCatalogo);
+                    articoloCatList.setVisible(true);
+
                     magazzinoBox.setEnabled(false);
                     magazzinoBox.removeAllItems();
                     magazzinoBox.setSelectedIndex(-1);
@@ -361,14 +450,20 @@ public class SessioneDipendenteViewPresenter {
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
                     quantitàMagazzinoLabel.setText("");
-                    Categoria categoria = listCategoria.get(categoriaBox.getSelectedIndex());
-                    Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
-                    List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
-                    List<Articolo> listAAA = new ArrayList<Articolo>();
-                    for (Articolo a : listA)
-                        if (a.getProdotto().getNome().equals(p.getNome()))
-                            listAAA.add(a);
-                    Articolo articolo = listAAA.get(articoloCatList.getSelectedIndex());
+                    Articolo articolo = null;
+                    if (ricercaPerNomeField.getText().length() == 0) {
+                        Categoria categoria = listCategoria.get(categoriaBox.getSelectedIndex());
+                        Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
+                        List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
+                        List<Articolo> listAAA = new ArrayList<Articolo>();
+                        for (Articolo a : listA)
+                            if (a.getProdotto().getNome().equals(p.getNome()))
+                                listAAA.add(a);
+                        articolo = listAAA.get(articoloCatList.getSelectedIndex());
+                    } else {
+                        List<Articolo> listArtcl = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
+                        articolo = listArtcl.get(articoloCatList.getSelectedIndex());
+                    }
                     List<ArticoloMagazzino> listAM = articolo.getInMagazzino();
                     int index = magazzinoBox.getSelectedIndex();
                     List<Magazzino> listMa = new ArrayList<Magazzino>();
@@ -520,7 +615,6 @@ public class SessioneDipendenteViewPresenter {
                     listOrdineArticoliNuovo.addElement(aor.getArticolo().getNome() + "     x " + aor.getQuantita() +
                             "     : " + budget + " €");
                     app = app + (budget * aor.getQuantita());
-
                 }
                 labelEvadiPrezzo.setText(Float.toString(app) + " €");
                 prezzoTotaleLabel.setText(Float.toString(app) + " €");
@@ -535,7 +629,7 @@ public class SessioneDipendenteViewPresenter {
         modificaQuantitàButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (ordineQuantitaField.getText().length() == 0)
-                    showMessageDialog(getView(), "Il campo \"Inserire nuoova quantità\" non può essere lasciato vuoto");
+                    showMessageDialog(getView(), "Il campo \"Inserire nuova quantità\" non può essere lasciato vuoto");
                 else if (ordineQuantitaField.getText().contains(",") || ordineQuantitaField.getText().contains(".") || Integer.parseInt(ordineQuantitaField.getText()) < 0)
                     showMessageDialog(getView(), "La quantità deve essere un numero intero positivo!");
                 else {
@@ -590,88 +684,92 @@ public class SessioneDipendenteViewPresenter {
 
         aggiungiArticoloAllOrdineButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                Articolo articolo = null;
-                if (ricercaPerNomeField.getText().length() == 0) {
-                    Categoria categoria = listCategoria.get(categoriaBox.getSelectedIndex());
-                    Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
-                    List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
-                    List<Articolo> listAAA = new ArrayList<Articolo>();
-                    for (Articolo a : listA)
-                        if (a.getProdotto().getNome().equals(p.getNome()))
-                            listAAA.add(a);
-                    articolo = listAAA.get(articoloCatList.getSelectedIndex());
-                } else {
-                    List<Articolo> listArtcl = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
-                    articolo = listArtcl.get(articoloCatList.getSelectedIndex());
-                }
-                List<ArticoloMagazzino> listAM = articolo.getInMagazzino();
-                int index = magazzinoBox.getSelectedIndex();
-                List<Magazzino> listMa = new ArrayList<Magazzino>();
-                int limite = -1;
-                if (catalogoQuantitaField.getText().length() == 0)
-                    limite = 0;
-                else
-                    limite = Integer.parseInt(catalogoQuantitaField.getText());
-                for (ArticoloMagazzino am : listAM)
-                    if (am.getDisponibilita() > limite)
-                        listMa.add(am.getMagazzino());
-                Magazzino magazzino = listMa.get(index);
-                int inr = -1;
-                for (ArticoloMagazzino ams : listAM)
-                    if (ams.getMagazzino().getNome().equals(magazzino.getNome()))
-                        inr = listAM.indexOf(ams);
-                ArticoloMagazzino articM = listAM.get(inr);
-                int innd = -1;
-                for (Ordine o : d.getOrdini())
-                    if (o.getNome().equals(nuovoOrdineLabel.getText()))
-                        innd = d.getOrdini().indexOf(o);
-                ArticoloOrdine ao = new ArticoloOrdine(d.getOrdini().get(innd), articM.getArticolo(),
-                        limite, magazzino);
-                int max = 0;
-                int indexAO = 0;
-                for (ArticoloOrdine aol : d.getOrdini().get(innd).getArticoliOrdine())
-                    if (aol.getArticolo().getNome().equals(ao.getArticolo().getNome()) && magazzino.getNome().equals(aol.getMagazzino().getNome())) {
-                        max = max + 1;
-                        indexAO = d.getOrdini().get(innd).getArticoliOrdine().indexOf(aol);
+                if (magazzinoBox.getSelectedIndex() == -1 || catalogoQuantitaField.getText().length() == 0)
+                    showMessageDialog(getView(), "Non hai scelto il magazzino e/o non hai inserito la quantità adatta");
+                else {
+                    Articolo articolo = null;
+                    if (ricercaPerNomeField.getText().length() == 0) {
+                        Categoria categoria = listCategoria.get(categoriaBox.getSelectedIndex());
+                        Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
+                        List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
+                        List<Articolo> listAAA = new ArrayList<Articolo>();
+                        for (Articolo a : listA)
+                            if (a.getProdotto().getNome().equals(p.getNome()))
+                                listAAA.add(a);
+                        articolo = listAAA.get(articoloCatList.getSelectedIndex());
+                    } else {
+                        List<Articolo> listArtcl = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
+                        articolo = listArtcl.get(articoloCatList.getSelectedIndex());
                     }
-                if (max > 0) {
-                    sessione.modificaDisponibilitàArticoloOrdine(d.getOrdini().get(innd).getArticoliOrdine().get(indexAO), Integer.parseInt(catalogoQuantitaField.getText()));
-                } else {
-                    sessione.aggiungiArticoloOrdine(ao, ao.getOrdine());
+                    List<ArticoloMagazzino> listAM = articolo.getInMagazzino();
+                    int index = magazzinoBox.getSelectedIndex();
+                    List<Magazzino> listMa = new ArrayList<Magazzino>();
+                    int limite = -1;
+                    if (catalogoQuantitaField.getText().length() == 0)
+                        limite = 0;
+                    else
+                        limite = Integer.parseInt(catalogoQuantitaField.getText());
+                    for (ArticoloMagazzino am : listAM)
+                        if (am.getDisponibilita() > limite)
+                            listMa.add(am.getMagazzino());
+                    Magazzino magazzino = listMa.get(index);
+                    int inr = -1;
+                    for (ArticoloMagazzino ams : listAM)
+                        if (ams.getMagazzino().getNome().equals(magazzino.getNome()))
+                            inr = listAM.indexOf(ams);
+                    ArticoloMagazzino articM = listAM.get(inr);
+                    int innd = -1;
+                    for (Ordine o : d.getOrdini())
+                        if (o.getNome().equals(nuovoOrdineLabel.getText()))
+                            innd = d.getOrdini().indexOf(o);
+                    ArticoloOrdine ao = new ArticoloOrdine(d.getOrdini().get(innd), articM.getArticolo(),
+                            limite, magazzino);
+                    int max = 0;
+                    int indexAO = 0;
+                    for (ArticoloOrdine aol : d.getOrdini().get(innd).getArticoliOrdine())
+                        if (aol.getArticolo().getNome().equals(ao.getArticolo().getNome()) && magazzino.getNome().equals(aol.getMagazzino().getNome())) {
+                            max = max + 1;
+                            indexAO = d.getOrdini().get(innd).getArticoliOrdine().indexOf(aol);
+                        }
+                    if (max > 0) {
+                        sessione.modificaDisponibilitàArticoloOrdine(d.getOrdini().get(innd).getArticoliOrdine().get(indexAO), Integer.parseInt(catalogoQuantitaField.getText()));
+                    } else {
+                        sessione.aggiungiArticoloOrdine(ao, ao.getOrdine());
+                    }
+
+                    String newBudget = Float.toString(ao.getArticolo().getPrezzo());
+                    newBudget = newBudget.replaceAll(",", ".");
+                    if (!newBudget.contains("."))
+                        newBudget = newBudget + ".00";
+                    float budget = Float.parseFloat(newBudget);
+
+                    listOrdineArticoliNuovo.addElement(ao.getArticolo().getNome() + "     x " +
+                            limite + "     : " + budget + " €");
+                    float totale = 0;
+                    for (ArticoloOrdine aos : d.getOrdini().get(innd).getArticoliOrdine())
+                        totale = totale + aos.getParziale();
+
+                    prezzoTotaleLabel.setText(Float.toString(totale));
+                    labelEvadiPrezzo.setText(Float.toString(totale));
+
+                    listModelArticoliOrdineCorrente.clear();
+                    listOrdineArticoliNuovo.clear();
+                    for (ArticoloOrdine aoos : d.getOrdini().get(innd).getArticoliOrdine()) {
+
+                        String newwBudget = Float.toString(aoos.getArticolo().getPrezzo());
+                        newwBudget = newwBudget.replaceAll(",", ".");
+                        if (!newwBudget.contains("."))
+                            newwBudget = newwBudget + ".00";
+                        float buddget = Float.parseFloat(newwBudget);
+
+                        listOrdineArticoliNuovo.addElement(aoos.getArticolo().getNome() + "   x " +
+                                aoos.getQuantita() + "     : " + buddget + " €");
+                        listModelArticoliOrdineCorrente.addElement(aoos.getArticolo().getNome() + "   x " +
+                                aoos.getQuantita() + "     : " + buddget + " €");
+                    }
+                    ordineArticoliNuovoList.setModel(listOrdineArticoliNuovo);
+                    ordineCorrenteList.setModel(listModelArticoliOrdineCorrente);
                 }
-
-                String newBudget = Float.toString(ao.getArticolo().getPrezzo());
-                newBudget = newBudget.replaceAll(",", ".");
-                if (!newBudget.contains("."))
-                    newBudget = newBudget + ".00";
-                float budget = Float.parseFloat(newBudget);
-
-                listOrdineArticoliNuovo.addElement(ao.getArticolo().getNome() + "     x " +
-                        limite + "     : " + budget + " €");
-                float totale = 0;
-                for (ArticoloOrdine aos : d.getOrdini().get(innd).getArticoliOrdine())
-                    totale = totale + aos.getParziale();
-
-                prezzoTotaleLabel.setText(Float.toString(totale));
-                labelEvadiPrezzo.setText(Float.toString(totale));
-
-                listModelArticoliOrdineCorrente.clear();
-                listOrdineArticoliNuovo.clear();
-                for (ArticoloOrdine aoos : d.getOrdini().get(innd).getArticoliOrdine()) {
-
-                    String newwBudget = Float.toString(aoos.getArticolo().getPrezzo());
-                    newwBudget = newwBudget.replaceAll(",", ".");
-                    if (!newwBudget.contains("."))
-                        newwBudget = newwBudget + ".00";
-                    float buddget = Float.parseFloat(newwBudget);
-
-                    listOrdineArticoliNuovo.addElement(aoos.getArticolo().getNome() + "   x " +
-                            aoos.getQuantita() + "     : " + buddget + " €");
-                    listModelArticoliOrdineCorrente.addElement(aoos.getArticolo().getNome() + "   x " +
-                            aoos.getQuantita() + "     : " + buddget + " €");
-                }
-                ordineArticoliNuovoList.setModel(listOrdineArticoliNuovo);
-                ordineCorrenteList.setModel(listModelArticoliOrdineCorrente);
 
             }
         });
