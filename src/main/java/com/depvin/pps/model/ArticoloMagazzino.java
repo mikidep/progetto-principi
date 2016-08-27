@@ -43,7 +43,4 @@ public class ArticoloMagazzino {
         this.disponibilita = disponibilita;
     }
 
-    void verificaRichieste() {
-        articolo.verificaRichiestePerMagazzino(magazzino);
-    }
 }

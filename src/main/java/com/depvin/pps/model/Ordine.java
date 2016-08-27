@@ -79,10 +79,4 @@ public class Ordine {
         }
         return t;
     }
-
-    public void notificaNecessitaArticoli() {
-        for (ArticoloOrdine ao : articoliOrdine) {
-            ao.notificaRichiestaAlMagazziniere();
-        }
-    }
 }

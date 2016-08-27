@@ -44,7 +44,6 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
         <table name="Dipendente"/>
         <discriminator-value>D</discriminator-value>
         <attributes>
-            <transient name="listeners"/>
             <one-to-many name="ordini" target-entity="Ordine" mapped-by="dipendente" fetch="EAGER">
                 <cascade>
                     <cascade-persist/>
@@ -68,7 +67,6 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
         <table name="Magazziniere"/>
         <discriminator-value>M</discriminator-value>
         <attributes>
-            <transient name="listeners"/>
             <one-to-one name="magazzino">
                 <join-column name="magazzino"/>
                 <cascade>
@@ -76,6 +74,21 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
                     <cascade-merge/>
                 </cascade>
             </one-to-one>
+        </attributes>
+    </entity>
+
+    <entity class="RichiestaArticolo" name="RichiestaArticolo">
+        <table name="RichiestaArticolo"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+            </id>
+            <many-to-one name="articolo">
+                <join-column name="articolo"/>
+            </many-to-one>
+            <many-to-one name="progetto">
+                <join-column name="progetto"/>
+            </many-to-one>
         </attributes>
     </entity>
 
@@ -229,6 +242,14 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
                     <cascade-merge/>
                 </cascade>
             </one-to-many>
+            <one-to-many name="richieste" target-entity="RichiestaArticolo" mapped-by="progetto" fetch="EAGER" orphan-removal="true">
+                <cascade>
+                    <cascade-persist/>
+                    <cascade-merge/>
+                    <cascade-remove/>
+                    <cascade-refresh/>
+                </cascade>
+            </one-to-many>
             <many-to-many name="dipendenti" target-entity="Dipendente" mapped-by="progetti">
                 <join-table name="DipendentiProgetto">
                     <join-column name="progetto"/>
@@ -294,8 +315,6 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
     </entity>
 
     <entity class="ArticoloMagazzino" name="ArticoloMagazzino">
-        <post-update method-name="verificaRichieste" />
-        <post-load method-name="verificaRichieste" />
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>

@@ -300,12 +300,12 @@ public class Sistema {
         try {
             Utente utente = UtenteDAO.getUtenteWithUsernameAndHash(username, hashPassword(password));
             if (utente instanceof Dipendente) {
-                ((Dipendente) utente).addListener(new Dipendente.NotificaArticoloListener() {
+                /*((Dipendente) utente).addListener(new Dipendente.NotificaArticoloListener() {
                     public void articoloOrdineIsDisponibile(ArticoloOrdine articoloOrdine, Magazzino magazzino) {
 
                         // TODO: Chiamerà il Presenter
                     }
-                });
+                });*/
                 return new SessioneDipendente((Dipendente) utente);
             } else if (utente instanceof Amministratore) {
                 return new SessioneAmministratore((Amministratore) utente);

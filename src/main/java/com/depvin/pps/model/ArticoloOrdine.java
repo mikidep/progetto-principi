@@ -65,15 +65,4 @@ public class ArticoloOrdine {
         return quantita * articolo.getPrezzo();
     }
 
-    void verificaRichiestePerMagazzino(Magazzino magazzino) {
-        if (magazzino.hasArticoloWithDisponibilita(articolo, quantita) && richiesto) {
-            ordine.getDipendente().notificaDisponibilitàInMagazzino(this, magazzino);
-        }
-    }
-
-    void notificaRichiestaAlMagazziniere() {
-        if (!getOrdine().isEvaso() && getOrdine().isInviato()) {
-            getMagazzino().getMagazziniere().notificaRichiestaArticolo(this);
-        }
-    }
 }

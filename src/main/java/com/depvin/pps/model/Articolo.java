@@ -90,10 +90,4 @@ public class Articolo {
     public List<ArticoloMagazzino> getInMagazzino() {
         return inMagazzino;
     }
-
-    void verificaRichiestePerMagazzino(Magazzino magazzino) {
-        for (ArticoloOrdine ao : inOrdine) {
-            ao.verificaRichiestePerMagazzino(magazzino);
-        }
-    }
 }

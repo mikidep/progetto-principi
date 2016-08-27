@@ -1,6 +1,7 @@
 package com.depvin.pps.model;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Michele De Pascalis on 30/11/15.
@@ -14,6 +15,7 @@ public class Progetto {
     private Sede sede;
     private List<Ordine> ordini;
     private List<Dipendente> dipendenti;
+    private Set<RichiestaArticolo> richieste;
 
     protected Progetto() {
     }
@@ -54,5 +56,9 @@ public class Progetto {
 
     public List<Dipendente> getDipendenti() {
         return dipendenti;
+    }
+
+    public Set<RichiestaArticolo> getRichieste() {
+        return richieste;
     }
 }
