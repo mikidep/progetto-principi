@@ -14,9 +14,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -815,15 +813,28 @@ public class SessioneDipendenteViewPresenter {
                     } catch (SendOrderException e) {
                         showMessageDialog(getView(), "Non tutti gli elementi ordinati sono disponibili");
                     }
-                    try {
-                        sessione.stampaOrdine(ordine);
-                        showMessageDialog(getView(), "Ordine stampato con successo");
-                    } catch (ReportCreationFailedException e) {
-                        showMessageDialog(getView(), "Errore nella stampa dell'ordine");
-                    }
+
                 } else {
                     showMessageDialog(getView(), "Ordine già inviato, attendere per l'evasione");
                 }
+
+                try {
+                    GregorianCalendar gc = new GregorianCalendar();
+                    ByteArrayOutputStream bytes = sessione.stampaOrdine(ordine);
+                    //TODO:
+                    // A seconda del computer che verrà presentato verrà cambiata la radice in cui salvare la stampa
+                    FileOutputStream of = new FileOutputStream("/home/costantino/" + d.getNome() + "_" +
+                            gc.get(Calendar.DATE) + "_" + gc.get(Calendar.MONTH) + "_" + gc.get(Calendar.YEAR) +
+                            "_" + gc.get(Calendar.HOUR) + "_" + gc.get(Calendar.MINUTE) + ".pdf");
+                    bytes.writeTo(of);
+                    of.close();
+                    showMessageDialog(getView(), "Ordine stampato con successo");
+                } catch (ReportCreationFailedException e) {
+                    showMessageDialog(getView(), "Errore nella stampa dell'ordine");
+                } catch (IOException e) {
+                    showMessageDialog(getView(), "IOexception, impossibile stampare");
+                }
+
             }
         });
 
