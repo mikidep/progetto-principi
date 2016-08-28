@@ -1,9 +1,11 @@
 package com.depvin.pps.presenter;
 
-import com.depvin.pps.business.EvasionException;
+import com.depvin.pps.business.SendOrderException;
 import com.depvin.pps.business.ReportCreationFailedException;
 import com.depvin.pps.business.SessioneDipendente;
 import com.depvin.pps.model.*;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -11,6 +13,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.List;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -42,11 +48,13 @@ public class SessioneDipendenteViewPresenter {
     private JButton nuovoOrdineButton;
     private JButton richiediNotificaButton;
     private JButton modificaOrdineButton;
-    private JButton chiudiOrdineButton1;
+    private JButton inviaOrdine;
     private JButton modificaQuantitàButton;
     private JButton eliminaArticoloDallOrdineButton;
     private JButton cancellaOrdineButton;
     private JButton abilitaNuovoOrdineButton;
+    private JButton ottieniInformazioniButton;
+    private JButton ottieniImmagineButton;
 
     private JTextField ricercaPerNomeField;
     private JTextField catalogoQuantitaField;
@@ -76,7 +84,7 @@ public class SessioneDipendenteViewPresenter {
         modificaOrdineButton.setEnabled(false);
         modificaQuantitàButton.setEnabled(false);
         richiediNotificaButton.setEnabled(false);
-        chiudiOrdineButton1.setEnabled(false);
+        inviaOrdine.setEnabled(false);
         aggiungiArticoloAllOrdineButton.setEnabled(false);
         eliminaArticoloDallOrdineButton.setEnabled(false);
         cancellaOrdineButton.setEnabled(false);
@@ -85,6 +93,8 @@ public class SessioneDipendenteViewPresenter {
         magazzinoNonBox.setEnabled(false);
         catalogoQuantitaField.setEnabled(false);
         abilitaNuovoOrdineButton.setEnabled(false);
+        ottieniImmagineButton.setEnabled(false);
+        ottieniInformazioniButton.setEnabled(false);
 
         listOrdineArticoliNuovo = new DefaultListModel();
         listOrdineArticoliNuovo.addElement(null);
@@ -120,16 +130,22 @@ public class SessioneDipendenteViewPresenter {
         categoriaBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (ricercaPerNomeField.getText().length() == 0) {
+
+                    listModelArticoliCatalogo.clear();
+                    articoloCatList.setModel(listModelArticoliCatalogo);
+
                     richiediNotificaButton.setEnabled(false);
                     aggiungiArticoloAllOrdineButton.setEnabled(false);
                     quantitàMagazzinoLabel.setText("");
-                    prodottoBox.removeAllItems();
+
                     magazzinoBox.setEnabled(false);
                     magazzinoBox.removeAllItems();
                     magazzinoBox.setSelectedIndex(-1);
                     magazzinoNonBox.setEnabled(false);
                     magazzinoNonBox.removeAllItems();
                     magazzinoNonBox.setSelectedIndex(-1);
+
+                    prodottoBox.removeAllItems();
                     int index = categoriaBox.getSelectedIndex();
                     for (Prodotto prod : listCategoria.get(index).getProdotti()) {
                         prodottoBox.addItem(prod.getNome());
@@ -358,6 +374,10 @@ public class SessioneDipendenteViewPresenter {
                     magazzinoNonBox.setSelectedIndex(-1);
                     catalogoQuantitaField.setEnabled(true);
                     catalogoQuantitaField.setText("");
+
+                    ottieniInformazioniButton.setEnabled(true);
+                    ottieniImmagineButton.setEnabled(true);
+
                 } catch (ArrayIndexOutOfBoundsException e) {
                     articoloCatList.setSelectedIndex(-1);
                 }
@@ -558,7 +578,7 @@ public class SessioneDipendenteViewPresenter {
                 ordineArticoliNuovoList.setModel(listModelArticoliOrdineCorrente);
                 ordineCorrenteList.setVisible(true);
                 ordineArticoliNuovoList.setVisible(true);
-                chiudiOrdineButton1.setEnabled(true);
+                inviaOrdine.setEnabled(true);
                 modificaQuantitàButton.setEnabled(true);
                 nuovoOrdineButton.setEnabled(false);
                 abilitaNuovoOrdineButton.setEnabled(true);
@@ -770,35 +790,39 @@ public class SessioneDipendenteViewPresenter {
                     ordineArticoliNuovoList.setModel(listOrdineArticoliNuovo);
                     ordineCorrenteList.setModel(listModelArticoliOrdineCorrente);
                 }
-
             }
         });
 
         ordineCorrenteList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                chiudiOrdineButton1.setEnabled(true);
+                inviaOrdine.setEnabled(true);
                 eliminaArticoloDallOrdineButton.setEnabled(true);
                 modificaQuantitàButton.setEnabled(true);
             }
         });
 
-        chiudiOrdineButton1.addActionListener(new ActionListener() {
+        inviaOrdine.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 int index = -1;
                 for (Ordine o : d.getOrdini())
-                    if (o.getNome().equals(ordineNomeLabel))
+                    if (o.getNome().equals(ordineNomeLabel.getText()))
                         index = d.getOrdini().indexOf(o);
                 Ordine ordine = d.getOrdini().get(index);
-                try {
-                    sessione.confermaOrdine(ordine);
-                } catch (EvasionException e) {
-                    showMessageDialog(getView(), "Non tutti gli elementi ordinati sono disponibili");
-                }
-                try {
-                    sessione.stampaOrdine(ordine);
-                    showMessageDialog(getView(), "Ordine stampato con successo");
-                } catch (ReportCreationFailedException e) {
-                    showMessageDialog(getView(), "Errore nella stampa dell'ordine");
+                if (!ordine.isInviato()) {
+                    try {
+                        sessione.inviaOrdine(ordine);
+                        showMessageDialog(getView(), "Ordine inviato con successo");
+                    } catch (SendOrderException e) {
+                        showMessageDialog(getView(), "Non tutti gli elementi ordinati sono disponibili");
+                    }
+                    try {
+                        sessione.stampaOrdine(ordine);
+                        showMessageDialog(getView(), "Ordine stampato con successo");
+                    } catch (ReportCreationFailedException e) {
+                        showMessageDialog(getView(), "Errore nella stampa dell'ordine");
+                    }
+                } else {
+                    showMessageDialog(getView(), "Ordine già inviato, attendere per l'evasione");
                 }
             }
         });
@@ -806,6 +830,97 @@ public class SessioneDipendenteViewPresenter {
         abilitaNuovoOrdineButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 nuovoOrdineButton.setEnabled(true);
+            }
+        });
+
+        ottieniImmagineButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                Articolo articolo = null;
+                if (ricercaPerNomeField.getText().length() == 0) {
+                    Categoria categoria = listCategoria.get(categoriaBox.getSelectedIndex());
+                    Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
+                    List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
+                    List<Articolo> listAAA = new ArrayList<Articolo>();
+                    for (Articolo a : listA)
+                        if (a.getProdotto().getNome().equals(p.getNome()))
+                            listAAA.add(a);
+                    articolo = listAAA.get(articoloCatList.getSelectedIndex());
+                } else {
+                    List<Articolo> listArtcl = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
+                    articolo = listArtcl.get(articoloCatList.getSelectedIndex());
+                }
+
+                byte[] bytes = articolo.getImmagine();
+                InputStream in = new ByteArrayInputStream(bytes);
+                paintImage(in);
+            }
+        });
+
+        ottieniInformazioniButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                Articolo articolo = null;
+                if (ricercaPerNomeField.getText().length() == 0) {
+                    Categoria categoria = listCategoria.get(categoriaBox.getSelectedIndex());
+                    Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
+                    List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
+                    List<Articolo> listAAA = new ArrayList<Articolo>();
+                    for (Articolo a : listA)
+                        if (a.getProdotto().getNome().equals(p.getNome()))
+                            listAAA.add(a);
+                    articolo = listAAA.get(articoloCatList.getSelectedIndex());
+                } else {
+                    List<Articolo> listArtcl = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
+                    articolo = listArtcl.get(articoloCatList.getSelectedIndex());
+                }
+
+                String listFoBuff = "";
+                String listCatBuff = "";
+
+                int len = articolo.getProdotto().getCategorie().size();
+                for (Categoria c : articolo.getProdotto().getCategorie()) {
+                    if (articolo.getProdotto().getCategorie().indexOf(c) == len - 1)
+                        listCatBuff = listCatBuff + c.getNome();
+                    else
+                        listCatBuff = listCatBuff + c.getNome() + ", ";
+                }
+                int len2 = articolo.getFornitori().size();
+                for (Fornitore f : articolo.getFornitori()) {
+                    if (articolo.getFornitori().indexOf(f) == len2 - 1)
+                        listFoBuff = listFoBuff + f.getNome();
+                    else
+                        listFoBuff = listFoBuff + f.getNome() + ", ";
+                }
+
+                showMessageDialog(getView(), "Nome : " + articolo.getNome() + "\n" +
+                        "Descrizione : " + articolo.getDescrizione() + "\n" +
+                        "Prezzo : " + articolo.getPrezzo() + "\n" +
+                        "Categoria : " + listCatBuff + "\n" +
+                        "Prodotto : " + articolo.getProdotto().getNome() + "\n" +
+                        "Produttore : " + articolo.getProduttore().getNome() + "\n" +
+                        "Fornitore : " + listFoBuff + "\n");
+            }
+        });
+
+        richiediNotificaButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                Articolo articolo = null;
+                if (ricercaPerNomeField.getText().length() == 0) {
+                    Categoria categoria = listCategoria.get(categoriaBox.getSelectedIndex());
+                    Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
+                    List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
+                    List<Articolo> listAAA = new ArrayList<Articolo>();
+                    for (Articolo a : listA)
+                        if (a.getProdotto().getNome().equals(p.getNome()))
+                            listAAA.add(a);
+                    articolo = listAAA.get(articoloCatList.getSelectedIndex());
+                } else {
+                    List<Articolo> listArtcl = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
+                    articolo = listArtcl.get(articoloCatList.getSelectedIndex());
+                }
+                int indexProgetto = progettoOrdineBox.getSelectedIndex();
+                Progetto progetto = d.getProgetti().get(indexProgetto);
+                sessione.creaNotifica(articolo, progetto, Integer.parseInt(catalogoQuantitaField.getText()));
+                showMessageDialog(getView(), "Richiesta inviata con successo");
             }
         });
 
@@ -820,6 +935,15 @@ public class SessioneDipendenteViewPresenter {
             } else {
                 magazzinoNonBox.addItem(am.getMagazzino().getNome());
             }
+        }
+    }
+
+    public void paintImage(InputStream in) {
+        try {
+            BufferedImage buffed = ImageIO.read(in);
+            ImageIcon icon = new ImageIcon(buffed);
+            showMessageDialog(getView(), icon);
+        } catch (IOException e) {
         }
     }
 

@@ -17,7 +17,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <grid id="ba0d9" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="ba0d9" layout-manager="GridLayoutManager" row-count="5" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <tabbedpane title="Ordini"/>
@@ -27,29 +27,93 @@
             <children>
               <component id="733d9" class="javax.swing.JList" binding="listArticoliOrdinati">
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                    <minimum-size width="100" height="300"/>
-                    <preferred-size width="300" height="300"/>
+                  <grid row="1" column="1" row-span="4" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <preferred-size width="200" height="50"/>
                   </grid>
                 </constraints>
                 <properties>
                   <model/>
                 </properties>
               </component>
-              <component id="66387" class="javax.swing.JButton" binding="stampaArticoliOrdinatiButton" default-binding="true">
+              <component id="9cc7b" class="javax.swing.JList" binding="listArticoliDisponibiliOrdine">
                 <constraints>
-                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
-                    <minimum-size width="275" height="30"/>
-                    <preferred-size width="275" height="30"/>
+                  <grid row="1" column="3" row-span="4" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <preferred-size width="200" height="50"/>
+                  </grid>
+                </constraints>
+                <properties/>
+              </component>
+              <component id="ef791" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+                    <preferred-size width="150" height="20"/>
                   </grid>
                 </constraints>
                 <properties>
-                  <text value="Stampa Articoli Ordinati"/>
+                  <text value="Lista Articoli Disponibili dell'Ordine"/>
                 </properties>
               </component>
+              <component id="195cd" class="javax.swing.JList" binding="listOrdini">
+                <constraints>
+                  <grid row="1" column="0" row-span="4" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <preferred-size width="200" height="50"/>
+                  </grid>
+                </constraints>
+                <properties/>
+              </component>
+              <component id="91adf" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+                    <preferred-size width="150" height="20"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <text value="Lista di Ordini"/>
+                </properties>
+              </component>
+              <component id="db8c5" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+                    <preferred-size width="150" height="20"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <text value="Lista Articoli Ordinati"/>
+                </properties>
+              </component>
+              <component id="66387" class="javax.swing.JButton" binding="stampaArticoliOrdineButton" default-binding="true">
+                <constraints>
+                  <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="200" height="30"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <text value="Stampa Articoli dell'Ordine"/>
+                </properties>
+              </component>
+              <component id="1d9b4" class="javax.swing.JButton" binding="evadiOrdineButton" default-binding="true">
+                <constraints>
+                  <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="200" height="30"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <text value="Evadi Ordine"/>
+                </properties>
+              </component>
+              <vspacer id="2a1cf">
+                <constraints>
+                  <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </vspacer>
+              <vspacer id="837ce">
+                <constraints>
+                  <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </vspacer>
             </children>
           </grid>
-          <grid id="a1e8" layout-manager="GridLayoutManager" row-count="6" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="a1e8" layout-manager="GridLayoutManager" row-count="7" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <tabbedpane title="Modifica Disponibilità Articolo Magazzino"/>
@@ -59,9 +123,9 @@
             <children>
               <component id="17482" class="javax.swing.JList" binding="listModificaDisponibilitàArticoloMagazzino">
                 <constraints>
-                  <grid row="0" column="0" row-span="6" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                  <grid row="1" column="0" row-span="6" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
                     <minimum-size width="100" height="300"/>
-                    <preferred-size width="300" height="300"/>
+                    <preferred-size width="250" height="300"/>
                   </grid>
                 </constraints>
                 <properties>
@@ -70,7 +134,7 @@
               </component>
               <component id="5825f" class="javax.swing.JLabel" binding="labelquantitàDisponibile">
                 <constraints>
-                  <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                  <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
                     <minimum-size width="100" height="20"/>
                     <preferred-size width="100" height="20"/>
                   </grid>
@@ -81,7 +145,7 @@
               </component>
               <component id="20907" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                  <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
                     <minimum-size width="75" height="15"/>
                     <preferred-size width="175" height="15"/>
                   </grid>
@@ -92,7 +156,7 @@
               </component>
               <component id="64cb7" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                  <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
                     <minimum-size width="75" height="15"/>
                     <preferred-size width="150" height="15"/>
                   </grid>
@@ -103,17 +167,12 @@
               </component>
               <vspacer id="f77b0">
                 <constraints>
-                  <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-                </constraints>
-              </vspacer>
-              <vspacer id="35726">
-                <constraints>
-                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                  <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
                 </constraints>
               </vspacer>
               <component id="92f23" class="javax.swing.JTextField" binding="quantitàFieldMod">
                 <constraints>
-                  <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                  <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <minimum-size width="100" height="15"/>
                     <preferred-size width="50" height="20"/>
                   </grid>
@@ -124,7 +183,7 @@
               </component>
               <component id="4488d" class="javax.swing.JButton" binding="confermaModificaButton" default-binding="true">
                 <constraints>
-                  <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
+                  <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
                     <minimum-size width="275" height="30"/>
                     <preferred-size width="275" height="30"/>
                   </grid>
@@ -135,12 +194,41 @@
               </component>
               <component id="1a6df" class="javax.swing.JButton" binding="clearButton">
                 <constraints>
-                  <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                  <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="275" height="30"/>
                   </grid>
                 </constraints>
                 <properties>
                   <text value="Cancella campo"/>
+                </properties>
+              </component>
+              <vspacer id="35726">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </vspacer>
+              <component id="bd174" class="javax.swing.JList" binding="listRichiesteArticoli">
+                <constraints>
+                  <grid row="1" column="3" row-span="6" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <preferred-size width="250" height="300"/>
+                  </grid>
+                </constraints>
+                <properties/>
+              </component>
+              <component id="b68ed" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Lista delle richieste di articoli"/>
+                </properties>
+              </component>
+              <component id="47f94" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Lista Articoli nel Magazzino"/>
                 </properties>
               </component>
             </children>
@@ -371,7 +459,7 @@
           <grid id="ab5c" layout-manager="GridLayoutManager" row-count="14" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <tabbedpane title="Modifica Articolo Magazzino"/>
+              <tabbedpane title="Modifica Articolo"/>
             </constraints>
             <properties/>
             <border type="none"/>

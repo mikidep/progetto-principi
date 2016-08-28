@@ -20,8 +20,8 @@ public class SessioneDipendente implements Sessione {
         return dipendente;
     }
 
-    public void confermaOrdine(Ordine ordine) throws EvasionException {
-        Sistema.getInstance().confermaOrdine(ordine);
+    public void inviaOrdine(Ordine ordine) throws SendOrderException {
+        Sistema.getInstance().inviaOrdine(ordine);
     }
 
     public void rimuoviOrdine(Ordine ordine) {
@@ -32,8 +32,8 @@ public class SessioneDipendente implements Sessione {
         Sistema.getInstance().rimuoviArticoloOrdine(ordine, articoloOrdine);
     }
 
-    public void richiediNotifica(ArticoloOrdine articoloOrdine) {
-        Sistema.getInstance().richiediNotifica(articoloOrdine);
+    public void creaNotifica(Articolo articolo, Progetto progetto, int quantita) {
+        Sistema.getInstance().creaNotifica(articolo, progetto, quantita);
     }
 
     public void aggiungiOrdineProgetto(String nome, Progetto progetto) {

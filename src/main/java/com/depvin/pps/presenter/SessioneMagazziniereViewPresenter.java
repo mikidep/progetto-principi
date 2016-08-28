@@ -1,5 +1,6 @@
 package com.depvin.pps.presenter;
 
+import com.depvin.pps.business.EvasionException;
 import com.depvin.pps.business.ReportCreationFailedException;
 import com.depvin.pps.business.SessioneMagazziniere;
 import com.depvin.pps.model.*;
@@ -28,10 +29,14 @@ public class SessioneMagazziniereViewPresenter {
     private JFrame view;
     private JPanel rootPanel;
     private JTabbedPane tabbedPane;
+
     private JList listModificaArticoloMagazzino;
     private JList listArticoliOrdinati;
     private JList listAggiungiArticoloMagazzino;
     private JList listModificaDisponibilitàArticoloMagazzino;
+    private JList listRichiesteArticoli;
+    private JList listOrdini;
+    private JList listArticoliDisponibiliOrdine;
 
     private JLabel labelquantitàDisponibile;
     private JTextField nomeField;
@@ -61,13 +66,17 @@ public class SessioneMagazziniereViewPresenter {
     private JButton confermaModificaButton;
     private JButton ottieniInformazioniButton;
     private JButton confermaModificheButton;
-    private JButton stampaArticoliOrdinatiButton;
+    private JButton stampaArticoliOrdineButton;
     private JButton pulisciTuttiICampiButton1;
     private JButton modificaFornitoreButton;
     private JButton ottieniImmagineButton;
     private JButton modificaCategoriaButton;
     private JButton clearButton;
+    private JButton evadiOrdineButton;
 
+    private DefaultListModel listArticoliDisponibiliOrdineModel;
+    private DefaultListModel listOrdiniModel;
+    private DefaultListModel listRichiesteArticoliModel;
     private DefaultListModel listArticoliOrdinatiModel;
     private DefaultListModel listArticoliMagazzinoModel;
 
@@ -91,37 +100,65 @@ public class SessioneMagazziniereViewPresenter {
                 sessione.aggiungiArticoloMagazzino(a, 0);
         }
 
+        listOrdiniModel = new DefaultListModel();
+        listRichiesteArticoliModel = new DefaultListModel();
+        listArticoliDisponibiliOrdineModel = new DefaultListModel();
+        listArticoliMagazzinoModel = new DefaultListModel();
         listArticoliOrdinatiModel = new DefaultListModel();
-        for (ArticoloOrdine ao : sessione.ottieniListaArticoliOrdine(m.getMagazzino()))
-            listArticoliOrdinatiModel.addElement(ao.getArticolo().getNome());
+
+        listOrdini.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        listOrdini.setVisible(true);
+
+        listRichiesteArticoli.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        listRichiesteArticoli.setVisible(true);
+
+        listArticoliDisponibiliOrdine.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        listArticoliDisponibiliOrdine.setVisible(true);
+
         listArticoliOrdinati.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        listArticoliOrdinati.setModel(listArticoliOrdinatiModel);
         listArticoliOrdinati.setVisible(true);
 
-        listArticoliMagazzinoModel = new DefaultListModel();
-        for (ArticoloMagazzino am : m.getMagazzino().getArticoliMagazzino())
-            listArticoliMagazzinoModel.addElement(am.getArticolo().getNome());
         listAggiungiArticoloMagazzino.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        listAggiungiArticoloMagazzino.setModel(listArticoliMagazzinoModel);
         listAggiungiArticoloMagazzino.setVisible(true);
 
         listModificaDisponibilitàArticoloMagazzino.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        listModificaDisponibilitàArticoloMagazzino.setModel(listArticoliMagazzinoModel);
         listModificaDisponibilitàArticoloMagazzino.setVisible(true);
 
-
         listModificaArticoloMagazzino.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        listModificaArticoloMagazzino.setModel(listArticoliMagazzinoModel);
         listModificaArticoloMagazzino.setVisible(true);
 
-        tabbedPane.setVisible(true);
 
+        for (ArticoloMagazzino am : m.getMagazzino().getArticoliMagazzino())
+            listArticoliMagazzinoModel.addElement(am.getArticolo().getNome());
+        listAggiungiArticoloMagazzino.setModel(listArticoliMagazzinoModel);
+
+        listModificaDisponibilitàArticoloMagazzino.setModel(listArticoliMagazzinoModel);
+
+        listRichiesteArticoli.setModel(listRichiesteArticoliModel);
+
+        listModificaArticoloMagazzino.setModel(listArticoliMagazzinoModel);
+
+        final List<Ordine> listaOrdineFinal = new ArrayList<Ordine>();
+        for (ArticoloOrdine ao : sessione.ottieniListaArticoliOrdine(m.getMagazzino())) {
+            if (!listaOrdineFinal.contains(ao.getOrdine())) {
+                listaOrdineFinal.add(ao.getOrdine());
+                listOrdiniModel.addElement(ao.getOrdine().getNome());
+            }
+        }
+
+        List<RichiestaArticolo> listRA = sessione.ottieniListaRichiestaArticoliSede(m.getMagazzino().getSede());
+        for (RichiestaArticolo ra : listRA)
+            listRichiesteArticoliModel.addElement(ra.getArticolo().getNome() + "   x " + ra.getQuantita() + "  progetto : " +
+                    ra.getProgetto());
+
+        tabbedPane.setVisible(true);
         ottieniImmagineButton.setEnabled(false);
         ottieniInformazioniButton.setEnabled(false);
         confermaModificheButton.setEnabled(false);
         modificaCategoriaButton.setEnabled(false);
         modificaFornitoreButton.setEnabled(false);
         confermaModificaButton.setEnabled(false);
+        evadiOrdineButton.setEnabled(false);
 
         view.pack();
 
@@ -145,13 +182,15 @@ public class SessioneMagazziniereViewPresenter {
             }
         });
 
-        stampaArticoliOrdinatiButton.addActionListener(new ActionListener() {
+        stampaArticoliOrdineButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
+                int indexO = listOrdini.getSelectedIndex();
+                Ordine o = listaOrdineFinal.get(indexO);
+                List<ArticoloOrdine> listAO = o.getArticoliOrdine();
                 GregorianCalendar gc = new GregorianCalendar();
                 try {
                     sessione.stampaArticoliOrdine(m.getNome() + " " + gc.get(Calendar.DATE) + gc.get(Calendar.MONTH) +
-                                    gc.get(Calendar.YEAR) + gc.get(Calendar.HOUR) + gc.get(Calendar.MINUTE),
-                            sessione.ottieniListaArticoliOrdine(m.getMagazzino()));
+                            gc.get(Calendar.YEAR) + gc.get(Calendar.HOUR) + gc.get(Calendar.MINUTE), listAO);
                 } catch (ReportCreationFailedException e) {
                     showMessageDialog(getView(), "Errore nella stampa dell'ordine");
                 }
@@ -213,6 +252,8 @@ public class SessioneMagazziniereViewPresenter {
                         showMessageDialog(getView(), "Articolo aggiunto con successo");
 
                         listArticoliMagazzinoModel.removeAllElements();
+                        listArticoliMagazzinoModel.clear();
+
                         for (ArticoloMagazzino am : m.getMagazzino().getArticoliMagazzino())
                             listArticoliMagazzinoModel.addElement(am.getArticolo().getNome());
                         listAggiungiArticoloMagazzino.setModel(listArticoliMagazzinoModel);
@@ -260,6 +301,13 @@ public class SessioneMagazziniereViewPresenter {
                 } else
                     showMessageDialog(getView(), "Il campo \"modifica disponibilità\" non può rimanere vuoto");
                 labelquantitàDisponibile.setText(String.valueOf(am.getDisponibilita()));
+
+                listRichiesteArticoliModel.clear();
+                List<RichiestaArticolo> listRA = sessione.ottieniListaRichiestaArticoliSede(m.getMagazzino().getSede());
+                for (RichiestaArticolo ra : listRA)
+                    listRichiesteArticoliModel.addElement(ra.getArticolo().getNome() + "   x " + ra.getQuantita() + "  progetto : " +
+                            ra.getProgetto());
+                listRichiesteArticoli.setModel(listRichiesteArticoliModel);
             }
         });
 
@@ -412,6 +460,49 @@ public class SessioneMagazziniereViewPresenter {
                 quantitàFieldMod.setText("");
             }
         });
+
+        listOrdini.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent listSelectionEvent) {
+
+                evadiOrdineButton.setEnabled(true);
+                int indexO = listOrdini.getSelectedIndex();
+                Ordine ordine = listaOrdineFinal.get(indexO);
+
+                listArticoliOrdinatiModel.clear();
+                for (ArticoloOrdine ao : ordine.getArticoliOrdine())
+                    listArticoliOrdinatiModel.addElement(ao.getArticolo().getNome());
+                listArticoliOrdinati.setModel(listArticoliOrdinatiModel);
+
+                listArticoliDisponibiliOrdineModel.clear();
+                List<Articolo> listA = sessione.ottieniListaArticoliDisponibiliProgetto(ordine.getProgetto());
+                for (Articolo a : listA)
+                    listArticoliDisponibiliOrdineModel.addElement(a.getNome());
+                listArticoliDisponibiliOrdine.setModel(listArticoliDisponibiliOrdineModel);
+
+            }
+        });
+
+        evadiOrdineButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                int indexO = listOrdini.getSelectedIndex();
+                Ordine ordine = listaOrdineFinal.get(indexO);
+                int limite = 0;
+                for (ArticoloOrdine ao : ordine.getArticoliOrdine()) {
+                    if (!ao.isDisponibile())
+                        limite++;
+                }
+                if (limite > 0)
+                    showMessageDialog(getView(), "Gli articoli dell'ordine non sono disponibili nelle quantità richieste," +
+                            " impossibile evadere l'ordine");
+                else {
+                    try {
+                        sessione.evadiOrdine(ordine);
+                    } catch (EvasionException e) {
+                        showMessageDialog(getView(), "Impossbile evadere l'ordine, il budget del progetto insufficiente");
+                    }
+                }
+            }
+        }); //Come fa il magazziniere a vedere gli articoli di un ordine se è già stato evaso da qualcun'altro?
 
     }
 

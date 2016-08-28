@@ -63,31 +63,37 @@ public class Sistema {
         DBInterface.getInstance().save();
     }
 
-    void confermaOrdine(Ordine ordine) throws EvasionException {
+    void inviaOrdine(Ordine ordine) throws SendOrderException {
         int t = 0;
         for (ArticoloOrdine ao : ordine.getArticoliOrdine()) {
             if (!ao.isDisponibile())
                 t++;
         }
         if (t == 0) {
-            if (ordine.getTotale() <= ordine.getProgetto().getBudget()) {
-                float appoggio = ordine.getProgetto().getBudget() - ordine.getTotale();
-                ordine.getProgetto().setBudget(appoggio);
-                ordine.setEvaso(true);
-                for (ArticoloOrdine ao : ordine.getArticoliOrdine()) {
-                    for (ArticoloMagazzino am : ao.getMagazzino().getArticoliMagazzino()) {
-                        if (ao.getArticolo().equals(am.getArticolo())) {
-                            int appoggioqt = am.getDisponibilita() - ao.getQuantita();
-                            am.setDisponibilita(appoggioqt);
-                        }
+            ordine.setInviato(true);
+            DBInterface.getInstance().save();
+        } else {
+            throw new SendOrderException("Non tutti gli articoli dell'ordine sono disponibili");
+        }
+    }
+
+    void evadiOrdine(Ordine ordine) throws EvasionException {
+        if (ordine.getTotale() <= ordine.getProgetto().getBudget()) {
+            float appoggio = ordine.getProgetto().getBudget() - ordine.getTotale();
+            ordine.getProgetto().setBudget(appoggio);
+            for (ArticoloOrdine ao : ordine.getArticoliOrdine()) {
+                for (ArticoloMagazzino am : ao.getMagazzino().getArticoliMagazzino()) {
+                    if (ao.getArticolo().equals(am.getArticolo())) {
+                        int appoggioqt = am.getDisponibilita() - ao.getQuantita();
+                        am.setDisponibilita(appoggioqt);
                     }
                 }
-                DBInterface.getInstance().save();
             }
+            ordine.setEvaso(true);
+            DBInterface.getInstance().save();
         } else {
-            throw new EvasionException("Non tutti gli articoli dell'ordine sono disponibili");
+            throw new EvasionException("Budget del progetto non sufficiente per evadere l'ordine");
         }
-
     }
 
     void aggiungiImmagineArticolo(Articolo articolo, byte[] bytes) {
@@ -198,15 +204,15 @@ public class Sistema {
         }
     }
 
-    ArrayList<ArticoloOrdine> ottieniListaOrdine(Ordine ordine) {
-        ArrayList<ArticoloOrdine> lista = new ArrayList<ArticoloOrdine>();
+    List<ArticoloOrdine> ottieniListaOrdine(Ordine ordine) {
+        List<ArticoloOrdine> lista = new ArrayList<ArticoloOrdine>();
         for (ArticoloOrdine ao : ordine.getArticoliOrdine())
             lista.add(ao);
         return lista;
     }
 
-    ArrayList<ArticoloOrdine> ottieniListaDipendente(Dipendente dipendente, Progetto progetto) {
-        ArrayList<ArticoloOrdine> lista = new ArrayList<ArticoloOrdine>();
+    List<ArticoloOrdine> ottieniListaDipendente(Dipendente dipendente, Progetto progetto) {
+        List<ArticoloOrdine> lista = new ArrayList<ArticoloOrdine>();
         for (Ordine o : progetto.getOrdini())
             if (dipendente == o.getDipendente())
                 for (ArticoloOrdine ao : o.getArticoliOrdine())
@@ -214,8 +220,13 @@ public class Sistema {
         return lista;
     }
 
-    void richiediNotifica(ArticoloOrdine articoloOrdine) {
-        articoloOrdine.setRichiesto(true);
+    /*void richiediNotifica(ArticoloOrdine articoloOrdine) {
+        articoloOrdine.setRichiesto(true); inutile
+    }*/
+    void creaNotifica(Articolo articolo, Progetto progetto, int quantita) {
+        RichiestaArticolo richiestaArticolo = new RichiestaArticolo(articolo, progetto, quantita);
+        progetto.getRichieste().add(richiestaArticolo);
+        DBInterface.getInstance().save();
     }
 
     void aggiungiDipendente(String name, String surname, String username, String password)
@@ -393,6 +404,14 @@ public class Sistema {
     void modificaDisponibilitàArticoloOrdine(ArticoloOrdine articoloOrdine, int disponibilità) {
         articoloOrdine.setQuantita(disponibilità);
         DBInterface.getInstance().save();
+    }
+
+    List<RichiestaArticolo> ottieniListaRichiestaArticoliSede(Sede sede) {
+        return RichiestaArticoloDAO.getArticoliRichiestiPerSede(sede);
+    }
+
+    List<Articolo> ottieniListaArticoliDisponibiliProgetto(Progetto progetto) {
+        return RichiestaArticoloDAO.getArticoliRichiestiDisponibiliPerProgetto(progetto);
     }
 
 }

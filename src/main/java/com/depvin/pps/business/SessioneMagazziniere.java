@@ -107,4 +107,17 @@ public class SessioneMagazziniere implements Sessione {
     public void linkaArticoliMagazzino(ArticoloMagazzino articoloMagazzino, Magazzino magazzino) {
         Sistema.getInstance().linkaArticoliMagazzino(articoloMagazzino, magazzino);
     }
+
+    public void evadiOrdine(Ordine ordine) throws EvasionException {
+        Sistema.getInstance().evadiOrdine(ordine);
+    }
+
+    public List<RichiestaArticolo> ottieniListaRichiestaArticoliSede(Sede sede) {
+        return Sistema.getInstance().ottieniListaRichiestaArticoliSede(sede);
+    }
+
+    public List<Articolo> ottieniListaArticoliDisponibiliProgetto(Progetto progetto) {
+        return Sistema.getInstance().ottieniListaArticoliDisponibiliProgetto(progetto);
+    }
+
 }
