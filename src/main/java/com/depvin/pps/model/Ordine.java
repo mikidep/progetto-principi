@@ -12,7 +12,6 @@ public class Ordine {
     private long id;
     private String nome;
     private boolean inviato = false;
-    private boolean evaso = false;
     private Progetto progetto;
     private Dipendente dipendente;
 
@@ -48,11 +47,16 @@ public class Ordine {
     }
 
     public boolean isEvaso() {
-        return evaso;
-    }
+        if (articoliOrdine.size() == 0) {
+            return false;
+        }
 
-    public void setEvaso(boolean evaso) {
-        this.evaso = evaso;
+        boolean evaso = true;
+        for (ArticoloOrdine ao: articoliOrdine) {
+            evaso = evaso && ao.isEvaso();
+        }
+
+        return evaso;
     }
 
     public List<ArticoloOrdine> getArticoliOrdine() {

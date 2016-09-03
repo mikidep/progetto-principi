@@ -89,7 +89,8 @@ public class Sistema {
                     }
                 }
             }
-            ordine.setEvaso(true);
+            // TODO: qui cambia qualcosa??
+            // ordine.setEvaso(true);
             DBInterface.getInstance().save();
         } else {
             throw new EvasionException("Budget del progetto non sufficiente per evadere l'ordine");

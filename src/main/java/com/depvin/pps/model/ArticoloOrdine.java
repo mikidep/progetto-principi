@@ -9,7 +9,7 @@ public class ArticoloOrdine {
     private int quantita;
     private Magazzino magazzino;
     private Ordine ordine;
-    private boolean richiesto = false;
+    private boolean evaso = false;
 
     protected ArticoloOrdine() {
     }
@@ -49,12 +49,12 @@ public class ArticoloOrdine {
         return ordine;
     }
 
-    public boolean isRichiesto() {
-        return richiesto;
+    public boolean isEvaso() {
+        return evaso;
     }
 
-    public void setRichiesto(boolean richiesto) {
-        this.richiesto = richiesto;
+    public void setEvaso(boolean evaso) {
+        this.evaso = evaso;
     }
 
     public boolean isDisponibile() {
