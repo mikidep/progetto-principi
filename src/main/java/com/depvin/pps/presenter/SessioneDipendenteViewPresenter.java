@@ -63,6 +63,11 @@ public class SessioneDipendenteViewPresenter {
     private JLabel quantitàMagazzinoLabel;
     private JLabel nuovoOrdineLabel;
     private JLabel labelEvadiPrezzo;
+    private JList listOrdiniInviati;
+    private JList listStatoArticoliInviati;
+
+    private DefaultListModel listOrdiniInviatiModel;
+    private DefaultListModel listStatoArticoliInviatiModel;
 
     private DefaultListModel listModelArticoliCatalogo;
     private DefaultListModel listModelOrdinePendente;
@@ -109,6 +114,22 @@ public class SessioneDipendenteViewPresenter {
         listModelArticoliOrdineCorrente = new DefaultListModel();
         listModelOrdinePendente = new DefaultListModel();
         listModelAppoggio = new DefaultListModel();
+
+        listOrdiniInviatiModel = new DefaultListModel();
+        listStatoArticoliInviatiModel = new DefaultListModel();
+        listOrdiniInviati.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        listStatoArticoliInviati.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+
+        final List<Ordine> listordine = new ArrayList<Ordine>();
+        for (Ordine o : d.getOrdini())
+            if (o.isInviato() && !listordine.contains(o)) {
+                listordine.add(o);
+                listOrdiniInviatiModel.addElement(o.getNome());
+            }
+        listOrdiniInviati.setModel(listOrdiniInviatiModel);
+        listStatoArticoliInviati.setVisible(true);
+        listOrdiniInviati.setVisible(true);
+
 
         for (Categoria cat : sessione.ottieniListaCategorie())
             categoriaBox.addItem(cat.getNome());
@@ -516,7 +537,7 @@ public class SessioneDipendenteViewPresenter {
                 Progetto prog = d.getProgetti().get(index);
                 listModelOrdinePendente.clear();
                 for (Ordine o : prog.getOrdini())
-                    if (o.getDipendente().getNome().equals(d.getNome()))
+                    if (o.getDipendente().getNome().equals(d.getNome()) && !o.isInviato())
                         listModelOrdinePendente.addElement(o.getNome());
                 ordiniPendentiList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                 ordiniPendentiList.setModel(listModelOrdinePendente);
@@ -568,7 +589,7 @@ public class SessioneDipendenteViewPresenter {
                     float budget = Float.parseFloat(newBudget);
 
                     listModelArticoliOrdineCorrente.addElement(ao.getArticolo().getNome() + "     x " + ao.getQuantita() +
-                            "     : " + budget + " €");
+                            "     : " + budget + " €" + "   Mag. : " + ao.getMagazzino().getNome());
                 }
                 ordineCorrenteList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                 ordineArticoliNuovoList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -629,9 +650,9 @@ public class SessioneDipendenteViewPresenter {
                     float budget = Float.parseFloat(newBudget);
 
                     listModelArticoliOrdineCorrente.addElement(aor.getArticolo().getNome() + "     x " + aor.getQuantita() +
-                            "     : " + budget + " €");
+                            "     : " + budget + " €" + "   Mag. : " + aor.getMagazzino().getNome());
                     listOrdineArticoliNuovo.addElement(aor.getArticolo().getNome() + "     x " + aor.getQuantita() +
-                            "     : " + budget + " €");
+                            "     : " + budget + " €" + "   Mag. : " + aor.getMagazzino().getNome());
                     app = app + (budget * aor.getQuantita());
                 }
                 labelEvadiPrezzo.setText(Float.toString(app) + " €");
@@ -672,9 +693,9 @@ public class SessioneDipendenteViewPresenter {
                         float budget = Float.parseFloat(newBudget);
 
                         listModelArticoliOrdineCorrente.addElement(aor.getArticolo().getNome() + "     x " + aor.getQuantita() +
-                                "     : " + budget + " €");
+                                "     : " + budget + " €" + "   Mag. : " + aor.getMagazzino().getNome());
                         listOrdineArticoliNuovo.addElement(aor.getArticolo().getNome() + "     x " + aor.getQuantita() +
-                                "     : " + budget + " €");
+                                "     : " + budget + " €" + "   Mag. : " + aor.getMagazzino().getNome());
                         app = app + (budget * aor.getQuantita());
                     }
                     labelEvadiPrezzo.setText(Float.toString(app) + " €");
@@ -762,7 +783,8 @@ public class SessioneDipendenteViewPresenter {
                     float budget = Float.parseFloat(newBudget);
 
                     listOrdineArticoliNuovo.addElement(ao.getArticolo().getNome() + "     x " +
-                            limite + "     : " + budget + " €");
+                            limite + "     : " + budget + " €"
+                            + "   Mag. : " + ao.getMagazzino().getNome());
                     float totale = 0;
                     for (ArticoloOrdine aos : d.getOrdini().get(innd).getArticoliOrdine())
                         totale = totale + aos.getParziale();
@@ -781,9 +803,11 @@ public class SessioneDipendenteViewPresenter {
                         float buddget = Float.parseFloat(newwBudget);
 
                         listOrdineArticoliNuovo.addElement(aoos.getArticolo().getNome() + "   x " +
-                                aoos.getQuantita() + "     : " + buddget + " €");
+                                aoos.getQuantita() + "     : " + buddget + " €"
+                                + "   Mag. : " + aoos.getMagazzino().getNome());
                         listModelArticoliOrdineCorrente.addElement(aoos.getArticolo().getNome() + "   x " +
-                                aoos.getQuantita() + "     : " + buddget + " €");
+                                aoos.getQuantita() + "     : " + buddget + " €"
+                                + "   Mag. : " + aoos.getMagazzino().getNome());
                     }
                     ordineArticoliNuovoList.setModel(listOrdineArticoliNuovo);
                     ordineCorrenteList.setModel(listModelArticoliOrdineCorrente);
@@ -829,6 +853,13 @@ public class SessioneDipendenteViewPresenter {
                     bytes.writeTo(of);
                     of.close();
                     showMessageDialog(getView(), "Ordine stampato con successo");
+
+                    progettiBox.setSelectedIndex(-1);
+                    listModelOrdinePendente.clear();
+                    ordiniPendentiList.setModel(listModelOrdinePendente);
+                    cancellaOrdineButton.setEnabled(false);
+                    modificaOrdineButton.setEnabled(false);
+
                 } catch (ReportCreationFailedException e) {
                     showMessageDialog(getView(), "Errore nella stampa dell'ordine");
                 } catch (IOException e) {
@@ -935,6 +966,23 @@ public class SessioneDipendenteViewPresenter {
             }
         });
 
+        listOrdiniInviati.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent listSelectionEvent) {
+
+                listStatoArticoliInviatiModel.clear();
+                int index = listOrdiniInviati.getSelectedIndex();
+                Ordine o = listordine.get(index);
+                for (ArticoloOrdine ao : o.getArticoliOrdine())
+                    if (ao.isEvaso())
+                        listStatoArticoliInviatiModel.addElement(ao.getArticolo().getNome() +
+                                "-> stato: inviato");
+                    else
+                        listStatoArticoliInviatiModel.addElement(ao.getArticolo().getNome() +
+                                "-> stato: in attesa di evasione");
+
+                listStatoArticoliInviati.setModel(listStatoArticoliInviatiModel);
+            }
+        });
     }
 
     public void riempiMagazzino(List<ArticoloMagazzino> articoloMagazzinos, int limite) {

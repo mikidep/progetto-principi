@@ -77,8 +77,45 @@ public class Sistema {
         }
     }
 
-    void evadiOrdine(Ordine ordine) throws EvasionException {
-        if (ordine.getTotale() <= ordine.getProgetto().getBudget()) {
+    void evadiOrdine(Ordine ordine, Magazzino magazzino) throws EvasionException {
+
+        List<ArticoloOrdine> listao = new ArrayList<ArticoloOrdine>();
+        for (ArticoloOrdine ao : ordine.getArticoliOrdine())
+            if (ao.getMagazzino().getNome().equals(magazzino.getNome()))
+                listao.add(ao);
+
+        float t = 0.0f;
+        Set<Sede> sedi = new HashSet<Sede>();
+        for (ArticoloOrdine ao : listao) {
+            t += ao.getParziale();
+            sedi.add(ao.getMagazzino().getSede());
+        }
+        for (Sede s : sedi) {
+            t += s.calcolaSpedizionePer(ordine.getProgetto().getSede());
+        }
+
+        boolean evaso = true;
+        for (ArticoloOrdine ao : listao) {
+            evaso = evaso && ao.isEvaso();
+        }
+
+        if (t <= ordine.getProgetto().getBudget() && !evaso) {
+            float appoggio = ordine.getProgetto().getBudget() - t;
+            ordine.getProgetto().setBudget(appoggio);
+            for (ArticoloOrdine ao : listao)
+                for (ArticoloMagazzino am : ao.getMagazzino().getArticoliMagazzino()) {
+                    if (ao.getArticolo().equals(am.getArticolo())) {
+                        int appoggioqt = am.getDisponibilita() - ao.getQuantita();
+                        am.setDisponibilita(appoggioqt);
+                        ao.setEvaso(true);
+                        DBInterface.getInstance().save();
+                    }
+                }
+        } else {
+            throw new EvasionException("Budget del progetto non sufficiente per evadere l'ordine");
+        }
+
+        /*if (ordine.getTotale() <= ordine.getProgetto().getBudget()) {
             float appoggio = ordine.getProgetto().getBudget() - ordine.getTotale();
             ordine.getProgetto().setBudget(appoggio);
             for (ArticoloOrdine ao : ordine.getArticoliOrdine()) {
@@ -94,7 +131,7 @@ public class Sistema {
             DBInterface.getInstance().save();
         } else {
             throw new EvasionException("Budget del progetto non sufficiente per evadere l'ordine");
-        }
+        }*/
     }
 
     void aggiungiImmagineArticolo(Articolo articolo, byte[] bytes) {
@@ -411,7 +448,7 @@ public class Sistema {
         return RichiestaArticoloDAO.getArticoliRichiestiPerSede(sede);
     }
 
-    List<Articolo> ottieniListaArticoliDisponibiliProgetto(Progetto progetto) {
+    List<Articolo> ottieniListaArticoliRichiestiProgetto(Progetto progetto) {
         return RichiestaArticoloDAO.getArticoliRichiestiDisponibiliPerProgetto(progetto);
     }
 

@@ -90,7 +90,7 @@ public class SessioneMagazziniereViewPresenter {
         view.setContentPane(rootPanel);
         view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        List<ArticoloMagazzino> listAM = m.getMagazzino().getArticoliMagazzino();
+        final List<ArticoloMagazzino> listAM = m.getMagazzino().getArticoliMagazzino();
         List<Articolo> listAAA = new ArrayList<Articolo>();
         for (ArticoloMagazzino ammm : listAM)
             listAAA.add(ammm.getArticolo());
@@ -134,22 +134,25 @@ public class SessioneMagazziniereViewPresenter {
 
         listModificaDisponibilitàArticoloMagazzino.setModel(listArticoliMagazzinoModel);
 
-        listRichiesteArticoli.setModel(listRichiesteArticoliModel);
+        //listRichiesteArticoli.setModel(listRichiesteArticoliModel);
 
         listModificaArticoloMagazzino.setModel(listArticoliMagazzinoModel);
 
-        final List<Ordine> listaOrdineFinal = new ArrayList<Ordine>();
-        for (ArticoloOrdine ao : sessione.ottieniListaArticoliOrdine(m.getMagazzino())) {
-            if (!listaOrdineFinal.contains(ao.getOrdine())) {
-                listaOrdineFinal.add(ao.getOrdine());
-                listOrdiniModel.addElement(ao.getOrdine().getNome());
-            }
-        }
+        List<Ordine> listaOrdine = new ArrayList<Ordine>();
+        for (ArticoloOrdine ao : sessione.ottieniListaArticoliOrdine(m.getMagazzino()))
+            if (!listaOrdine.contains(ao.getOrdine()) && ao.getOrdine().isInviato())
+                if (!ao.isEvaso()) {
+                    listaOrdine.add(ao.getOrdine());
+                    listOrdiniModel.addElement(ao.getOrdine().getNome());
+                }
+
+        listOrdini.setModel(listOrdiniModel);
 
         List<RichiestaArticolo> listRA = sessione.ottieniListaRichiestaArticoliSede(m.getMagazzino().getSede());
         for (RichiestaArticolo ra : listRA)
-            listRichiesteArticoliModel.addElement(ra.getArticolo().getNome() + "   x " + ra.getQuantita() + "  progetto : " +
-                    ra.getProgetto());
+            listRichiesteArticoliModel.addElement(ra.getArticolo().getNome() + "   x " + ra.getQuantita() +
+                    "  progetto : " + ra.getProgetto());
+        listRichiesteArticoli.setModel(listRichiesteArticoliModel);
 
         tabbedPane.setVisible(true);
         ottieniImmagineButton.setEnabled(false);
@@ -159,6 +162,7 @@ public class SessioneMagazziniereViewPresenter {
         modificaFornitoreButton.setEnabled(false);
         confermaModificaButton.setEnabled(false);
         evadiOrdineButton.setEnabled(false);
+        stampaArticoliOrdineButton.setEnabled(false);
 
         view.pack();
 
@@ -184,15 +188,32 @@ public class SessioneMagazziniereViewPresenter {
 
         stampaArticoliOrdineButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
+
+                List<Ordine> listOrdine = new ArrayList<Ordine>();
+                for (ArticoloOrdine ao : sessione.ottieniListaArticoliOrdine(m.getMagazzino()))
+                    if (!listOrdine.contains(ao.getOrdine()) && ao.getOrdine().isInviato())
+                        if (!ao.isEvaso())
+                            listOrdine.add(ao.getOrdine());
+
                 int indexO = listOrdini.getSelectedIndex();
-                Ordine o = listaOrdineFinal.get(indexO);
+                Ordine o = listOrdine.get(indexO);
                 List<ArticoloOrdine> listAO = o.getArticoliOrdine();
                 GregorianCalendar gc = new GregorianCalendar();
                 try {
-                    sessione.stampaArticoliOrdine(m.getNome() + " " + gc.get(Calendar.DATE) + gc.get(Calendar.MONTH) +
+                    ByteArrayOutputStream bytes = sessione.stampaArticoliOrdine(m.getNome() + " " + gc.get(Calendar.DATE) + gc.get(Calendar.MONTH) +
                             gc.get(Calendar.YEAR) + gc.get(Calendar.HOUR) + gc.get(Calendar.MINUTE), listAO);
+
+                    FileOutputStream of = new FileOutputStream("/home/costantino/" + m.getNome() + "_" +
+                            gc.get(Calendar.DATE) + "_" + gc.get(Calendar.MONTH) + "_" + gc.get(Calendar.YEAR) +
+                            "_" + gc.get(Calendar.HOUR) + "_" + gc.get(Calendar.MINUTE) + ".pdf");
+                    bytes.writeTo(of);
+                    of.close();
+
+                    showMessageDialog(getView(), "Stampa avvenuta con successo");
                 } catch (ReportCreationFailedException e) {
                     showMessageDialog(getView(), "Errore nella stampa dell'ordine");
+                } catch (IOException e) {
+                    showMessageDialog(getView(), "IOexception, impossibile stampare");
                 }
             }
         });
@@ -464,19 +485,42 @@ public class SessioneMagazziniereViewPresenter {
         listOrdini.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
 
+                stampaArticoliOrdineButton.setEnabled(true);
+
+                List<Ordine> listOrdine = new ArrayList<Ordine>();
+                for (ArticoloOrdine ao : sessione.ottieniListaArticoliOrdine(m.getMagazzino()))
+                    if (!listOrdine.contains(ao.getOrdine()) && ao.getOrdine().isInviato())
+                        if (!ao.isEvaso())
+                            listOrdine.add(ao.getOrdine());
+
                 evadiOrdineButton.setEnabled(true);
                 int indexO = listOrdini.getSelectedIndex();
-                Ordine ordine = listaOrdineFinal.get(indexO);
+                Ordine ordine = listOrdine.get(indexO);
+
+                List<Articolo> listA = new ArrayList<Articolo>();
 
                 listArticoliOrdinatiModel.clear();
                 for (ArticoloOrdine ao : ordine.getArticoliOrdine())
-                    listArticoliOrdinatiModel.addElement(ao.getArticolo().getNome());
+                    if (ao.getMagazzino().getNome().equals(m.getMagazzino().getNome()) && !ao.isEvaso()) {
+                        listArticoliOrdinatiModel.addElement(ao.getArticolo().getNome() + "    x " + ao.getQuantita());
+                        listA.add(ao.getArticolo());
+                    }
                 listArticoliOrdinati.setModel(listArticoliOrdinatiModel);
 
                 listArticoliDisponibiliOrdineModel.clear();
-                List<Articolo> listA = sessione.ottieniListaArticoliDisponibiliProgetto(ordine.getProgetto());
-                for (Articolo a : listA)
-                    listArticoliDisponibiliOrdineModel.addElement(a.getNome());
+
+                List<ArticoloMagazzino> listAAM = new ArrayList<ArticoloMagazzino>();
+                for (ArticoloMagazzino am : listAM)
+                    if (listA.contains(am.getArticolo()))
+                        listAAM.add(am);
+
+                for (ArticoloOrdine ao : ordine.getArticoliOrdine())
+                    for (ArticoloMagazzino am : listAAM)
+                        if (am.getArticolo().getNome().equals(ao.getArticolo().getNome()) &&
+                                am.getDisponibilita() >= ao.getQuantita())
+                            listArticoliDisponibiliOrdineModel.addElement(am.getArticolo().getNome() + "   x "
+                                    + am.getDisponibilita());
+
                 listArticoliDisponibiliOrdine.setModel(listArticoliDisponibiliOrdineModel);
 
             }
@@ -484,25 +528,63 @@ public class SessioneMagazziniereViewPresenter {
 
         evadiOrdineButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
+
+                List<Ordine> listOrdine = new ArrayList<Ordine>();
+                for (ArticoloOrdine ao : sessione.ottieniListaArticoliOrdine(m.getMagazzino()))
+                    if (!listOrdine.contains(ao.getOrdine()) && ao.getOrdine().isInviato())
+                        if (!ao.isEvaso())
+                            listOrdine.add(ao.getOrdine());
+
                 int indexO = listOrdini.getSelectedIndex();
-                Ordine ordine = listaOrdineFinal.get(indexO);
+                Ordine ordine = listOrdine.get(indexO);
+
                 int limite = 0;
                 for (ArticoloOrdine ao : ordine.getArticoliOrdine()) {
-                    if (!ao.isDisponibile())
-                        limite++;
+                    if (ao.getMagazzino().getNome().equals(m.getMagazzino().getNome()))
+                        if (!ao.isDisponibile())
+                            limite++;
                 }
                 if (limite > 0)
                     showMessageDialog(getView(), "Gli articoli dell'ordine non sono disponibili nelle quantità richieste," +
                             " impossibile evadere l'ordine");
                 else {
                     try {
-                        sessione.evadiOrdine(ordine);
+                        sessione.evadiOrdine(ordine, m.getMagazzino());
+
+                        listOrdini.setSelectedIndex(-1);
+                        listArticoliDisponibiliOrdineModel.clear();
+                        listArticoliOrdinatiModel.clear();
+                        listArticoliDisponibiliOrdine.setModel(listArticoliDisponibiliOrdineModel);
+                        listArticoliOrdinati.setModel(listArticoliOrdinatiModel);
+                        evadiOrdineButton.setEnabled(false);
+
+                        List<ArticoloOrdine> listAO = ordine.getArticoliOrdine();
+                        GregorianCalendar gc = new GregorianCalendar();
+
+                        try {
+                            ByteArrayOutputStream bytes = sessione.stampaArticoliOrdine(m.getNome() + " " + gc.get(Calendar.DATE) + gc.get(Calendar.MONTH) +
+                                    gc.get(Calendar.YEAR) + gc.get(Calendar.HOUR) + gc.get(Calendar.MINUTE), listAO);
+
+                            FileOutputStream of = new FileOutputStream("/home/costantino/" + m.getNome() + "_" +
+                                    gc.get(Calendar.DATE) + "_" + gc.get(Calendar.MONTH) + "_" + gc.get(Calendar.YEAR) +
+                                    "_" + gc.get(Calendar.HOUR) + "_" + gc.get(Calendar.MINUTE) + ".pdf");
+                            bytes.writeTo(of);
+                            of.close();
+
+                            showMessageDialog(getView(), "Articoli evasi con successo e ricevuta stampata con successo");
+
+                        } catch (ReportCreationFailedException e) {
+                            showMessageDialog(getView(), "Errore nella stampa dell'ordine");
+                        } catch (IOException e) {
+                            showMessageDialog(getView(), "IOexception, impossibile stampare");
+                        }
+
                     } catch (EvasionException e) {
-                        showMessageDialog(getView(), "Impossbile evadere l'ordine, il budget del progetto insufficiente");
+                        showMessageDialog(getView(), "Impossibile evadere l'ordine, il budget del progetto insufficiente");
                     }
                 }
             }
-        }); //Come fa il magazziniere a vedere gli articoli di un ordine se è già stato evaso da qualcun'altro?
+        });
 
     }
 
