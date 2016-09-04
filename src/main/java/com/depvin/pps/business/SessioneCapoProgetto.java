@@ -26,18 +26,24 @@ public class SessioneCapoProgetto implements Sessione {
     }
 
     public ByteArrayOutputStream stampaOrdineDipendente(Dipendente dipendente, Progetto progetto) throws ReportCreationFailedException {
-        return Sistema.getInstance().articoliToPDFBytes(dipendente.getNome(), Sistema.getInstance().ottieniListaDipendente(dipendente, progetto));
+        List<Ordine> listo = new ArrayList<Ordine>();
+        List<ArticoloOrdine> listao = Sistema.getInstance().ottieniListaDipendente(dipendente, progetto);
+        for (ArticoloOrdine ao : listao)
+            if (ao.getOrdine().isInviato() && ao.getOrdine().isEvaso() && !listo.contains(ao.getOrdine()))
+                listo.add(ao.getOrdine());
+        List<ArticoloOrdine> listAO = new ArrayList<ArticoloOrdine>();
+        for (Ordine o : listo)
+            for (ArticoloOrdine ao : o.getArticoliOrdine())
+                listAO.add(ao);
+        return Sistema.getInstance().articoliToPDFBytes(dipendente.getNome(), listAO);
     }
 
     public ByteArrayOutputStream stampaOrdineProgetto(Progetto progetto) throws ReportCreationFailedException {
         ArrayList<ArticoloOrdine> lista = new ArrayList<ArticoloOrdine>();
-        for (Ordine o : progetto.getOrdini()) {
-            for (ArticoloOrdine ao : o.getArticoliOrdine()) {
-                lista.add(ao);
-            }
-        }
-        /*DateTime jodaTime = new DateTime();
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss.SSS");*/
+        for (Ordine o : progetto.getOrdini())
+            if (o.isEvaso() && o.isInviato())
+                for (ArticoloOrdine ao : o.getArticoliOrdine())
+                    lista.add(ao);
         return Sistema.getInstance().articoliToPDFBytes(progetto.getNome(), lista);
     }
 

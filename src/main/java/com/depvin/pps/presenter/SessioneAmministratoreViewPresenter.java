@@ -92,6 +92,8 @@ public class SessioneAmministratoreViewPresenter {
                     List<Progetto> list = sessione.ottieniListaCapoProgetto().get(index).getProgetti();
                     for (Progetto prog : list)
                         progettoBox.addItem(prog.getNome());
+                    progettoBox.setSelectedIndex(-1);
+                    capoProgettoBox.setSelectedIndex(-1);
 
                     nomeUtenteField.setVisible(true);
                     cognomeUtenteField.setVisible(true);
@@ -190,6 +192,7 @@ public class SessioneAmministratoreViewPresenter {
                     List<Sede> list = sessione.ottieniListaSede();
                     for (Sede sede : list)
                         sedeBox.addItem(sede.getNome());
+                    sedeBox.setSelectedIndex(-1);
 
                     nomeUtenteField.setVisible(true);
                     cognomeUtenteField.setVisible(true);
@@ -335,9 +338,12 @@ public class SessioneAmministratoreViewPresenter {
                     List<CapoProgetto> listProgetto = sessione.ottieniListaCapoProgetto();
                     for (CapoProgetto cp : listProgetto)
                         capoProgettoBox.addItem(cp.getUsername());
+                    capoProgettoBox.setSelectedIndex(-1);
                     List<Sede> listSede = sessione.ottieniListaSede();
                     for (Sede sede : listSede)
                         sedeBox.addItem(sede.getNome());
+                    sedeBox.setSelectedIndex(-1);
+
 
                     nomeProgettoField.setVisible(true);
                     budgetField.setVisible(true);
@@ -395,6 +401,8 @@ public class SessioneAmministratoreViewPresenter {
                     List<Progetto> list = sessione.ottieniListaCapoProgetto().get(index).getProgetti();
                     for (Progetto prog : list)
                         progettoBox.addItem(prog.getNome());
+                    progettoBox.setSelectedIndex(-1);
+                    capoProgettoBox.setSelectedIndex(-1);
 
                     usernameUtenteField.setVisible(true);
                     passwordUtenteField.setVisible(true);
@@ -452,6 +460,7 @@ public class SessioneAmministratoreViewPresenter {
                     List<Progetto> list = sessione.ottieniListaCapoProgetto().get(index).getProgetti();
                     for (Progetto prog : list)
                         progettoBox.addItem(prog.getNome());
+                    progettoBox.setSelectedIndex(-1);
                 } catch (Exception e) {
                     /*"AWT-EventQueue-0" java.lang.ArrayIndexOutOfBoundsException: -1*/
                 }
@@ -482,7 +491,7 @@ public class SessioneAmministratoreViewPresenter {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (nomeUtenteField.getText().length() == 0 || cognomeUtenteField.getText().length() == 0 ||
                         usernameUtenteField.getText().length() == 0 || passwordUtenteField.getText().length() == 0 ||
-                        progettoBox.getSelectedItem().equals(null) || capoProgettoBox.getSelectedItem().equals(null))
+                        progettoBox.getSelectedIndex() == -1 || capoProgettoBox.getSelectedIndex() == -1)
                     showMessageDialog(getView(), "I campi \"Nome\", \"Cognome\", \"Username\", \"Password\", " +
                             "\"Scegliere il Capo Progetto\" e \"Scegliere il Progetto\"non possono essere lasciati vuoti");
                 else {
@@ -518,7 +527,7 @@ public class SessioneAmministratoreViewPresenter {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (nomeUtenteField.getText().length() == 0 || cognomeUtenteField.getText().length() == 0 ||
                         usernameUtenteField.getText().length() == 0 || passwordUtenteField.getText().length() == 0 ||
-                        nomeMagazzinoField.getText().length() == 0 || sedeBox.getSelectedItem().equals(null))
+                        nomeMagazzinoField.getText().length() == 0 || sedeBox.getSelectedIndex() == -1)
                     showMessageDialog(getView(), "I campi \"Nome\", \"Cognome\", \"Username\", \"Password\"," +
                             " \"Scegliere la Sede\" e \"Magazzino\" non possono essere lasciati vuoti");
                 else {
@@ -564,8 +573,8 @@ public class SessioneAmministratoreViewPresenter {
 
         buttonProg.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                if (nomeProgettoField.getText().length() == 0 || sedeBox.getSelectedItem().equals(null) ||
-                        capoProgettoBox.getSelectedItem().equals(null) || budgetField.getText().length() == 0)
+                if (nomeProgettoField.getText().length() == 0 || sedeBox.getSelectedIndex() == -1 ||
+                        capoProgettoBox.getSelectedIndex() == -1 || budgetField.getText().length() == 0)
                     showMessageDialog(getView(), "I campi \"Scegliere il Capo Progetto\", \"Scegliere la Sede\"," +
                             " \"Nuovo Progetto\" e \"Budget\" non possono essere lasciati vuoti");
                 else {
@@ -635,7 +644,8 @@ public class SessioneAmministratoreViewPresenter {
                         int indexProgetto = progettoBox.getSelectedIndex();
                         CapoProgetto capoProgetto = sessione.ottieniListaCapoProgetto().get(indexCapoProgetto);
                         Progetto progetto = capoProgetto.getProgetti().get(indexProgetto);
-                        progetto.getDipendenti().add(dipendente);
+                        //progetto.getDipendenti().add(dipendente);
+                        sessione.aggiungiDipendenteProgetto(progetto, dipendente);
                         showMessageDialog(getView(), "Dipendente aggiunto al Progetto con successo");
                     } catch (UserNotFoundException e) {
                         showMessageDialog(getView(), "Utente già inesistente");

@@ -114,24 +114,6 @@ public class Sistema {
         } else {
             throw new EvasionException("Budget del progetto non sufficiente per evadere l'ordine");
         }
-
-        /*if (ordine.getTotale() <= ordine.getProgetto().getBudget()) {
-            float appoggio = ordine.getProgetto().getBudget() - ordine.getTotale();
-            ordine.getProgetto().setBudget(appoggio);
-            for (ArticoloOrdine ao : ordine.getArticoliOrdine()) {
-                for (ArticoloMagazzino am : ao.getMagazzino().getArticoliMagazzino()) {
-                    if (ao.getArticolo().equals(am.getArticolo())) {
-                        int appoggioqt = am.getDisponibilita() - ao.getQuantita();
-                        am.setDisponibilita(appoggioqt);
-                    }
-                }
-            }
-            // TODO: qui cambia qualcosa??
-            // ordine.setEvaso(true);
-            DBInterface.getInstance().save();
-        } else {
-            throw new EvasionException("Budget del progetto non sufficiente per evadere l'ordine");
-        }*/
     }
 
     void aggiungiImmagineArticolo(Articolo articolo, byte[] bytes) {
@@ -450,6 +432,12 @@ public class Sistema {
 
     List<Articolo> ottieniListaArticoliRichiestiProgetto(Progetto progetto) {
         return RichiestaArticoloDAO.getArticoliRichiestiDisponibiliPerProgetto(progetto);
+    }
+
+    void aggiungiDipendenteProgetto(Progetto progetto, Dipendente dipendente) {
+        progetto.getDipendenti().add(dipendente);
+        dipendente.getProgetti().add(progetto);
+        DBInterface.getInstance().save();
     }
 
 }

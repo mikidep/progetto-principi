@@ -12,6 +12,11 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -115,12 +120,24 @@ public class SessioneCapoProgettoViewPresenter {
                 if (prog.getOrdini().isEmpty())
                     showMessageDialog(getView(), "Il seguente progetto non ha nessun ordine a suo carico");
                 else {
+                    //TODO:
+                    // A seconda del computer che verrà presentato verrà cambiata la radice in cui salvare la stampa
                     try {
-                        sessione.stampaOrdineProgetto(prog);
+                        GregorianCalendar gc = new GregorianCalendar();
+                        ByteArrayOutputStream bytes = sessione.stampaOrdineProgetto(prog);
+                        FileOutputStream of = new FileOutputStream("/home/costantino/" + cp.getNome() + "_" +
+                                prog.getNome() + "_" + gc.get(Calendar.DATE) + "_" + gc.get(Calendar.MONTH) + "_" +
+                                gc.get(Calendar.YEAR) + "_" + gc.get(Calendar.HOUR) + "_" + gc.get(Calendar.MINUTE) +
+                                ".pdf");
+                        bytes.writeTo(of);
+                        of.close();
+
                         showMessageDialog(getView(), "Stampa svolta con successo");
 
                     } catch (ReportCreationFailedException e) {
                         showMessageDialog(getView(), "Errore nella stampa degli ordini");
+                    } catch (IOException e) {
+                        showMessageDialog(getView(), "IOexception, impossibile stampare");
                     }
                 }
             }
@@ -137,11 +154,23 @@ public class SessioneCapoProgettoViewPresenter {
                 if (prog.getOrdini().isEmpty())
                     showMessageDialog(getView(), "Il dipendente in questione non ha effettuato nessun ordine");
                 else {
+                    //TODO:
+                    // A seconda del computer che verrà presentato verrà cambiata la radice in cui salvare la stampa
                     try {
-                        sessione.stampaOrdineDipendente(dip, prog);
+                        GregorianCalendar gc = new GregorianCalendar();
+                        ByteArrayOutputStream bytes = sessione.stampaOrdineDipendente(dip, prog);
+                        FileOutputStream of = new FileOutputStream("/home/costantino/" + cp.getNome() + "_" +
+                                prog.getDipendenti().get(indexDip).getNome() + "_" + prog.getNome() + "_" +
+                                gc.get(Calendar.DATE) + "_" + gc.get(Calendar.MONTH) + "_" + gc.get(Calendar.YEAR) +
+                                "_" + gc.get(Calendar.HOUR) + "_" + gc.get(Calendar.MINUTE) + ".pdf");
+                        bytes.writeTo(of);
+                        of.close();
+
                         showMessageDialog(getView(), "Stampa svolta con successo");
                     } catch (ReportCreationFailedException e) {
                         showMessageDialog(getView(), "Errore nella stampa degli ordini");
+                    } catch (IOException e) {
+                        showMessageDialog(getView(), "IOexception, impossibile stampare");
                     }
                 }
             }

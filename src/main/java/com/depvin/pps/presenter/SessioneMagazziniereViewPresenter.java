@@ -134,8 +134,6 @@ public class SessioneMagazziniereViewPresenter {
 
         listModificaDisponibilitàArticoloMagazzino.setModel(listArticoliMagazzinoModel);
 
-        //listRichiesteArticoli.setModel(listRichiesteArticoliModel);
-
         listModificaArticoloMagazzino.setModel(listArticoliMagazzinoModel);
 
         List<Ordine> listaOrdine = new ArrayList<Ordine>();
@@ -151,7 +149,7 @@ public class SessioneMagazziniereViewPresenter {
         List<RichiestaArticolo> listRA = sessione.ottieniListaRichiestaArticoliSede(m.getMagazzino().getSede());
         for (RichiestaArticolo ra : listRA)
             listRichiesteArticoliModel.addElement(ra.getArticolo().getNome() + "   x " + ra.getQuantita() +
-                    "  progetto : " + ra.getProgetto());
+                    "  progetto : " + ra.getProgetto().getNome());
         listRichiesteArticoli.setModel(listRichiesteArticoliModel);
 
         tabbedPane.setVisible(true);
@@ -199,6 +197,9 @@ public class SessioneMagazziniereViewPresenter {
                 Ordine o = listOrdine.get(indexO);
                 List<ArticoloOrdine> listAO = o.getArticoliOrdine();
                 GregorianCalendar gc = new GregorianCalendar();
+
+                //TODO:
+                // A seconda del computer che verrà presentato verrà cambiata la radice in cui salvare la stampa
                 try {
                     ByteArrayOutputStream bytes = sessione.stampaArticoliOrdine(m.getNome() + " " + gc.get(Calendar.DATE) + gc.get(Calendar.MONTH) +
                             gc.get(Calendar.YEAR) + gc.get(Calendar.HOUR) + gc.get(Calendar.MINUTE), listAO);
@@ -326,8 +327,8 @@ public class SessioneMagazziniereViewPresenter {
                 listRichiesteArticoliModel.clear();
                 List<RichiestaArticolo> listRA = sessione.ottieniListaRichiestaArticoliSede(m.getMagazzino().getSede());
                 for (RichiestaArticolo ra : listRA)
-                    listRichiesteArticoliModel.addElement(ra.getArticolo().getNome() + "   x " + ra.getQuantita() + "  progetto : " +
-                            ra.getProgetto());
+                    listRichiesteArticoliModel.addElement(ra.getArticolo().getNome() + "   x " + ra.getQuantita() +
+                            "  progetto : " + ra.getProgetto().getNome());
                 listRichiesteArticoli.setModel(listRichiesteArticoliModel);
             }
         });
@@ -561,6 +562,8 @@ public class SessioneMagazziniereViewPresenter {
                         List<ArticoloOrdine> listAO = ordine.getArticoliOrdine();
                         GregorianCalendar gc = new GregorianCalendar();
 
+                        //TODO:
+                        // A seconda del computer che verrà presentato verrà cambiata la radice in cui salvare la stampa
                         try {
                             ByteArrayOutputStream bytes = sessione.stampaArticoliOrdine(m.getNome() + " " + gc.get(Calendar.DATE) + gc.get(Calendar.MONTH) +
                                     gc.get(Calendar.YEAR) + gc.get(Calendar.HOUR) + gc.get(Calendar.MINUTE), listAO);
