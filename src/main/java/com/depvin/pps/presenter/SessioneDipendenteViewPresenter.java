@@ -65,6 +65,7 @@ public class SessioneDipendenteViewPresenter {
     private JLabel labelEvadiPrezzo;
     private JList listOrdiniInviati;
     private JList listStatoArticoliInviati;
+    private JComboBox richiestaProgettoBox;
 
     private DefaultListModel listOrdiniInviatiModel;
     private DefaultListModel listStatoArticoliInviatiModel;
@@ -98,6 +99,7 @@ public class SessioneDipendenteViewPresenter {
         abilitaNuovoOrdineButton.setEnabled(false);
         ottieniImmagineButton.setEnabled(false);
         ottieniInformazioniButton.setEnabled(false);
+        richiestaProgettoBox.setEnabled(false);
 
         listOrdineArticoliNuovo = new DefaultListModel();
         listOrdineArticoliNuovo.addElement(null);
@@ -138,12 +140,14 @@ public class SessioneDipendenteViewPresenter {
         for (Progetto p : d.getProgetti()) {
             progettoOrdineBox.addItem(p.getNome());
             progettiBox.addItem(p.getNome());
+            richiestaProgettoBox.addItem((p.getNome()));
         }
 
         final List<Categoria> listCategoria = sessione.ottieniListaCategorie();
 
         progettiBox.setSelectedIndex(-1);
         progettoOrdineBox.setSelectedIndex(-1);
+        richiestaProgettoBox.setSelectedIndex(-1);
         view.pack();
 
         categoriaBox.addActionListener(new ActionListener() {
@@ -175,6 +179,7 @@ public class SessioneDipendenteViewPresenter {
                     prodottoBox.setEnabled(true);
                     prodottoBox.setSelectedIndex(-1);
                     articoloCatList.setEnabled(false);
+                    richiestaProgettoBox.setEnabled(false);
                 } else {
                     richiediNotificaButton.setEnabled(false);
                     listModelArticoliCatalogo.clear();
@@ -199,6 +204,7 @@ public class SessioneDipendenteViewPresenter {
                     aggiungiArticoloAllOrdineButton.setEnabled(false);
                     catalogoQuantitaField.setText("");
                     articoloCatList.setEnabled(true);
+                    richiestaProgettoBox.setEnabled(false);
                 }
             }
         });
@@ -241,6 +247,7 @@ public class SessioneDipendenteViewPresenter {
                     magazzinoNonBox.setEnabled(false);
                     magazzinoNonBox.removeAllItems();
                     magazzinoNonBox.setSelectedIndex(-1);
+                    richiestaProgettoBox.setEnabled(false);
 
                     listModelArticoliCatalogo.clear();
                     listModelAppoggio.clear();
@@ -275,6 +282,7 @@ public class SessioneDipendenteViewPresenter {
                     quantitàMagazzinoLabel.setText("");
                     catalogoQuantitaField.setEnabled(false);
                     articoloCatList.removeAll();
+                    richiestaProgettoBox.setEnabled(false);
 
                     List<Articolo> listA = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
                     for (Articolo a : listA)
@@ -304,8 +312,11 @@ public class SessioneDipendenteViewPresenter {
                         public void run() {
                             Articolo articolo = null;
                             String nomeBox = (String) magazzinoBox.getSelectedItem();
+                            richiediNotificaButton.setEnabled(false);
                             magazzinoBox.removeAllItems();
                             magazzinoNonBox.removeAllItems();
+                            richiestaProgettoBox.setEnabled(true);
+
                             if (ricercaPerNomeField.getText().length() == 0) {
                                 Categoria categoria = listCategoria.get(categoriaBox.getSelectedIndex());
                                 Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
@@ -357,14 +368,22 @@ public class SessioneDipendenteViewPresenter {
             }
         });
 
+        richiestaProgettoBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                richiediNotificaButton.setEnabled(true);
+            }
+        });
+
         articoloCatList.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent mouseEvent) {
                 try {
                     aggiungiArticoloAllOrdineButton.setEnabled(true);
-                    richiediNotificaButton.setEnabled(true);
+                    richiediNotificaButton.setEnabled(false);
                     quantitàMagazzinoLabel.setText("");
                     magazzinoBox.removeAllItems();
                     magazzinoNonBox.removeAllItems();
+                    richiestaProgettoBox.setEnabled(false);
+
                     Articolo articolo = null;
                     if (ricercaPerNomeField.getText().length() == 0) {
 
@@ -576,6 +595,7 @@ public class SessioneDipendenteViewPresenter {
                 magazzinoNonBox.removeAllItems();
                 magazzinoNonBox.setSelectedIndex(-1);
                 articoloCatList.setEnabled(false);
+                richiestaProgettoBox.setEnabled(false);
 
                 Progetto prog = d.getProgetti().get(indexProg);
                 Ordine ord = prog.getOrdini().get(indexOrd);
@@ -945,30 +965,34 @@ public class SessioneDipendenteViewPresenter {
 
         richiediNotificaButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                Articolo articolo = null;
-                if (ricercaPerNomeField.getText().length() == 0) {
-                    Categoria categoria = listCategoria.get(categoriaBox.getSelectedIndex());
-                    Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
-                    List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
-                    List<Articolo> listAAA = new ArrayList<Articolo>();
-                    for (Articolo a : listA)
-                        if (a.getProdotto().getNome().equals(p.getNome()))
-                            listAAA.add(a);
-                    articolo = listAAA.get(articoloCatList.getSelectedIndex());
-                } else {
-                    List<Articolo> listArtcl = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
-                    articolo = listArtcl.get(articoloCatList.getSelectedIndex());
+                if (richiestaProgettoBox.getSelectedIndex() == -1)
+                    showMessageDialog(getView(), "Scegliere un progetto");
+                else {
+                    Articolo articolo = null;
+                    if (ricercaPerNomeField.getText().length() == 0) {
+                        Categoria categoria = listCategoria.get(categoriaBox.getSelectedIndex());
+                        Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
+                        List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
+                        List<Articolo> listAAA = new ArrayList<Articolo>();
+                        for (Articolo a : listA)
+                            if (a.getProdotto().getNome().equals(p.getNome()))
+                                listAAA.add(a);
+                        articolo = listAAA.get(articoloCatList.getSelectedIndex());
+                    } else {
+                        List<Articolo> listArtcl = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
+                        articolo = listArtcl.get(articoloCatList.getSelectedIndex());
+                    }
+                    //int indexProgetto = progettoOrdineBox.getSelectedIndex();
+                    int indexProgetto = richiestaProgettoBox.getSelectedIndex();
+                    Progetto progetto = d.getProgetti().get(indexProgetto);
+                    sessione.creaNotifica(articolo, progetto, Integer.parseInt(catalogoQuantitaField.getText()));
+                    showMessageDialog(getView(), "Richiesta inviata con successo");
                 }
-                int indexProgetto = progettoOrdineBox.getSelectedIndex();
-                Progetto progetto = d.getProgetti().get(indexProgetto);
-                sessione.creaNotifica(articolo, progetto, Integer.parseInt(catalogoQuantitaField.getText()));
-                showMessageDialog(getView(), "Richiesta inviata con successo");
             }
         });
 
         listOrdiniInviati.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
-
                 listStatoArticoliInviatiModel.clear();
                 int index = listOrdiniInviati.getSelectedIndex();
                 Ordine o = listordine.get(index);
@@ -979,7 +1003,6 @@ public class SessioneDipendenteViewPresenter {
                     else
                         listStatoArticoliInviatiModel.addElement(ao.getArticolo().getNome() +
                                 "-> stato: in attesa di evasione");
-
                 listStatoArticoliInviati.setModel(listStatoArticoliInviatiModel);
             }
         });
