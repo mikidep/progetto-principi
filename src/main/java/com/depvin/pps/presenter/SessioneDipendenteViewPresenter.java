@@ -152,59 +152,36 @@ public class SessioneDipendenteViewPresenter {
 
         categoriaBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
+                listModelArticoliCatalogo.clear();
+                articoloCatList.setModel(listModelArticoliCatalogo);
+                magazzinoBox.setEnabled(false);
+                magazzinoBox.removeAllItems();
+                magazzinoBox.setSelectedIndex(-1);
+                magazzinoNonBox.setEnabled(false);
+                magazzinoNonBox.removeAllItems();
+                magazzinoNonBox.setSelectedIndex(-1);
+                catalogoQuantitaField.setText("");
+                aggiungiArticoloAllOrdineButton.setEnabled(false);
+                richiestaProgettoBox.setEnabled(false);
+                richiediNotificaButton.setEnabled(false);
                 if (ricercaPerNomeField.getText().length() == 0) {
-
-                    listModelArticoliCatalogo.clear();
-                    articoloCatList.setModel(listModelArticoliCatalogo);
-
-                    richiediNotificaButton.setEnabled(false);
-                    aggiungiArticoloAllOrdineButton.setEnabled(false);
                     quantitàMagazzinoLabel.setText("");
-
-                    magazzinoBox.setEnabled(false);
-                    magazzinoBox.removeAllItems();
-                    magazzinoBox.setSelectedIndex(-1);
-                    magazzinoNonBox.setEnabled(false);
-                    magazzinoNonBox.removeAllItems();
-                    magazzinoNonBox.setSelectedIndex(-1);
-
                     prodottoBox.removeAllItems();
                     int index = categoriaBox.getSelectedIndex();
                     for (Prodotto prod : listCategoria.get(index).getProdotti()) {
                         prodottoBox.addItem(prod.getNome());
                         listModelArticoliCatalogo.removeAllElements();
                     }
-                    catalogoQuantitaField.setText("");
                     catalogoQuantitaField.setEnabled(false);
                     prodottoBox.setEnabled(true);
                     prodottoBox.setSelectedIndex(-1);
                     articoloCatList.setEnabled(false);
-                    richiestaProgettoBox.setEnabled(false);
                 } else {
-                    richiediNotificaButton.setEnabled(false);
-                    listModelArticoliCatalogo.clear();
-
-                    articoloCatList.setModel(listModelArticoliCatalogo);
-                    listModelArticoliCatalogo = new DefaultListModel();
-
                     List<Articolo> listA = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
                     for (Articolo a : listA)
                         listModelArticoliCatalogo.addElement(a.getNome() + "      " + a.getPrezzo() + " €");
-
-                    articoloCatList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                     articoloCatList.setModel(listModelArticoliCatalogo);
-                    articoloCatList.setVisible(true);
-
-                    magazzinoBox.setEnabled(false);
-                    magazzinoBox.removeAllItems();
-                    magazzinoBox.setSelectedIndex(-1);
-                    magazzinoNonBox.setEnabled(false);
-                    magazzinoNonBox.removeAllItems();
-                    magazzinoNonBox.setSelectedIndex(-1);
-                    aggiungiArticoloAllOrdineButton.setEnabled(false);
-                    catalogoQuantitaField.setText("");
                     articoloCatList.setEnabled(true);
-                    richiestaProgettoBox.setEnabled(false);
                 }
             }
         });
@@ -235,23 +212,22 @@ public class SessioneDipendenteViewPresenter {
 
         prodottoBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
+                listModelArticoliCatalogo.clear();
+                articoloCatList.setModel(listModelArticoliCatalogo);
+                richiediNotificaButton.setEnabled(false);
+                quantitàMagazzinoLabel.setText("");
+                catalogoQuantitaField.setText("");
+                catalogoQuantitaField.setEnabled(false);
+                magazzinoBox.setEnabled(false);
+                magazzinoBox.removeAllItems();
+                magazzinoBox.setSelectedIndex(-1);
+                magazzinoNonBox.setEnabled(false);
+                magazzinoNonBox.removeAllItems();
+                magazzinoNonBox.setSelectedIndex(-1);
+                richiestaProgettoBox.setEnabled(false);
+
                 if (prodottoBox.getSelectedIndex() != -1 && ricercaPerNomeField.getText().length() == 0) {
-
-                    richiediNotificaButton.setEnabled(false);
-                    quantitàMagazzinoLabel.setText("");
-                    catalogoQuantitaField.setText("");
-                    catalogoQuantitaField.setEnabled(false);
-                    magazzinoBox.setEnabled(false);
-                    magazzinoBox.removeAllItems();
-                    magazzinoBox.setSelectedIndex(-1);
-                    magazzinoNonBox.setEnabled(false);
-                    magazzinoNonBox.removeAllItems();
-                    magazzinoNonBox.setSelectedIndex(-1);
-                    richiestaProgettoBox.setEnabled(false);
-
-                    listModelArticoliCatalogo.clear();
                     listModelAppoggio.clear();
-
                     Categoria categoria = listCategoria.get(categoriaBox.getSelectedIndex());
                     Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
                     List<Articolo> listA = sessione.ottieniListaArticoliPerCategoria(categoria);
@@ -267,38 +243,18 @@ public class SessioneDipendenteViewPresenter {
                             listModelArticoliCatalogo.addElement(a.getNome() + "       " + budget + " €");
                             listModelAppoggio.addElement(a.getNome() + "       " + budget + " €");
                         }
-                    articoloCatList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                     articoloCatList.setModel(listModelArticoliCatalogo);
                     articoloCatList.setVisible(true);
                     articoloCatList.setEnabled(true);
                     aggiungiArticoloAllOrdineButton.setEnabled(false);
-
                 } else if (prodottoBox.getSelectedIndex() != -1 && ricercaPerNomeField.getText().length() != 0) {
-
-                    listModelArticoliCatalogo.clear();
-                    listModelArticoliCatalogo = new DefaultListModel();
-                    articoloCatList.setModel(listModelArticoliCatalogo);
-                    richiediNotificaButton.setEnabled(false);
-                    quantitàMagazzinoLabel.setText("");
-                    catalogoQuantitaField.setEnabled(false);
-                    articoloCatList.removeAll();
-                    richiestaProgettoBox.setEnabled(false);
-
                     List<Articolo> listA = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
                     for (Articolo a : listA)
                         listModelArticoliCatalogo.addElement(a.getNome() + "      " + a.getPrezzo() + " €");
                     articoloCatList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                     articoloCatList.setModel(listModelArticoliCatalogo);
                     articoloCatList.setVisible(true);
-
-                    magazzinoBox.setEnabled(false);
-                    magazzinoBox.removeAllItems();
-                    magazzinoBox.setSelectedIndex(-1);
-                    magazzinoNonBox.setEnabled(false);
-                    magazzinoNonBox.removeAllItems();
-                    magazzinoNonBox.setSelectedIndex(-1);
                     aggiungiArticoloAllOrdineButton.setEnabled(false);
-                    catalogoQuantitaField.setText("");
                     articoloCatList.setEnabled(true);
                 } else {
                 }
@@ -358,11 +314,9 @@ public class SessioneDipendenteViewPresenter {
                 } catch (ArrayIndexOutOfBoundsException e) {
                 }
             }
-
             public void removeUpdate(DocumentEvent documentEvent) {
 
             }
-
             public void changedUpdate(DocumentEvent documentEvent) {
 
             }
@@ -439,22 +393,19 @@ public class SessioneDipendenteViewPresenter {
         });
 
         ricercaPerNomeField.getDocument().addDocumentListener(new DocumentListener() {
-
             public void insertUpdate(DocumentEvent documentEvent) {
                 richiediNotificaButton.setEnabled(false);
                 listModelArticoliCatalogo.clear();
 
                 articoloCatList.setModel(listModelArticoliCatalogo);
-                listModelArticoliCatalogo = new DefaultListModel();
 
                 List<Articolo> listA = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
                 for (Articolo a : listA)
                     listModelArticoliCatalogo.addElement(a.getNome() + "      " + a.getPrezzo() + " €");
 
-                articoloCatList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                 articoloCatList.setModel(listModelArticoliCatalogo);
                 articoloCatList.setVisible(true);
-
+                articoloCatList.setSelectedIndex(-1);
                 magazzinoBox.setEnabled(false);
                 magazzinoBox.removeAllItems();
                 magazzinoBox.setSelectedIndex(-1);
@@ -464,8 +415,9 @@ public class SessioneDipendenteViewPresenter {
                 aggiungiArticoloAllOrdineButton.setEnabled(false);
                 catalogoQuantitaField.setText("");
                 articoloCatList.setEnabled(true);
+                categoriaBox.setEnabled(false);
+                prodottoBox.setEnabled(false);
             }
-
             public void removeUpdate(DocumentEvent documentEvent) {
                 if (ricercaPerNomeField.getText().length() != 0) {
                     richiediNotificaButton.setEnabled(false);
@@ -492,16 +444,16 @@ public class SessioneDipendenteViewPresenter {
                     catalogoQuantitaField.setText("");
                     articoloCatList.setEnabled(true);
                 } else {
+                    categoriaBox.setEnabled(true);
+                    prodottoBox.setEnabled(true);
                     articoloCatList.setModel(listModelAppoggio);
                     articoloCatList.setEnabled(true);
                     richiediNotificaButton.setEnabled(false);
                 }
             }
-
             public void changedUpdate(DocumentEvent documentEvent) {
 
             }
-
         });
 
         magazzinoBox.addActionListener(new ActionListener() {
@@ -743,8 +695,10 @@ public class SessioneDipendenteViewPresenter {
 
         aggiungiArticoloAllOrdineButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                if (magazzinoBox.getSelectedIndex() == -1 || catalogoQuantitaField.getText().length() == 0)
-                    showMessageDialog(getView(), "Non hai scelto il magazzino e/o non hai inserito la quantità adatta");
+                if (magazzinoBox.getSelectedIndex() == -1 || catalogoQuantitaField.getText().length() == 0 ||
+                        nuovoOrdineLabel.getText().length() == 0)
+                    showMessageDialog(getView(), "Non hai scelto il magazzino e/o non hai inserito la quantità " +
+                            "adatta o non hai creato nessun ordine");
                 else {
                     Articolo articolo = null;
                     if (ricercaPerNomeField.getText().length() == 0) {
@@ -982,7 +936,6 @@ public class SessioneDipendenteViewPresenter {
                         List<Articolo> listArtcl = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
                         articolo = listArtcl.get(articoloCatList.getSelectedIndex());
                     }
-                    //int indexProgetto = progettoOrdineBox.getSelectedIndex();
                     int indexProgetto = richiestaProgettoBox.getSelectedIndex();
                     Progetto progetto = d.getProgetti().get(indexProgetto);
                     sessione.creaNotifica(articolo, progetto, Integer.parseInt(catalogoQuantitaField.getText()));
