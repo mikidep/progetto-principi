@@ -1,10 +1,9 @@
 package com.depvin.pps.business;
 
-import com.depvin.pps.dbinterface.DBInterface;
-import com.depvin.pps.model.*;
+import com.depvin.pps.model.Magazzino;
+import com.depvin.pps.model.Nazione;
+import com.depvin.pps.model.Sede;
 import org.junit.Test;
-
-import java.util.List;
 
 /**
  * Created by costantino on 24/05/16.
@@ -13,68 +12,41 @@ public class SessioneAmministratoreTest {
 
     @Test
     public void AggiungiAmministratore() throws Exception {
-        String name = "Gesù";
-        String surname = "Cristo";
-        String username = "Jesusa";
-        String password = "Pezzente";
+        String name = "Mario";
+        String surname = "Rossi";
+        String username = "admin";
+        String password = "admin";
         Sistema.getInstance().aggiungiAmministratore(name, surname, username, password);
     }
 
     @Test
     public void aggiungiCapoProgetto() throws Exception {
-        String name = "Francesco";
-        String surname = "Schettino";
-        String username = "Costa";
-        String password = "Concordia";
+        String name = "Mario";
+        String surname = "Bianchi";
+        String username = "cp";
+        String password = "cp";
         Sistema.getInstance().aggiungiCapoProgetto(name, surname, username, password);
     }
 
     @Test
     public void aggiungiDipendente() throws Exception {
-        String name = "Vincenzo";
-        String surname = "Guarini";
-        String username = "Berzerk";
-        String password = "Hue";
+        String name = "Alberto";
+        String surname = "Monti";
+        String username = "dip";
+        String password = "dip";
         Sistema.getInstance().aggiungiDipendente(name, surname, username, password);
     }
 
     @Test
     public void aggiungiMagazziniere() throws Exception {
-        String name = "Renato";
-        String surname = "Rinino";
-        String username = "Renè";
-        String password = "Lupen";
+        String name = "Gennaro";
+        String surname = "D'Angelo";
+        String username = "mag";
+        String password = "mag";
         Nazione nazione = new Nazione("Italiana", 5.60f);
-        Sede sede = new Sede("Savona", nazione);
-        Magazzino magazzino = new Magazzino("ParDeCazzi", sede);
+        Sede sede = new Sede("Roma", nazione);
+        Magazzino magazzino = new Magazzino("Magazzino1", sede);
         Sistema.getInstance().aggiungiMagazziniere(name, surname, magazzino, username, password);
-    }
-
-    @Test
-    public void aggiungiProgetto() throws Exception {
-        CapoProgetto capoProgetto = (CapoProgetto) DBInterface.getInstance().getEntityManager()
-                .createQuery("SELECT u FROM Utente AS u WHERE u.username = :username", Utente.class)
-                .setParameter("username", "Costa")
-                .getSingleResult();
-        Nazione nazione = new Nazione("Italia", 5.60f);
-        Sede sede = new Sede("Napoli", nazione);
-        Progetto pgg = new Progetto("Cancro", 100.0f, sede);
-        Sistema.getInstance().aggiungiProgetto("008", sede, 0.10f, capoProgetto);
-        //DBInterface.getInstance().save();
-
-    }//Risolvere il prome del cast per ottenere il capo progetto
-
-    @Test
-    public void ottieniDipendentiPerProgetto() throws Exception {
-        Progetto p = (Progetto) DBInterface.getInstance().getEntityManager()
-                .createQuery("SELECT p FROM Progetto AS p WHERE p.id = :id", Progetto.class)
-                .setParameter("id", 3)
-                .getSingleResult();
-        System.out.println(p.getNome() + ": " + p.getBudget());
-        List<Dipendente> ds = p.getDipendenti();
-        for (Dipendente d: ds) {
-            System.out.println(d.getNome() + " " + d.getCognome());
-        }
     }
 
 }
