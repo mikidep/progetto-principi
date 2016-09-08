@@ -334,6 +334,7 @@ public class SessioneDipendenteViewPresenter {
                     aggiungiArticoloAllOrdineButton.setEnabled(true);
                     richiediNotificaButton.setEnabled(false);
                     quantitàMagazzinoLabel.setText("");
+                    catalogoQuantitaField.setText("");
                     magazzinoBox.removeAllItems();
                     magazzinoNonBox.removeAllItems();
                     richiestaProgettoBox.setEnabled(false);
@@ -364,8 +365,8 @@ public class SessioneDipendenteViewPresenter {
                     magazzinoBox.setSelectedIndex(-1);
                     magazzinoNonBox.setEnabled(true);
                     magazzinoNonBox.setSelectedIndex(-1);
-                    catalogoQuantitaField.setEnabled(true);
                     catalogoQuantitaField.setText("");
+                    catalogoQuantitaField.setEnabled(true);
 
                     ottieniInformazioniButton.setEnabled(true);
                     ottieniImmagineButton.setEnabled(true);
