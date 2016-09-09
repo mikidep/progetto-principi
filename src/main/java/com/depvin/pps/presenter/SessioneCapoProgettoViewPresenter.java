@@ -2,6 +2,8 @@ package com.depvin.pps.presenter;
 
 import com.depvin.pps.business.ReportCreationFailedException;
 import com.depvin.pps.business.SessioneCapoProgetto;
+import com.depvin.pps.business.UserLoadingException;
+import com.depvin.pps.business.UserNotFoundException;
 import com.depvin.pps.model.CapoProgetto;
 import com.depvin.pps.model.Dipendente;
 import com.depvin.pps.model.Progetto;
@@ -38,6 +40,11 @@ public class SessioneCapoProgettoViewPresenter {
     private JLabel labelBudget;
     private JLabel labelMsgBudget;
     private JLabel labelShowMsg;
+    private JTabbedPane tabbedPane1;
+    private JComboBox progettoAddBox;
+    private JTextField pwdTextField;
+    private JTextField usernameTextField;
+    private JButton aggiungiDipendenteAlProgettoButton;
     private DefaultListModel listModelProg;
     private DefaultListModel listModelDip;
 
@@ -52,7 +59,9 @@ public class SessioneCapoProgettoViewPresenter {
         final List<Progetto> progs = cp.getProgetti();
         for (Progetto p : progs) {
             listModelProg.addElement(p.getNome());
+            progettoAddBox.addItem(p.getNome());
         }
+        progettoAddBox.setSelectedIndex(-1);
         listProgetti.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         modificaBudgetButton.setEnabled(false);
         stampaOrdinePerProgettoButton.setEnabled(false);
@@ -61,6 +70,7 @@ public class SessioneCapoProgettoViewPresenter {
         listProgetti.setVisible(true);
         view.setContentPane(rootPanel);
         view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        tabbedPane1.setVisible(true);
         view.pack();
 
         listProgetti.addListSelectionListener(new ListSelectionListener() {
@@ -125,7 +135,7 @@ public class SessioneCapoProgettoViewPresenter {
                     try {
                         GregorianCalendar gc = new GregorianCalendar();
                         ByteArrayOutputStream bytes = sessione.stampaOrdineProgetto(prog);
-                        FileOutputStream of = new FileOutputStream("/home/costantino/" + cp.getNome() + "_" +
+                        FileOutputStream of = new FileOutputStream("/home/costantino/pdf_progetto/" + cp.getNome() + "_" +
                                 prog.getNome() + "_" + gc.get(Calendar.DATE) + "_" + gc.get(Calendar.MONTH) + "_" +
                                 gc.get(Calendar.YEAR) + "_" + gc.get(Calendar.HOUR) + "_" + gc.get(Calendar.MINUTE) +
                                 ".pdf");
@@ -159,7 +169,7 @@ public class SessioneCapoProgettoViewPresenter {
                     try {
                         GregorianCalendar gc = new GregorianCalendar();
                         ByteArrayOutputStream bytes = sessione.stampaOrdineDipendente(dip, prog);
-                        FileOutputStream of = new FileOutputStream("/home/costantino/" + cp.getNome() + "_" +
+                        FileOutputStream of = new FileOutputStream("/home/costantino/pdf_progetto/" + cp.getNome() + "_" +
                                 prog.getDipendenti().get(indexDip).getNome() + "_" + prog.getNome() + "_" +
                                 gc.get(Calendar.DATE) + "_" + gc.get(Calendar.MONTH) + "_" + gc.get(Calendar.YEAR) +
                                 "_" + gc.get(Calendar.HOUR) + "_" + gc.get(Calendar.MINUTE) + ".pdf");
@@ -171,6 +181,29 @@ public class SessioneCapoProgettoViewPresenter {
                         showMessageDialog(getView(), "Errore nella stampa degli ordini");
                     } catch (IOException e) {
                         showMessageDialog(getView(), "IOexception, impossibile stampare");
+                    }
+                }
+            }
+        });
+
+        aggiungiDipendenteAlProgettoButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (usernameTextField.getText().length() == 0 || pwdTextField.getText().length() == 0 ||
+                        progettoAddBox.getSelectedIndex() == -1)
+                    showMessageDialog(getView(), "I campi \"username\", \"password\" e \"Scegli il Progetto\" " +
+                            "non possono essere lasciati vuoti");
+                else {
+                    try {
+                        Dipendente dipendente = (Dipendente) sessione.ottieniUtente(usernameTextField.getText(),
+                                pwdTextField.getText());
+                        int indexProgetto = progettoAddBox.getSelectedIndex();
+                        Progetto progetto = cp.getProgetti().get(indexProgetto);
+                        sessione.aggiungiDipendenteProgetto(progetto, dipendente);
+                        showMessageDialog(getView(), "Dipendente aggiunto al Progetto con successo");
+                    } catch (UserNotFoundException e) {
+                        showMessageDialog(getView(), "Utente già inesistente");
+                    } catch (UserLoadingException e) {
+                        showMessageDialog(getView(), "Errore nel caricamento");
                     }
                 }
             }

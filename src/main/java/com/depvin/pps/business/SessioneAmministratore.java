@@ -48,10 +48,6 @@ public class SessioneAmministratore implements Sessione {
         return Sistema.getInstance().ottieniUtente(username, password);
     }
 
-    public void aggiungiDipendenteProgetto(Progetto progetto, Dipendente dipendente) {
-        Sistema.getInstance().aggiungiDipendenteProgetto(progetto, dipendente);
-    }
-
     public List<CapoProgetto> ottieniListaCapoProgetto() {
         return Sistema.getInstance().ottieniListaCapoProgetto();
     }

@@ -302,7 +302,6 @@
             <item value="Aggiungi Magazziniere e Sede"/>
             <item value="Aggiungi Capo Progetto"/>
             <item value="Aggiungi Progetto"/>
-            <item value="Aggiungi Dipendente ad un Progetto"/>
           </model>
         </properties>
       </component>

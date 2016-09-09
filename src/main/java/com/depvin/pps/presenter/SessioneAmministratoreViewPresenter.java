@@ -384,64 +384,6 @@ public class SessioneAmministratoreViewPresenter {
                     nuovoMagazzinoLabel.setVisible(false);
                     spedizioneLabel.setVisible(false);
                     magazzinoLabel.setVisible(false);
-                } else if (selezioneOpzioneBox.getSelectedIndex() == 7) {
-                    usernameUtenteField.setText("");
-                    passwordUtenteField.setText("");
-                    progettoBox.removeAllItems();
-                    capoProgettoBox.removeAllItems();
-
-                    List<CapoProgetto> listCapoProgetto = sessione.ottieniListaCapoProgetto();
-                    for (CapoProgetto cp : listCapoProgetto)
-                        capoProgettoBox.addItem(cp.getUsername());
-
-                    progettoBox.removeAllItems();
-                    progettoBox.setEnabled(false);
-                    progettoBox.setVisible(true);
-                    int index = capoProgettoBox.getSelectedIndex();
-                    List<Progetto> list = sessione.ottieniListaCapoProgetto().get(index).getProgetti();
-                    for (Progetto prog : list)
-                        progettoBox.addItem(prog.getNome());
-                    progettoBox.setSelectedIndex(-1);
-                    capoProgettoBox.setSelectedIndex(-1);
-
-                    usernameUtenteField.setVisible(true);
-                    passwordUtenteField.setVisible(true);
-                    capoProgettoBox.setVisible(true);
-                    buttonDipProg.setVisible(true);
-
-                    nomeUtenteField.setVisible(false);
-                    cognomeUtenteField.setVisible(false);
-                    nuovoMagazzinoNomeField.setVisible(false);
-                    nomeMagazzinoField.setVisible(false);
-                    nomeProgettoField.setVisible(false);
-                    budgetField.setVisible(false);
-                    sedeBox.setVisible(false);
-                    nomeSedeField.setVisible(false);
-                    nomeNazioneField.setVisible(false);
-                    prezzoSpedizioneField.setVisible(false);
-
-                    buttonAdmin.setVisible(false);
-                    buttonMagazziniereVecchiaS.setVisible(false);
-                    buttonMagazziniereNuovaS.setVisible(false);
-                    buttonCapo.setVisible(false);
-                    buttonProg.setVisible(false);
-                    buttonDip.setVisible(false);
-
-                    usernameLabel.setVisible(true);
-                    passwordLabel.setVisible(true);
-                    capoProgettoBoxLabel.setVisible(true);
-                    progettoBoxLabel.setVisible(true);
-
-                    nomeLabel.setVisible(false);
-                    cognomeLabel.setVisible(false);
-                    sedeBoxLabel.setVisible(false);
-                    sedeLabel.setVisible(false);
-                    nazioneLabel.setVisible(false);
-                    nuovoMagazzinoLabel.setVisible(false);
-                    spedizioneLabel.setVisible(false);
-                    magazzinoLabel.setVisible(false);
-                    nuovoProgettoLabel.setVisible(false);
-                    budgetLabel.setVisible(false);
                 }
             }
         });
@@ -623,32 +565,6 @@ public class SessioneAmministratoreViewPresenter {
                         showMessageDialog(getView(), "Magazziniere aggiunto con successo");
                     } catch (UserExistsException e) {
                         showMessageDialog(getView(), "Utente già esistente");
-                    } catch (UserLoadingException e) {
-                        showMessageDialog(getView(), "Errore nel caricamento");
-                    }
-                }
-            }
-        });
-
-        buttonDipProg.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (usernameUtenteField.getText().length() == 0 || passwordUtenteField.getText().length() == 0 ||
-                        progettoBox.getSelectedIndex() == -1 || capoProgettoBox.getSelectedIndex() == -1)
-                    showMessageDialog(getView(), "I campi \"username\", \"password\", \"Scegli il Capo Progetto\"" +
-                            " e \"Scegli il Progetto\" non possono essere lasciati vuoti");
-                else {
-                    try {
-                        Dipendente dipendente = (Dipendente) sessione.ottieniUtente(usernameUtenteField.getText(),
-                                passwordUtenteField.getText());
-                        int indexCapoProgetto = capoProgettoBox.getSelectedIndex();
-                        int indexProgetto = progettoBox.getSelectedIndex();
-                        CapoProgetto capoProgetto = sessione.ottieniListaCapoProgetto().get(indexCapoProgetto);
-                        Progetto progetto = capoProgetto.getProgetti().get(indexProgetto);
-                        //progetto.getDipendenti().add(dipendente);
-                        sessione.aggiungiDipendenteProgetto(progetto, dipendente);
-                        showMessageDialog(getView(), "Dipendente aggiunto al Progetto con successo");
-                    } catch (UserNotFoundException e) {
-                        showMessageDialog(getView(), "Utente già inesistente");
                     } catch (UserLoadingException e) {
                         showMessageDialog(getView(), "Errore nel caricamento");
                     }

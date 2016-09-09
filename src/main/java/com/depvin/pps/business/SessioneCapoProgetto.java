@@ -51,4 +51,12 @@ public class SessioneCapoProgetto implements Sessione {
         return Sistema.getInstance().articoliToPDFBytes(ordine.getNome(), Sistema.getInstance().ottieniListaOrdine(ordine));
     }
 
+    public void aggiungiDipendenteProgetto(Progetto progetto, Dipendente dipendente) {
+        Sistema.getInstance().aggiungiDipendenteProgetto(progetto, dipendente);
+    }
+
+    public Utente ottieniUtente(String username, String password) throws UserNotFoundException, UserLoadingException {
+        return Sistema.getInstance().ottieniUtente(username, password);
+    }
+
 }
