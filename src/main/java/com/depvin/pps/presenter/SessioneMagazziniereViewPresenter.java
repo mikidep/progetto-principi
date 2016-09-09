@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -73,6 +74,8 @@ public class SessioneMagazziniereViewPresenter {
     private JButton modificaCategoriaButton;
     private JButton clearButton;
     private JButton evadiOrdineButton;
+    private JButton scegliImmagineButton;
+    private JButton scegliImmagineButton1;
 
     private DefaultListModel listArticoliDisponibiliOrdineModel;
     private DefaultListModel listOrdiniModel;
@@ -204,7 +207,7 @@ public class SessioneMagazziniereViewPresenter {
                     ByteArrayOutputStream bytes = sessione.stampaArticoliOrdine(m.getNome() + " " + gc.get(Calendar.DATE) + gc.get(Calendar.MONTH) +
                             gc.get(Calendar.YEAR) + gc.get(Calendar.HOUR) + gc.get(Calendar.MINUTE), listAO);
 
-                    FileOutputStream of = new FileOutputStream("/home/costantino/" + m.getNome() + "_" +
+                    FileOutputStream of = new FileOutputStream("/home/costantino/pdf_progetto/" + m.getNome() + "_" +
                             gc.get(Calendar.DATE) + "_" + gc.get(Calendar.MONTH) + "_" + gc.get(Calendar.YEAR) +
                             "_" + gc.get(Calendar.HOUR) + "_" + gc.get(Calendar.MINUTE) + ".pdf");
                     bytes.writeTo(of);
@@ -250,8 +253,9 @@ public class SessioneMagazziniereViewPresenter {
                     Articolo articolo = new Articolo(nomeField.getText(), descrizioneField.getText(),
                             budget, prodotto, produttore, listF);
                     try {
-                        BufferedImage img = ImageIO.read(new File("/home/costantino/Scaricati/Progetto_Softwar_Immagini/" +
-                                immagineField.getText()));
+                        /*BufferedImage img = ImageIO.read(new File("/home/costantino/Scaricati/Progetto_Softwar_Immagini/" +
+                                immagineField.getText()));*/
+                        BufferedImage img = ImageIO.read(new File(immagineField.getText()));
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         ImageIO.write(img, "jpg", baos);
                         baos.flush();
@@ -438,8 +442,9 @@ public class SessioneMagazziniereViewPresenter {
                     }
                     if (immagineModificaField.getText().length() != 0) {
                         try {
-                            BufferedImage img = ImageIO.read(new File("/home/costantino/Scaricati/Progetto_Softwar_Immagini/" +
-                                    immagineModificaField.getText()));
+                            BufferedImage img = ImageIO.read(new File(immagineModificaField.getText()));
+                            /*BufferedImage img = ImageIO.read(new File("/home/costantino/Scaricati/Progetto_Softwar_Immagini/" +
+                                    immagineModificaField.getText()));*/
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             ImageIO.write(img, "jpg", baos);
                             baos.flush();
@@ -568,7 +573,7 @@ public class SessioneMagazziniereViewPresenter {
                             ByteArrayOutputStream bytes = sessione.stampaArticoliOrdine(m.getNome() + " " + gc.get(Calendar.DATE) + gc.get(Calendar.MONTH) +
                                     gc.get(Calendar.YEAR) + gc.get(Calendar.HOUR) + gc.get(Calendar.MINUTE), listAO);
 
-                            FileOutputStream of = new FileOutputStream("/home/costantino/" + m.getNome() + "_" +
+                            FileOutputStream of = new FileOutputStream("/home/costantino/pdf_progetto/" + m.getNome() + "_" +
                                     gc.get(Calendar.DATE) + "_" + gc.get(Calendar.MONTH) + "_" + gc.get(Calendar.YEAR) +
                                     "_" + gc.get(Calendar.HOUR) + "_" + gc.get(Calendar.MINUTE) + ".pdf");
                             bytes.writeTo(of);
@@ -589,6 +594,39 @@ public class SessioneMagazziniereViewPresenter {
             }
         });
 
+        scegliImmagineButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                JFileChooser chooser = new JFileChooser();
+                FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                        "JPG & JPEG Images", "jpg", "jpeg");
+                chooser.setFileFilter(filter);
+                int returnVal = chooser.showOpenDialog(getView());
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    /*System.out.println("You chose to open this file: " +
+                            chooser.getSelectedFile().getAbsolutePath());*/
+                    immagineModificaField.setText(chooser.getSelectedFile().getAbsolutePath());
+                } else {
+                    showMessageDialog(getView(), "Inserire un'immagine di tipo jpg o jpeg");
+                }
+            }
+        });
+
+        scegliImmagineButton1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                JFileChooser chooser = new JFileChooser();
+                FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                        "JPG & JPEG Images", "jpg", "jpeg");
+                chooser.setFileFilter(filter);
+                int returnVal = chooser.showOpenDialog(getView());
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    /*System.out.println("You chose to open this file: " +
+                            chooser.getSelectedFile().getAbsolutePath());*/
+                    immagineField.setText(chooser.getSelectedFile().getAbsolutePath());
+                } else {
+                    showMessageDialog(getView(), "Inserire un'immagine di tipo jpg o jpeg");
+                }
+            }
+        });
     }
 
     public void show() {
@@ -607,5 +645,4 @@ public class SessioneMagazziniereViewPresenter {
         } catch (IOException e) {
         }
     }
-
 }

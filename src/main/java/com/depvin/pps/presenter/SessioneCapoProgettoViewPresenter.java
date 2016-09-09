@@ -190,8 +190,8 @@ public class SessioneCapoProgettoViewPresenter {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (usernameTextField.getText().length() == 0 || pwdTextField.getText().length() == 0 ||
                         progettoAddBox.getSelectedIndex() == -1)
-                    showMessageDialog(getView(), "I campi \"username\", \"password\" e \"Scegli il Progetto\" " +
-                            "non possono essere lasciati vuoti");
+                    showMessageDialog(getView(), "I campi \"username dipendente\", \"password dipendente\" e" +
+                            " \"Scegli il Progetto\" non possono essere lasciati vuoti");
                 else {
                     try {
                         Dipendente dipendente = (Dipendente) sessione.ottieniUtente(usernameTextField.getText(),
