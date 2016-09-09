@@ -83,7 +83,7 @@
               </component>
               <component id="66387" class="javax.swing.JButton" binding="stampaArticoliOrdineButton" default-binding="true">
                 <constraints>
-                  <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                  <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false">
                     <preferred-size width="200" height="30"/>
                   </grid>
                 </constraints>
@@ -93,7 +93,7 @@
               </component>
               <component id="1d9b4" class="javax.swing.JButton" binding="evadiOrdineButton" default-binding="true">
                 <constraints>
-                  <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                  <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false">
                     <preferred-size width="200" height="30"/>
                   </grid>
                 </constraints>

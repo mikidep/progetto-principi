@@ -78,6 +78,7 @@ public class SessioneMagazziniereViewPresenter {
     private JButton scegliImmagineButton1;
     private JComboBox categoriaBox;
     private JComboBox prodottoBox;
+    //private JButton aggiornaButton;
 
     private DefaultListModel listArticoliDisponibiliOrdineModel;
     private DefaultListModel listOrdiniModel;
@@ -182,11 +183,15 @@ public class SessioneMagazziniereViewPresenter {
 
         listModificaDisponibilitàArticoloMagazzino.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                int index = listModificaDisponibilitàArticoloMagazzino.getSelectedIndex();
-                ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
-                labelquantitàDisponibile.setText(String.valueOf(am.getDisponibilita()));
-                labelquantitàDisponibile.setVisible(true);
-                confermaModificaButton.setEnabled(true);
+                try {
+                    int index = listModificaDisponibilitàArticoloMagazzino.getSelectedIndex();
+                    ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
+                    labelquantitàDisponibile.setText(String.valueOf(am.getDisponibilita()));
+                    labelquantitàDisponibile.setVisible(true);
+                    confermaModificaButton.setEnabled(true);
+                } catch (ArrayIndexOutOfBoundsException e) {
+
+                }
             }
         });
 
@@ -371,10 +376,14 @@ public class SessioneMagazziniereViewPresenter {
 
                 listRichiesteArticoliModel.clear();
                 List<RichiestaArticolo> listRA = sessione.ottieniListaRichiestaArticoliSede(m.getMagazzino().getSede());
-                for (RichiestaArticolo ra : listRA)
-                    listRichiesteArticoliModel.addElement(ra.getArticolo().getNome() + "   x " + ra.getQuantita() +
-                            "  progetto : " + ra.getProgetto().getNome());
-                listRichiesteArticoli.setModel(listRichiesteArticoliModel);
+                if (!listRA.equals(null)) {
+                    for (RichiestaArticolo ra : listRA)
+                        listRichiesteArticoliModel.addElement(ra.getArticolo().getNome() + "   x " + ra.getQuantita() +
+                                "  progetto : " + ra.getProgetto().getNome());
+                    listRichiesteArticoli.setModel(listRichiesteArticoliModel);
+                }
+                /*listModificaDisponibilitàArticoloMagazzino.clearSelection();
+                labelquantitàDisponibile.setText("");*/
             }
         });
 
@@ -706,7 +715,23 @@ public class SessioneMagazziniereViewPresenter {
                 }
             }
         });
+
+        /*aggiornaButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                aggiorna();
+            }
+        });*/
+
     }
+
+    /*public void aggiorna() {
+        listArticoliMagazzinoModel.clear();
+        for (ArticoloMagazzino am : sessione.getUtente().getMagazzino().getArticoliMagazzino())
+            listArticoliMagazzinoModel.addElement(am.getArticolo().getNome());
+        listAggiungiArticoloMagazzino.setModel(listArticoliMagazzinoModel);
+        listModificaDisponibilitàArticoloMagazzino.setModel(listArticoliMagazzinoModel);
+        listModificaArticoloMagazzino.setModel(listArticoliMagazzinoModel);
+    }*/
 
     public void show() {
         view.setVisible(true);
