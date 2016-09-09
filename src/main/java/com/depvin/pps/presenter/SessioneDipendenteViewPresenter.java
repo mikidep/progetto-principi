@@ -19,6 +19,8 @@ import java.util.*;
 import java.util.List;
 import static javax.swing.JOptionPane.showMessageDialog;
 import java.awt.Color;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by costantino on 24/05/16.
@@ -80,6 +82,7 @@ public class SessioneDipendenteViewPresenter {
         this.sessione = sessione;
         final Dipendente d = sessione.getUtente();
         view = new JFrame("Sessione: " + d.getNome() + " " + d.getCognome());
+        final Pattern pattern = Pattern.compile("[a-zA-Z_-|\"£$%&/()=?^'/òçèé+*ù§à°#@{};:.]");
         rootPanel.setPreferredSize(new Dimension(1200, 700));
         view.setLocation(80, 0);
         view.setContentPane(rootPanel);
@@ -287,27 +290,40 @@ public class SessioneDipendenteViewPresenter {
                                 articolo = listArtcl.get(articoloCatList.getSelectedIndex());
                             }
                             List<ArticoloMagazzino> listAM = articolo.getInMagazzino();
-                            riempiMagazzino(listAM, Integer.parseInt(catalogoQuantitaField.getText()));
-                            int j = 0;
-                            int index = 0;
-                            for (int x = 0; x < magazzinoBox.getItemCount(); x++) {
-                                if (magazzinoBox.getItemAt(x).equals(nomeBox)) {
-                                    j++;
-                                    index = magazzinoBox.getSelectedIndex();
+                            Matcher m = pattern.matcher(catalogoQuantitaField.getText());
+                            if (!m.find()) {
+                                riempiMagazzino(listAM, Integer.parseInt(catalogoQuantitaField.getText()));
+                                int j = 0;
+                                int index = 0;
+                                if (magazzinoBox.getItemCount() != 0) {
+                                    for (int x = 0; x < magazzinoBox.getItemCount(); x++) {
+                                        if (magazzinoBox.getItemAt(x).equals(nomeBox)) {
+                                            j++;
+                                            index = magazzinoBox.getSelectedIndex();
+                                        }
+                                    }
                                 }
-                            }
-                            if (j == 0) {
-                                magazzinoBox.setSelectedIndex(-1);
-                                magazzinoBox.setEnabled(true);
-                                quantitàMagazzinoLabel.setText("");
-                                aggiungiArticoloAllOrdineButton.setEnabled(false);
+                                if (j == 0) {
+                                    magazzinoBox.setSelectedIndex(-1);
+                                    magazzinoBox.setEnabled(true);
+                                    quantitàMagazzinoLabel.setText("");
+                                    aggiungiArticoloAllOrdineButton.setEnabled(false);
+                                } else {
+                                    magazzinoBox.setSelectedIndex(index);
+                                    magazzinoBox.setEnabled(true);
+                                    aggiungiArticoloAllOrdineButton.setEnabled(true);
+                                }
+                                magazzinoNonBox.setSelectedIndex(-1);
+                                magazzinoNonBox.setEnabled(true);
                             } else {
-                                magazzinoBox.setSelectedIndex(index);
-                                magazzinoBox.setEnabled(true);
-                                aggiungiArticoloAllOrdineButton.setEnabled(true);
+                                magazzinoBox.removeAllItems();
+                                magazzinoBox.setEnabled(false);
+                                magazzinoNonBox.removeAllItems();
+                                magazzinoNonBox.setEnabled(false);
+                                catalogoQuantitaField.setText("");
+                                catalogoQuantitaField.setEnabled(false);
+                                articoloCatList.setSelectedIndex(-1);
                             }
-                            magazzinoNonBox.setSelectedIndex(-1);
-                            magazzinoNonBox.setEnabled(true);
                         }
                     };
                     SwingUtilities.invokeLater(run);
@@ -484,7 +500,7 @@ public class SessioneDipendenteViewPresenter {
                     else
                         limite = Integer.parseInt(catalogoQuantitaField.getText());
                     for (ArticoloMagazzino am : listAM)
-                        if (am.getDisponibilita() > limite)
+                        if (am.getDisponibilita() >= limite && am.getDisponibilita() != 0)
                             listMa.add(am.getMagazzino());
                     Magazzino magazzino = listMa.get(index);
                     int inr = -1;
@@ -499,6 +515,14 @@ public class SessioneDipendenteViewPresenter {
 
                 } catch (ArrayIndexOutOfBoundsException e) {
 
+                } catch (NumberFormatException e) {
+                    showMessageDialog(getView(), "Non puoi inserire caratteri che non siano cifre");
+                    magazzinoBox.removeAllItems();
+                    magazzinoBox.setEnabled(false);
+                    magazzinoNonBox.removeAllItems();
+                    magazzinoNonBox.setEnabled(false);
+                    catalogoQuantitaField.setEnabled(false);
+                    articoloCatList.setSelectedIndex(-1);
                 }
             }
         });
@@ -653,7 +677,6 @@ public class SessioneDipendenteViewPresenter {
                     int indexArt = ordineCorrenteList.getSelectedIndex();
                     ArticoloOrdine ao = ordine.getArticoliOrdine().get(indexArt);
                     sessione.modificaDisponibilitàArticoloOrdine(ao, Integer.parseInt(ordineQuantitaField.getText()));
-                    //listModelArticoliOrdineCorrente = new DefaultListModel();
                     listModelArticoliOrdineCorrente.clear();
                     listOrdineArticoliNuovo.clear();
                     float app = 0;
@@ -695,11 +718,14 @@ public class SessioneDipendenteViewPresenter {
         });
 
         aggiungiArticoloAllOrdineButton.addActionListener(new ActionListener() {
+            //Matcher m = pattern.matcher(catalogoQuantitaField.getText());
             public void actionPerformed(ActionEvent actionEvent) {
                 if (magazzinoBox.getSelectedIndex() == -1 || catalogoQuantitaField.getText().length() == 0 ||
                         nuovoOrdineLabel.getText().length() == 0)
                     showMessageDialog(getView(), "Non hai scelto il magazzino e/o non hai inserito la quantità " +
                             "adatta o non hai creato nessun ordine");
+                /*else if (m.find())
+                    showMessageDialog(getView(), "Hai inserito caratteri particolari nella quantità");*/
                 else {
                     Articolo articolo = null;
                     if (ricercaPerNomeField.getText().length() == 0) {
@@ -714,7 +740,7 @@ public class SessioneDipendenteViewPresenter {
                     } else {
                         List<Articolo> listArtcl = sessione.ottieniListaArticoliPerRicerca(ricercaPerNomeField.getText());
                         articolo = listArtcl.get(articoloCatList.getSelectedIndex());
-                    }
+                        }
                     List<ArticoloMagazzino> listAM = articolo.getInMagazzino();
                     int index = magazzinoBox.getSelectedIndex();
                     List<Magazzino> listMa = new ArrayList<Magazzino>();
@@ -786,8 +812,8 @@ public class SessioneDipendenteViewPresenter {
                     }
                     ordineArticoliNuovoList.setModel(listOrdineArticoliNuovo);
                     ordineCorrenteList.setModel(listModelArticoliOrdineCorrente);
+                    }
                 }
-            }
         });
 
         ordineCorrenteList.addListSelectionListener(new ListSelectionListener() {
@@ -822,7 +848,7 @@ public class SessioneDipendenteViewPresenter {
                     ByteArrayOutputStream bytes = sessione.stampaOrdine(ordine);
                     //TODO:
                     // A seconda del computer che verrà presentato verrà cambiata la radice in cui salvare la stampa
-                    FileOutputStream of = new FileOutputStream("/home/costantino/" + d.getNome() + "_" +
+                    FileOutputStream of = new FileOutputStream("/home/costantino/pdf_progetto/" + d.getNome() + "_" +
                             gc.get(Calendar.DATE) + "_" + gc.get(Calendar.MONTH) + "_" + gc.get(Calendar.YEAR) +
                             "_" + gc.get(Calendar.HOUR) + "_" + gc.get(Calendar.MINUTE) + ".pdf");
                     bytes.writeTo(of);
@@ -966,7 +992,7 @@ public class SessioneDipendenteViewPresenter {
         for (ArticoloMagazzino am : articoloMagazzinos) {
             magazzinoNonBox.setForeground(new Color(0xff0000));
             magazzinoBox.setForeground(new Color(0x00ff00));
-            if (am.getDisponibilita() > limite) {
+            if (am.getDisponibilita() >= limite && am.getDisponibilita() != 0) {
                 magazzinoBox.addItem(am.getMagazzino().getNome());
             } else {
                 magazzinoNonBox.addItem(am.getMagazzino().getNome());
