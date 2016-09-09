@@ -34,14 +34,6 @@ public class Sistema {
 
     void aggiungiArticoloMagazzino(ArticoloMagazzino articoloMagazzino, Magazzino magazzino) {
         magazzino.getArticoliMagazzino().add(articoloMagazzino);
-        /*Articolo a = articoloMagazzino.getArticolo();
-        a.getInMagazzino().add(articoloMagazzino);*/
-        DBInterface.getInstance().save();
-    }
-
-    void linkaArticoliMagazzino(ArticoloMagazzino articoloMagazzino, Magazzino magazzino) {
-        Articolo a = articoloMagazzino.getArticolo();
-        a.getInMagazzino().add(articoloMagazzino);
         DBInterface.getInstance().save();
     }
 

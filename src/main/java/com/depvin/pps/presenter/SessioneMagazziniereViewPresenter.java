@@ -76,6 +76,8 @@ public class SessioneMagazziniereViewPresenter {
     private JButton evadiOrdineButton;
     private JButton scegliImmagineButton;
     private JButton scegliImmagineButton1;
+    private JComboBox categoriaBox;
+    private JComboBox prodottoBox;
 
     private DefaultListModel listArticoliDisponibiliOrdineModel;
     private DefaultListModel listOrdiniModel;
@@ -88,13 +90,13 @@ public class SessioneMagazziniereViewPresenter {
         this.sessione = sessione;
         final Magazziniere m = sessione.getUtente();
         view = new JFrame("Sessione: " + m.getNome() + " " + m.getCognome());
-        rootPanel.setPreferredSize(new Dimension(900, 750));
+        rootPanel.setPreferredSize(new Dimension(1000, 750));
         view.setLocation(200, 0);
         view.setContentPane(rootPanel);
         view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         final List<ArticoloMagazzino> listAM = m.getMagazzino().getArticoliMagazzino();
-        List<Articolo> listAAA = new ArrayList<Articolo>();
+        final List<Articolo> listAAA = new ArrayList<Articolo>();
         for (ArticoloMagazzino ammm : listAM)
             listAAA.add(ammm.getArticolo());
 
@@ -102,6 +104,18 @@ public class SessioneMagazziniereViewPresenter {
             if (!listAAA.contains(a))
                 sessione.aggiungiArticoloMagazzino(a, 0);
         }
+        for (Categoria c : sessione.ottieniListaCategoria()) {
+            categoriaBox.addItem(c.getNome());
+            for (Prodotto p : sessione.ottieniListaProdotto(c)) {
+                prodottoBox.addItem(p.getNome());
+            }
+        }
+        prodottoBox.addItem("Nuovo");
+        categoriaBox.addItem("Nuovo");
+        prodottoBox.setSelectedIndex(-1);
+        categoriaBox.setSelectedIndex(-1);
+        categoriaField.setEnabled(false);
+        prodottoField.setEnabled(false);
 
         listOrdiniModel = new DefaultListModel();
         listRichiesteArticoliModel = new DefaultListModel();
@@ -133,10 +147,9 @@ public class SessioneMagazziniereViewPresenter {
 
         for (ArticoloMagazzino am : m.getMagazzino().getArticoliMagazzino())
             listArticoliMagazzinoModel.addElement(am.getArticolo().getNome());
+
         listAggiungiArticoloMagazzino.setModel(listArticoliMagazzinoModel);
-
         listModificaDisponibilitàArticoloMagazzino.setModel(listArticoliMagazzinoModel);
-
         listModificaArticoloMagazzino.setModel(listArticoliMagazzinoModel);
 
         List<Ordine> listaOrdine = new ArrayList<Ordine>();
@@ -226,8 +239,9 @@ public class SessioneMagazziniereViewPresenter {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (nomeField.getText().length() == 0 || descrizioneField.getText().length() == 0 ||
                         prezzoField.getText().length() == 0 || quantitàField.getText().length() == 0 ||
-                        prodottoField.getText().length() == 0 || produttoreField.getText().length() == 0 ||
-                        fornitoreField.getText().length() == 0 || immagineField.getText().length() == 0)
+                        (prodottoField.getText().length() == 0 && prodottoBox.getSelectedIndex() == -1) ||
+                        produttoreField.getText().length() == 0 || fornitoreField.getText().length() == 0 ||
+                        immagineField.getText().length() == 0)
                     showMessageDialog(getView(), "Riempire tutti i campi");
                 else {
                     String newBudget = prezzoField.getText();
@@ -235,26 +249,55 @@ public class SessioneMagazziniereViewPresenter {
                     if (!newBudget.contains("."))
                         newBudget = newBudget + ".00";
                     float budget = Float.parseFloat(newBudget);
-                    Categoria categoria = new Categoria(categoriaField.getText());
+
                     List<Categoria> listC = new ArrayList<Categoria>();
-                    List<Categoria> listCAT = sessione.ottieniListaCategoria();
-                    for (Categoria cat : listCAT) {
+
+                    if (categoriaBox.getSelectedItem().equals("Nuovo")) {
+                        Categoria categoria = new Categoria(categoriaField.getText());
+                        List<Categoria> listCAT = sessione.ottieniListaCategoria();
+                        for (Categoria cat : listCAT) {
+                            if (listC.isEmpty())
+                                if (cat.getNome().equals(categoria.getNome()))
+                                    listC.add(cat);
+                        }
                         if (listC.isEmpty())
-                            if (cat.getNome().equals(categoria.getNome()))
-                                listC.add(cat);
+                            listC.add(categoria);
+                    } else {
+                        Categoria cat = sessione.ottieniListaCategoria().get(categoriaBox.getSelectedIndex());
+                        listC.add(cat);
                     }
-                    if (listC.isEmpty())
-                        listC.add(categoria);
+
                     Fornitore fornitore = new Fornitore(fornitoreField.getText());
                     List<Fornitore> listF = new ArrayList<Fornitore>();
                     listF.add(fornitore);
                     Produttore produttore = new Produttore(produttoreField.getText());
-                    Prodotto prodotto = new Prodotto(prodottoField.getText(), listC);
+                    Prodotto prodotto = new Prodotto("");
+                    if (prodottoBox.getSelectedItem().equals("Nuovo")) {
+                        int k = 0;
+                        int indexx = -1;
+                        List<Prodotto> lp = new ArrayList<Prodotto>();
+                        for (Categoria c : sessione.ottieniListaCategoria())
+                            for (Prodotto p : sessione.ottieniListaProdotto(c))
+                                lp.add(p);
+                        for (Prodotto p : lp)
+                            if (p.getNome().equals(prodottoField.getText())) {
+                                indexx = lp.indexOf(p);
+                                k++;
+                            }
+                        if (k > 0)
+                            prodotto = lp.get(indexx);
+                        else
+                            prodotto = new Prodotto(prodottoField.getText(), listC);
+                    } else {
+                        List<Prodotto> lp = new ArrayList<Prodotto>();
+                        for (Categoria c : sessione.ottieniListaCategoria())
+                            for (Prodotto p : sessione.ottieniListaProdotto(c))
+                                lp.add(p);
+                        prodotto = lp.get(prodottoBox.getSelectedIndex());
+                    }
                     Articolo articolo = new Articolo(nomeField.getText(), descrizioneField.getText(),
                             budget, prodotto, produttore, listF);
                     try {
-                        /*BufferedImage img = ImageIO.read(new File("/home/costantino/Scaricati/Progetto_Softwar_Immagini/" +
-                                immagineField.getText()));*/
                         BufferedImage img = ImageIO.read(new File(immagineField.getText()));
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         ImageIO.write(img, "jpg", baos);
@@ -277,19 +320,24 @@ public class SessioneMagazziniereViewPresenter {
                         sessione.aggiungiArticoloMagazzino(articolo, Integer.parseInt(quantitàField.getText()));
                         showMessageDialog(getView(), "Articolo aggiunto con successo");
 
-                        listArticoliMagazzinoModel.removeAllElements();
                         listArticoliMagazzinoModel.clear();
-
                         for (ArticoloMagazzino am : m.getMagazzino().getArticoliMagazzino())
                             listArticoliMagazzinoModel.addElement(am.getArticolo().getNome());
                         listAggiungiArticoloMagazzino.setModel(listArticoliMagazzinoModel);
-
-                        List<ArticoloMagazzino> listAMA = m.getMagazzino().getArticoliMagazzino();
-                        for (ArticoloMagazzino ao : listAMA)
-                            if (ao.getArticolo().getNome().equals(amg.getArticolo().getNome()))
-                                index = listAMA.indexOf(ao);
-                        ArticoloMagazzino ammm = listAMA.get(index);
-                        sessione.linkaArticoliMagazzino(ammm, m.getMagazzino());
+                        categoriaBox.removeAllItems();
+                        prodottoBox.removeAllItems();
+                        for (Categoria c : sessione.ottieniListaCategoria()) {
+                            categoriaBox.addItem(c.getNome());
+                            for (Prodotto p : sessione.ottieniListaProdotto(c)) {
+                                prodottoBox.addItem(p.getNome());
+                            }
+                        }
+                        prodottoBox.addItem("Nuovo");
+                        categoriaBox.addItem("Nuovo");
+                        categoriaField.setEnabled(false);
+                        prodottoField.setEnabled(false);
+                        prodottoBox.setSelectedIndex(-1);
+                        categoriaBox.setSelectedIndex(-1);
                     }
                     } catch (IOException e) {
                     }
@@ -317,13 +365,6 @@ public class SessioneMagazziniereViewPresenter {
                 ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
                 if (quantitàFieldMod.getText().length() != 0) {
                     sessione.modificaQuantitàArticolo(am, Integer.parseInt(quantitàFieldMod.getText()), m.getMagazzino());
-                    List<ArticoloMagazzino> listAM = am.getArticolo().getInMagazzino();
-                    int andex = 0;
-                    for (ArticoloMagazzino asma : listAM)
-                        if (asma.getMagazzino().getNome().equals(m.getMagazzino().getNome()))
-                            andex += 1;
-                    if (andex == 0)
-                        sessione.aggiungiArticoloInArticoloMagazzino(am, m.getMagazzino());
                 } else
                     showMessageDialog(getView(), "Il campo \"modifica disponibilità\" non può rimanere vuoto");
                 labelquantitàDisponibile.setText(String.valueOf(am.getDisponibilita()));
@@ -443,8 +484,6 @@ public class SessioneMagazziniereViewPresenter {
                     if (immagineModificaField.getText().length() != 0) {
                         try {
                             BufferedImage img = ImageIO.read(new File(immagineModificaField.getText()));
-                            /*BufferedImage img = ImageIO.read(new File("/home/costantino/Scaricati/Progetto_Softwar_Immagini/" +
-                                    immagineModificaField.getText()));*/
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             ImageIO.write(img, "jpg", baos);
                             baos.flush();
@@ -455,6 +494,10 @@ public class SessioneMagazziniereViewPresenter {
                         } catch (IOException e) {
                         }
                     }
+                    listArticoliMagazzinoModel.clear();
+                    for (ArticoloMagazzino artm : m.getMagazzino().getArticoliMagazzino())
+                        listArticoliMagazzinoModel.addElement(artm.getArticolo().getNome());
+                    listAggiungiArticoloMagazzino.setModel(listArticoliMagazzinoModel);
                 }
             }
         });
@@ -465,6 +508,12 @@ public class SessioneMagazziniereViewPresenter {
                     int index = listModificaArticoloMagazzino.getSelectedIndex();
                     ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
                     sessione.modificaFornitoreArticolo(am, nuovoFornitorefield.getText(), vecchioFornitoreField.getText());
+                    listArticoliMagazzinoModel.clear();
+                    for (ArticoloMagazzino ammm : m.getMagazzino().getArticoliMagazzino())
+                        listArticoliMagazzinoModel.addElement(ammm.getArticolo().getNome());
+                    listAggiungiArticoloMagazzino.setModel(listArticoliMagazzinoModel);
+                    listModificaArticoloMagazzino.setModel(listArticoliMagazzinoModel);
+                    listModificaDisponibilitàArticoloMagazzino.setModel(listArticoliMagazzinoModel);
                 } else
                     showMessageDialog(getView(), "I campi \"Vecchio fornitore\" e \"Nuovo fornitore\" non possono" +
                             " rimanere vuoti");
@@ -477,6 +526,12 @@ public class SessioneMagazziniereViewPresenter {
                     int index = listModificaArticoloMagazzino.getSelectedIndex();
                     ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
                     sessione.modificaCategoriaArticolo(am, categoriaModificaField.getText());
+                    listArticoliMagazzinoModel.clear();
+                    for (ArticoloMagazzino ammm : m.getMagazzino().getArticoliMagazzino())
+                        listArticoliMagazzinoModel.addElement(ammm.getArticolo().getNome());
+                    listAggiungiArticoloMagazzino.setModel(listArticoliMagazzinoModel);
+                    listModificaArticoloMagazzino.setModel(listArticoliMagazzinoModel);
+                    listModificaDisponibilitàArticoloMagazzino.setModel(listArticoliMagazzinoModel);
                 } else
                     showMessageDialog(getView(), "Il campo \"Modifica Categoria\" non può rimanere vuoto");
             }
@@ -602,8 +657,6 @@ public class SessioneMagazziniereViewPresenter {
                 chooser.setFileFilter(filter);
                 int returnVal = chooser.showOpenDialog(getView());
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    /*System.out.println("You chose to open this file: " +
-                            chooser.getSelectedFile().getAbsolutePath());*/
                     immagineModificaField.setText(chooser.getSelectedFile().getAbsolutePath());
                 } else {
                     showMessageDialog(getView(), "Inserire un'immagine di tipo jpg o jpeg");
@@ -619,11 +672,37 @@ public class SessioneMagazziniereViewPresenter {
                 chooser.setFileFilter(filter);
                 int returnVal = chooser.showOpenDialog(getView());
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    /*System.out.println("You chose to open this file: " +
-                            chooser.getSelectedFile().getAbsolutePath());*/
                     immagineField.setText(chooser.getSelectedFile().getAbsolutePath());
                 } else {
                     showMessageDialog(getView(), "Inserire un'immagine di tipo jpg o jpeg");
+                }
+            }
+        });
+
+        categoriaBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    if (categoriaBox.getSelectedItem().equals("Nuovo"))
+                        categoriaField.setEnabled(true);
+                    else {
+                        categoriaField.setEnabled(false);
+                    }
+                } catch (NullPointerException e) {
+                    //ignored
+                }
+            }
+        });
+
+        prodottoBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    if (prodottoBox.getSelectedItem().equals("Nuovo")) {
+                        prodottoField.setEnabled(true);
+                    } else {
+                        prodottoField.setEnabled(false);
+                    }
+                } catch (NullPointerException e) {
+                    //ignored
                 }
             }
         });
