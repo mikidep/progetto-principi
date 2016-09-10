@@ -49,12 +49,11 @@ public class SessioneMagazziniere implements Sessione {
 
     public void modificaProdottoArticolo(ArticoloMagazzino articoloMagazzino, String nomeProdotto) {
         List<Categoria> listCAT = articoloMagazzino.getArticolo().getProdotto().getCategorie();
-        Sistema.getInstance().modificaProdottoArticolo(articoloMagazzino, new Prodotto(nomeProdotto, listCAT));
+        Sistema.getInstance().modificaProdottoArticolo(articoloMagazzino, nomeProdotto, listCAT);
     }
 
     public void modificaProduttoreArticolo(ArticoloMagazzino articoloMagazzino, String nomeProduttore) {
-        Produttore produttore = new Produttore(nomeProduttore);
-        Sistema.getInstance().modificaProduttoreArticolo(articoloMagazzino, produttore);
+        Sistema.getInstance().modificaProduttoreArticolo(articoloMagazzino, nomeProduttore);
     }
 
     public void modificaImmagineArticolo(ArticoloMagazzino articoloMagazzino, byte[] bytes) {
@@ -66,8 +65,7 @@ public class SessioneMagazziniere implements Sessione {
     }
 
     public void aggiungiFornitoreArticolo(ArticoloMagazzino articoloMagazzino, String nomeFornitore) {
-        Fornitore fornitore = new Fornitore(nomeFornitore);
-        Sistema.getInstance().aggiungiFornitoreArticolo(articoloMagazzino, fornitore);
+        Sistema.getInstance().aggiungiFornitoreArticolo(articoloMagazzino, nomeFornitore);
     }
 
     public void aggiungiCategoriaArticolo(ArticoloMagazzino articoloMagazzino, String nomeCategoria) {
@@ -91,17 +89,7 @@ public class SessioneMagazziniere implements Sessione {
     }
 
     public List<Articolo> ottieniListaArticoli() {
-        List<Categoria> listC = ottieniListaCategoria();
-        List<Articolo> listF = new ArrayList<Articolo>();
-        for (Categoria c : listC)
-            for (Articolo a : Sistema.getInstance().ottieniListaArticoliPerCategoria(c))
-                if (!listF.contains(a))
-                    listF.add(a);
-        return listF;
-    }
-
-    public void aggiungiArticoloInArticoloMagazzino(ArticoloMagazzino articoloMagazzino, Magazzino magazzino) {
-        Sistema.getInstance().aggiungiArticoloInArticoloMagazzino(articoloMagazzino, magazzino);
+        return Sistema.getInstance().ottieniListaArticoli();
     }
 
     public void evadiOrdine(Ordine ordine, Magazzino magazzino) throws EvasionException {

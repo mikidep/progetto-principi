@@ -272,11 +272,39 @@ public class SessioneMagazziniereViewPresenter {
                         listC.add(cat);
                     }
 
-                    Fornitore fornitore = new Fornitore(fornitoreField.getText());
+                    List<Articolo> listam = sessione.ottieniListaArticoli();
+                    int g = 0;
+                    int j = 0;
+                    int h = 0;
+                    Fornitore fornitore;
+                    for (Articolo a : listam)
+                        for (Fornitore f : a.getFornitori())
+                            if (f.getNome().equals(fornitoreField.getText())) {
+                                h++;
+                                g = a.getFornitori().indexOf(f);
+                                j = listam.indexOf(a);
+                            }
+                    if (h > 0)
+                        fornitore = listam.get(j).getFornitori().get(g);
+                    else
+                        fornitore = new Fornitore(fornitoreField.getText());
+
                     List<Fornitore> listF = new ArrayList<Fornitore>();
                     listF.add(fornitore);
-                    Produttore produttore = new Produttore(produttoreField.getText());
-                    Prodotto prodotto = new Prodotto("");
+
+                    Produttore produttore;
+                    g = 0;
+                    for (Articolo a : listam)
+                        if (a.getProduttore().getNome().equals(produttoreField.getText())) {
+                            g++;
+                            h = listam.indexOf(a);
+                        }
+                    if (g > 0)
+                        produttore = listam.get(h).getProduttore();
+                    else
+                        produttore = new Produttore(produttoreField.getText());
+
+                    Prodotto prodotto;
                     if (prodottoBox.getSelectedItem().equals("Nuovo")) {
                         int k = 0;
                         int indexx = -1;
@@ -468,7 +496,6 @@ public class SessioneMagazziniereViewPresenter {
                     if (prodottoModificaField.getText().length() != 0) {
                         sessione.modificaProdottoArticolo(am, prodottoModificaField.getText());
                         showMessageDialog(getView(), "Modica avvenuta con successo");
-
                     }
                     if (produttoreModificaField.getText().length() != 0) {
                         sessione.modificaProduttoreArticolo(am, produttoreModificaField.getText());
@@ -516,13 +543,22 @@ public class SessioneMagazziniereViewPresenter {
                 if (nuovoFornitorefield.getText().length() != 0 && vecchioFornitoreField.getText().length() != 0) {
                     int index = listModificaArticoloMagazzino.getSelectedIndex();
                     ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
-                    sessione.modificaFornitoreArticolo(am, nuovoFornitorefield.getText(), vecchioFornitoreField.getText());
-                    listArticoliMagazzinoModel.clear();
-                    for (ArticoloMagazzino ammm : m.getMagazzino().getArticoliMagazzino())
-                        listArticoliMagazzinoModel.addElement(ammm.getArticolo().getNome());
-                    listAggiungiArticoloMagazzino.setModel(listArticoliMagazzinoModel);
-                    listModificaArticoloMagazzino.setModel(listArticoliMagazzinoModel);
-                    listModificaDisponibilitàArticoloMagazzino.setModel(listArticoliMagazzinoModel);
+                    int k = -1;
+                    for (Fornitore fo : am.getArticolo().getFornitori())
+                        if (fo.getNome().equals(vecchioFornitoreField))
+                            k++;
+                    if (k > -1) {
+                        sessione.modificaFornitoreArticolo(am, nuovoFornitorefield.getText(), vecchioFornitoreField.getText());
+                        listArticoliMagazzinoModel.clear();
+                        for (ArticoloMagazzino ammm : m.getMagazzino().getArticoliMagazzino())
+                            listArticoliMagazzinoModel.addElement(ammm.getArticolo().getNome());
+                        listAggiungiArticoloMagazzino.setModel(listArticoliMagazzinoModel);
+                        listModificaArticoloMagazzino.setModel(listArticoliMagazzinoModel);
+                        listModificaDisponibilitàArticoloMagazzino.setModel(listArticoliMagazzinoModel);
+                        showMessageDialog(getView(), "Modica avvenuta con successo");
+                    } else
+                        showMessageDialog(getView(), "Ha inserito dati errati nel camp \"Vecchio fornitore\"");
+
                 } else
                     showMessageDialog(getView(), "I campi \"Vecchio fornitore\" e \"Nuovo fornitore\" non possono" +
                             " rimanere vuoti");
@@ -541,6 +577,7 @@ public class SessioneMagazziniereViewPresenter {
                     listAggiungiArticoloMagazzino.setModel(listArticoliMagazzinoModel);
                     listModificaArticoloMagazzino.setModel(listArticoliMagazzinoModel);
                     listModificaDisponibilitàArticoloMagazzino.setModel(listArticoliMagazzinoModel);
+                    showMessageDialog(getView(), "Modica avvenuta con successo");
                 } else
                     showMessageDialog(getView(), "Il campo \"Modifica Categoria\" non può rimanere vuoto");
             }

@@ -141,10 +141,26 @@ public class Sistema {
 
     void modificaFornitoreArticolo(ArticoloMagazzino articoloMagazzino, String nuovoFornitore, String vecchioFornitore) {
         List<Fornitore> listF = articoloMagazzino.getArticolo().getFornitori();
+        List<Articolo> lista = ottieniListaArticoli();
+        Fornitore fornitore;
+        int i = -1;
+        int g = -1;
+        int k = -1;
+        for (Articolo a : lista)
+            for (Fornitore f : a.getFornitori())
+                if (f.getNome().equals(nuovoFornitore)) {
+                    i++;
+                    g = a.getFornitori().indexOf(f);
+                    k = lista.indexOf(a);
+                }
+        if (i > -1)
+            fornitore = lista.get(k).getFornitori().get(g);
+        else
+            fornitore = new Fornitore(nuovoFornitore);
         for (Fornitore f : listF)
             if (f.getNome().equals(vecchioFornitore)) {
                 listF.remove(f);
-                listF.add(new Fornitore(nuovoFornitore));
+                listF.add(fornitore);
             }
         DBInterface.getInstance().save();
     }
@@ -157,7 +173,7 @@ public class Sistema {
         for (Categoria cate : ottieniListaCategorie())
             if (cate.getNome().equals(cat.getNome())) {
                 index = ottieniListaCategorie().indexOf(cate);
-                break;
+                //break;
             }
         if (index == -10)
             articoloMagazzino.getArticolo().getProdotto().getCategorie().add(cat);
@@ -166,19 +182,71 @@ public class Sistema {
         DBInterface.getInstance().save();
     }
 
-    void modificaProdottoArticolo(ArticoloMagazzino articoloMagazzino, Prodotto prodotto) {
+    void modificaProdottoArticolo(ArticoloMagazzino articoloMagazzino, String nomeProdotto, List<Categoria> listC) {
+        Prodotto prodotto;
+        List<Articolo> lista = ottieniListaArticoli();
+        int i = -1;
+        int k = -1;
+        for (Articolo a : lista)
+            if (a.getProdotto().getNome().equals(nomeProdotto)) {
+                i++;
+                k = lista.indexOf(a);
+            }
+        if (i > -1)
+            prodotto = lista.get(k).getProdotto();
+        else
+            prodotto = new Prodotto(nomeProdotto, listC);
         articoloMagazzino.getArticolo().setProdotto(prodotto);
         DBInterface.getInstance().save();
     }
 
-    void modificaProduttoreArticolo(ArticoloMagazzino articoloMagazzino, Produttore produttore) {
+    void modificaProduttoreArticolo(ArticoloMagazzino articoloMagazzino, String nomeProduttore) {
+        List<Articolo> lista = ottieniListaArticoli();
+        int h = -1;
+        int i = -1;
+        Produttore produttore;
+        for (Articolo a : lista)
+            if (a.getProduttore().getNome().equals(nomeProduttore)) {
+                h++;
+                i = lista.indexOf(a);
+            }
+        if (h > -1)
+            produttore = lista.get(i).getProduttore();
+        else
+            produttore = new Produttore(nomeProduttore);
         articoloMagazzino.getArticolo().setProduttore(produttore);
         DBInterface.getInstance().save();
     }
 
-    void aggiungiFornitoreArticolo(ArticoloMagazzino articoloMagazzino, Fornitore fornitore) {
+    void aggiungiFornitoreArticolo(ArticoloMagazzino articoloMagazzino, String nomeFornitore) {
+        List<Articolo> lista = ottieniListaArticoli();
+        int h = -1;
+        int i = -1;
+        int g = -1;
+        Fornitore fornitore;
+        for (Articolo a : lista)
+            for (Fornitore f : a.getFornitori())
+                if (f.getNome().equals(nomeFornitore)) {
+                    h++;
+                    i = lista.indexOf(a);
+                    g = a.getFornitori().indexOf(f);
+                }
+        if (h > -1)
+            fornitore = lista.get(i).getFornitori().get(g);
+        else
+            fornitore = new Fornitore(nomeFornitore);
         articoloMagazzino.getArticolo().getFornitori().add(fornitore);
         DBInterface.getInstance().save();
+    }
+
+    List<Articolo> ottieniListaArticoli() {
+        List<Categoria> listC = ottieniListaCategorie();
+        List<Articolo> listF = new ArrayList<Articolo>();
+        for (Categoria c : listC)
+            for (Articolo a : Sistema.getInstance().ottieniListaArticoliPerCategoria(c))
+                if (!listF.contains(a))
+                    listF.add(a);
+        return listF;
     }
 
     ByteArrayOutputStream articoliToPDFBytes(String intestazione, List<ArticoloOrdine> aolist) throws ReportCreationFailedException {
@@ -232,9 +300,6 @@ public class Sistema {
         return lista;
     }
 
-    /*void richiediNotifica(ArticoloOrdine articoloOrdine) {
-        articoloOrdine.setRichiesto(true); inutile
-    }*/
     void creaNotifica(Articolo articolo, Progetto progetto, int quantita) {
         RichiestaArticolo richiestaArticolo = new RichiestaArticolo(articolo, progetto, quantita);
         progetto.getRichieste().add(richiestaArticolo);
@@ -400,12 +465,6 @@ public class Sistema {
 
     List<Prodotto> ottieniListaProdottiPerCategoria(Categoria categoria) {
         return ProdottoDAO.getProdottiPerCategoria(categoria);
-    }
-
-    void aggiungiArticoloInArticoloMagazzino(ArticoloMagazzino articoloMagazzino, Magazzino magazzino) {
-        Articolo a = articoloMagazzino.getArticolo();
-        a.getInMagazzino().add(articoloMagazzino);
-        DBInterface.getInstance().save();
     }
 
     void aggiungiArticoloOrdine(ArticoloOrdine articoloOrdine, Ordine ordine) {
