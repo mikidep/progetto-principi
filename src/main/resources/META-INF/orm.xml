@@ -120,8 +120,8 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
             <one-to-many name="inMagazzino" target-entity="ArticoloMagazzino" mapped-by="articolo" fetch="EAGER"/>
             <many-to-many name="fornitori">
                 <join-table name="FornitoreArticolo">
-                    <join-column name="fornitore"/>
-                    <inverse-join-column name="articolo"/>
+                    <join-column name="articolo"/>
+                    <inverse-join-column name="fornitore"/>
                 </join-table>
                 <cascade>
                     <cascade-persist/>

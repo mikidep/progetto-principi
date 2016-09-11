@@ -3,6 +3,7 @@ package com.depvin.pps.presenter;
 import com.depvin.pps.business.EvasionException;
 import com.depvin.pps.business.ReportCreationFailedException;
 import com.depvin.pps.business.SessioneMagazziniere;
+import com.depvin.pps.dbinterface.DBInterface;
 import com.depvin.pps.model.*;
 
 import javax.imageio.ImageIO;
@@ -13,12 +14,15 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+
 import static javax.swing.JOptionPane.showMessageDialog;
 
 /**
@@ -47,7 +51,6 @@ public class SessioneMagazziniereViewPresenter {
     private JTextField categoriaField;
     private JTextField prodottoField;
     private JTextField produttoreField;
-    private JTextField fornitoreField;
     private JTextField quantitàFieldMod;
     private JTextField nomeModificaField;
     private JTextField descrizioneModificaField;
@@ -55,10 +58,7 @@ public class SessioneMagazziniereViewPresenter {
     private JTextField categoriaAggiungiField;
     private JTextField prodottoModificaField;
     private JTextField produttoreModificaField;
-    private JTextField fornitoreModificaField;
-    private JTextField nuovoFornitorefield;
     private JTextField categoriaModificaField;
-    private JTextField vecchioFornitoreField;
     private JTextField immagineModificaField;
     private JTextField immagineField;
 
@@ -69,7 +69,6 @@ public class SessioneMagazziniereViewPresenter {
     private JButton confermaModificheButton;
     private JButton stampaArticoliOrdineButton;
     private JButton pulisciTuttiICampiButton1;
-    private JButton modificaFornitoreButton;
     private JButton ottieniImmagineButton;
     private JButton modificaCategoriaButton;
     private JButton clearButton;
@@ -78,6 +77,8 @@ public class SessioneMagazziniereViewPresenter {
     private JButton scegliImmagineButton1;
     private JComboBox categoriaBox;
     private JComboBox prodottoBox;
+    private JButton selezionaFornitoriButton;
+    private JButton scegliFornitoriButton;
     //private JButton aggiornaButton;
 
     private DefaultListModel listArticoliDisponibiliOrdineModel;
@@ -85,6 +86,8 @@ public class SessioneMagazziniereViewPresenter {
     private DefaultListModel listRichiesteArticoliModel;
     private DefaultListModel listArticoliOrdinatiModel;
     private DefaultListModel listArticoliMagazzinoModel;
+
+    private List<Fornitore> fornitoriNuovo = new ArrayList<Fornitore>();
 
     public SessioneMagazziniereViewPresenter(final SessioneMagazziniere sessione) {
 
@@ -174,7 +177,7 @@ public class SessioneMagazziniereViewPresenter {
         ottieniInformazioniButton.setEnabled(false);
         confermaModificheButton.setEnabled(false);
         modificaCategoriaButton.setEnabled(false);
-        modificaFornitoreButton.setEnabled(false);
+        scegliFornitoriButton.setEnabled(false);
         confermaModificaButton.setEnabled(false);
         evadiOrdineButton.setEnabled(false);
         stampaArticoliOrdineButton.setEnabled(false);
@@ -201,7 +204,7 @@ public class SessioneMagazziniereViewPresenter {
                 ottieniInformazioniButton.setEnabled(true);
                 confermaModificheButton.setEnabled(true);
                 modificaCategoriaButton.setEnabled(true);
-                modificaFornitoreButton.setEnabled(true);
+                scegliFornitoriButton.setEnabled(true);
             }
         });
 
@@ -240,12 +243,36 @@ public class SessioneMagazziniereViewPresenter {
             }
         });
 
+        selezionaFornitoriButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ModificaFornitoriViewPresenter mfViewPresenter = new ModificaFornitoriViewPresenter(fornitoriNuovo);
+                mfViewPresenter.show();
+            }
+        });
+
+        scegliFornitoriButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int index = listModificaArticoloMagazzino.getSelectedIndex();
+                ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
+                ModificaFornitoriViewPresenter mfViewPresenter = new ModificaFornitoriViewPresenter(am.getArticolo().getFornitori());
+                mfViewPresenter.show();
+                mfViewPresenter.getView().addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosed(WindowEvent e) {
+                        super.windowClosed(e);
+                        DBInterface.save();
+                    }
+                });
+            }
+        });
+
+
         aggiungiArticoloNelDatabaseButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (nomeField.getText().length() == 0 || descrizioneField.getText().length() == 0 ||
                         prezzoField.getText().length() == 0 || quantitàField.getText().length() == 0 ||
                         (prodottoField.getText().length() == 0 && prodottoBox.getSelectedIndex() == -1) ||
-                        produttoreField.getText().length() == 0 || fornitoreField.getText().length() == 0 ||
+                        produttoreField.getText().length() == 0 ||
                         immagineField.getText().length() == 0)
                     showMessageDialog(getView(), "Riempire tutti i campi");
                 else {
@@ -273,27 +300,10 @@ public class SessioneMagazziniereViewPresenter {
                     }
 
                     List<Articolo> listam = sessione.ottieniListaArticoli();
-                    int g = 0;
-                    int j = 0;
-                    int h = 0;
-                    Fornitore fornitore;
-                    for (Articolo a : listam)
-                        for (Fornitore f : a.getFornitori())
-                            if (f.getNome().equals(fornitoreField.getText())) {
-                                h++;
-                                g = a.getFornitori().indexOf(f);
-                                j = listam.indexOf(a);
-                            }
-                    if (h > 0)
-                        fornitore = listam.get(j).getFornitori().get(g);
-                    else
-                        fornitore = new Fornitore(fornitoreField.getText());
-
-                    List<Fornitore> listF = new ArrayList<Fornitore>();
-                    listF.add(fornitore);
 
                     Produttore produttore;
-                    g = 0;
+                    int g = 0;
+                    int h = 0;
                     for (Articolo a : listam)
                         if (a.getProduttore().getNome().equals(produttoreField.getText())) {
                             g++;
@@ -329,7 +339,7 @@ public class SessioneMagazziniereViewPresenter {
                         prodotto = lp.get(prodottoBox.getSelectedIndex());
                     }
                     Articolo articolo = new Articolo(nomeField.getText(), descrizioneField.getText(),
-                            budget, prodotto, produttore, listF);
+                            budget, prodotto, produttore, fornitoriNuovo);
                     try {
                         BufferedImage img = ImageIO.read(new File(immagineField.getText()));
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -386,7 +396,6 @@ public class SessioneMagazziniereViewPresenter {
                 quantitàField.setText("");
                 prodottoField.setText("");
                 produttoreField.setText("");
-                fornitoreField.setText("");
                 categoriaField.setText("");
                 immagineField.setText("");
             }
@@ -462,12 +471,9 @@ public class SessioneMagazziniereViewPresenter {
                 prezzoModificaField.setText("");
                 prodottoModificaField.setText("");
                 produttoreModificaField.setText("");
-                fornitoreModificaField.setText("");
                 categoriaAggiungiField.setText("");
                 immagineModificaField.setText("");
-                vecchioFornitoreField.setText("");
                 categoriaModificaField.setText("");
-                nuovoFornitorefield.setText("");
             }
         });
 
@@ -475,7 +481,7 @@ public class SessioneMagazziniereViewPresenter {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (categoriaAggiungiField.getText().length() == 0 && prodottoModificaField.getText().length() == 0 &&
                         produttoreModificaField.getText().length() == 0 && nomeModificaField.getText().length() == 0 &&
-                        prezzoModificaField.getText().length() == 0 && fornitoreModificaField.getText().length() == 0 &&
+                        prezzoModificaField.getText().length() == 0 &&
                         descrizioneModificaField.getText().length() == 0 && immagineModificaField.getText().length() == 0) {
                     showMessageDialog(getView(), "Nessuna modifica compiuta, tutti i campi sono vuoti");
                 } else {
@@ -509,10 +515,6 @@ public class SessioneMagazziniereViewPresenter {
                         sessione.modificaPrezzoArticolo(am, Float.parseFloat(prezzoModificaField.getText()));
                         showMessageDialog(getView(), "Modica avvenuta con successo");
                     }
-                    if (fornitoreModificaField.getText().length() != 0) {
-                        sessione.aggiungiFornitoreArticolo(am, fornitoreModificaField.getText());
-                        showMessageDialog(getView(), "Modica avvenuta con successo");
-                    }
                     if (descrizioneModificaField.getText().length() != 0) {
                         sessione.modificaDescrizioneArticolo(am, descrizioneModificaField.getText());
                         showMessageDialog(getView(), "Modica avvenuta con successo");
@@ -535,33 +537,6 @@ public class SessioneMagazziniereViewPresenter {
                         listArticoliMagazzinoModel.addElement(artm.getArticolo().getNome());
                     listAggiungiArticoloMagazzino.setModel(listArticoliMagazzinoModel);
                 }
-            }
-        });
-
-        modificaFornitoreButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (nuovoFornitorefield.getText().length() != 0 && vecchioFornitoreField.getText().length() != 0) {
-                    int index = listModificaArticoloMagazzino.getSelectedIndex();
-                    ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
-                    int k = -1;
-                    for (Fornitore fo : am.getArticolo().getFornitori())
-                        if (fo.getNome().equals(vecchioFornitoreField))
-                            k++;
-                    if (k > -1) {
-                        sessione.modificaFornitoreArticolo(am, nuovoFornitorefield.getText(), vecchioFornitoreField.getText());
-                        listArticoliMagazzinoModel.clear();
-                        for (ArticoloMagazzino ammm : m.getMagazzino().getArticoliMagazzino())
-                            listArticoliMagazzinoModel.addElement(ammm.getArticolo().getNome());
-                        listAggiungiArticoloMagazzino.setModel(listArticoliMagazzinoModel);
-                        listModificaArticoloMagazzino.setModel(listArticoliMagazzinoModel);
-                        listModificaDisponibilitàArticoloMagazzino.setModel(listArticoliMagazzinoModel);
-                        showMessageDialog(getView(), "Modica avvenuta con successo");
-                    } else
-                        showMessageDialog(getView(), "Ha inserito dati errati nel camp \"Vecchio fornitore\"");
-
-                } else
-                    showMessageDialog(getView(), "I campi \"Vecchio fornitore\" e \"Nuovo fornitore\" non possono" +
-                            " rimanere vuoti");
             }
         });
 
