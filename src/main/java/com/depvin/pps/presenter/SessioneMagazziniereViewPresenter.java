@@ -30,7 +30,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
  */
 public class SessioneMagazziniereViewPresenter {
 
-    SessioneMagazziniere sessione;
+    private SessioneMagazziniere sessione;
     private JFrame view;
     private JPanel rootPanel;
     private JTabbedPane tabbedPane;
@@ -55,10 +55,8 @@ public class SessioneMagazziniereViewPresenter {
     private JTextField nomeModificaField;
     private JTextField descrizioneModificaField;
     private JTextField prezzoModificaField;
-    private JTextField categoriaAggiungiField;
     private JTextField prodottoModificaField;
     private JTextField produttoreModificaField;
-    private JTextField categoriaModificaField;
     private JTextField immagineModificaField;
     private JTextField immagineField;
 
@@ -70,7 +68,6 @@ public class SessioneMagazziniereViewPresenter {
     private JButton stampaArticoliOrdineButton;
     private JButton pulisciTuttiICampiButton1;
     private JButton ottieniImmagineButton;
-    private JButton modificaCategoriaButton;
     private JButton clearButton;
     private JButton evadiOrdineButton;
     private JButton scegliImmagineButton;
@@ -79,6 +76,7 @@ public class SessioneMagazziniereViewPresenter {
     private JComboBox prodottoBox;
     private JButton selezionaFornitoriButton;
     private JButton scegliFornitoriButton;
+    private JButton scegliCategorieButton;
     //private JButton aggiornaButton;
 
     private DefaultListModel listArticoliDisponibiliOrdineModel;
@@ -176,7 +174,7 @@ public class SessioneMagazziniereViewPresenter {
         ottieniImmagineButton.setEnabled(false);
         ottieniInformazioniButton.setEnabled(false);
         confermaModificheButton.setEnabled(false);
-        modificaCategoriaButton.setEnabled(false);
+        scegliCategorieButton.setEnabled(false);
         scegliFornitoriButton.setEnabled(false);
         confermaModificaButton.setEnabled(false);
         evadiOrdineButton.setEnabled(false);
@@ -203,7 +201,7 @@ public class SessioneMagazziniereViewPresenter {
                 ottieniImmagineButton.setEnabled(true);
                 ottieniInformazioniButton.setEnabled(true);
                 confermaModificheButton.setEnabled(true);
-                modificaCategoriaButton.setEnabled(true);
+                scegliCategorieButton.setEnabled(true);
                 scegliFornitoriButton.setEnabled(true);
             }
         });
@@ -257,6 +255,22 @@ public class SessioneMagazziniereViewPresenter {
                 ModificaFornitoriViewPresenter mfViewPresenter = new ModificaFornitoriViewPresenter(am.getArticolo().getFornitori());
                 mfViewPresenter.show();
                 mfViewPresenter.getView().addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosed(WindowEvent e) {
+                        super.windowClosed(e);
+                        DBInterface.save();
+                    }
+                });
+            }
+        });
+
+        scegliCategorieButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int index = listModificaArticoloMagazzino.getSelectedIndex();
+                ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
+                ModificaCategorieViewPresenter mcViewPresenter = new ModificaCategorieViewPresenter(am.getArticolo().getProdotto().getCategorie());
+                mcViewPresenter.show();
+                mcViewPresenter.getView().addWindowListener(new WindowAdapter() {
                     @Override
                     public void windowClosed(WindowEvent e) {
                         super.windowClosed(e);
@@ -471,15 +485,13 @@ public class SessioneMagazziniereViewPresenter {
                 prezzoModificaField.setText("");
                 prodottoModificaField.setText("");
                 produttoreModificaField.setText("");
-                categoriaAggiungiField.setText("");
                 immagineModificaField.setText("");
-                categoriaModificaField.setText("");
             }
         });
 
         confermaModificheButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                if (categoriaAggiungiField.getText().length() == 0 && prodottoModificaField.getText().length() == 0 &&
+                if (prodottoModificaField.getText().length() == 0 &&
                         produttoreModificaField.getText().length() == 0 && nomeModificaField.getText().length() == 0 &&
                         prezzoModificaField.getText().length() == 0 &&
                         descrizioneModificaField.getText().length() == 0 && immagineModificaField.getText().length() == 0) {
@@ -487,18 +499,6 @@ public class SessioneMagazziniereViewPresenter {
                 } else {
                     int index = listModificaArticoloMagazzino.getSelectedIndex();
                     ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
-                    if (categoriaAggiungiField.getText().length() != 0) {
-                        List<Categoria> listc = sessione.ottieniListaCategoria();
-                        int ind = 0;
-                        for (Categoria cat : listc)
-                            if (cat.getNome().equals(categoriaAggiungiField.getText()))
-                                ind = 10;
-                        if (ind == 0) {
-                            sessione.aggiungiCategoriaArticolo(am, categoriaAggiungiField.getText());
-                            showMessageDialog(getView(), "Modica avvenuta con successo");
-                        } else
-                            showMessageDialog(getView(), "Categoria già presente");
-                    }
                     if (prodottoModificaField.getText().length() != 0) {
                         sessione.modificaProdottoArticolo(am, prodottoModificaField.getText());
                         showMessageDialog(getView(), "Modica avvenuta con successo");
@@ -537,24 +537,6 @@ public class SessioneMagazziniereViewPresenter {
                         listArticoliMagazzinoModel.addElement(artm.getArticolo().getNome());
                     listAggiungiArticoloMagazzino.setModel(listArticoliMagazzinoModel);
                 }
-            }
-        });
-
-        modificaCategoriaButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (categoriaModificaField.getText().length() != 0) {
-                    int index = listModificaArticoloMagazzino.getSelectedIndex();
-                    ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
-                    sessione.modificaCategoriaArticolo(am, categoriaModificaField.getText());
-                    listArticoliMagazzinoModel.clear();
-                    for (ArticoloMagazzino ammm : m.getMagazzino().getArticoliMagazzino())
-                        listArticoliMagazzinoModel.addElement(ammm.getArticolo().getNome());
-                    listAggiungiArticoloMagazzino.setModel(listArticoliMagazzinoModel);
-                    listModificaArticoloMagazzino.setModel(listArticoliMagazzinoModel);
-                    listModificaDisponibilitàArticoloMagazzino.setModel(listArticoliMagazzinoModel);
-                    showMessageDialog(getView(), "Modica avvenuta con successo");
-                } else
-                    showMessageDialog(getView(), "Il campo \"Modifica Categoria\" non può rimanere vuoto");
             }
         });
 
