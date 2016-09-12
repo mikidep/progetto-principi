@@ -77,7 +77,6 @@ public class SessioneMagazziniereViewPresenter {
     private JButton selezionaFornitoriButton;
     private JButton scegliFornitoriButton;
     private JButton scegliCategorieButton;
-    //private JButton aggiornaButton;
 
     private DefaultListModel listArticoliDisponibiliOrdineModel;
     private DefaultListModel listOrdiniModel;
@@ -97,8 +96,8 @@ public class SessioneMagazziniereViewPresenter {
         view.setContentPane(rootPanel);
         view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        final List<ArticoloMagazzino> listAM = m.getMagazzino().getArticoliMagazzino();
-        final List<Articolo> listAAA = new ArrayList<Articolo>();
+        List<ArticoloMagazzino> listAM = m.getMagazzino().getArticoliMagazzino();
+        List<Articolo> listAAA = new ArrayList<Articolo>();
         for (ArticoloMagazzino ammm : listAM)
             listAAA.add(ammm.getArticolo());
 
@@ -460,9 +459,25 @@ public class SessioneMagazziniereViewPresenter {
                             listRichiesteArticoli.setModel(listRichiesteArticoliModel);
                         }
                     }
+                    stampaArticoliOrdineButton.setEnabled(false);
+                    evadiOrdineButton.setEnabled(false);
+
+                    listArticoliDisponibiliOrdineModel.clear();
+                    listArticoliOrdinatiModel.clear();
+                    listArticoliDisponibiliOrdine.setModel(listArticoliDisponibiliOrdineModel);
+                    listArticoliOrdinati.setModel(listArticoliOrdinatiModel);
+
+                    List<Ordine> listOrd = new ArrayList<Ordine>();
+                    for (ArticoloOrdine ao : sessione.ottieniListaArticoliOrdine(m.getMagazzino()))
+                        if (!listOrd.contains(ao.getOrdine()) && ao.getOrdine().isInviato())
+                            if (!ao.isEvaso())
+                                listOrd.add(ao.getOrdine());
+                    listOrdiniModel.clear();
+                    for (Ordine o : listOrd)
+                        listOrdiniModel.addElement(o.getNome());
+                    listOrdini.setModel(listOrdiniModel);
+                    listOrdini.clearSelection();
                 }
-                /*listModificaDisponibilitàArticoloMagazzino.clearSelection();
-                labelquantitàDisponibile.setText("");*/
             }
         });
 
@@ -576,7 +591,7 @@ public class SessioneMagazziniereViewPresenter {
 
         listOrdini.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                if (listOrdini.getSelectedIndex() != 1 && !listOrdini.isSelectionEmpty()) {
+                if (listOrdini.getSelectedIndex() != -1 && !listOrdini.isSelectionEmpty()) {
 
                     stampaArticoliOrdineButton.setEnabled(true);
                     evadiOrdineButton.setEnabled(true);
@@ -603,6 +618,8 @@ public class SessioneMagazziniereViewPresenter {
                     listArticoliDisponibiliOrdineModel.clear();
 
                     List<ArticoloMagazzino> listAAM = new ArrayList<ArticoloMagazzino>();
+                    List<ArticoloMagazzino> listAM = m.getMagazzino().getArticoliMagazzino();
+
                     for (ArticoloMagazzino am : listAM)
                         if (listA.contains(am.getArticolo()))
                             listAAM.add(am);
@@ -610,10 +627,10 @@ public class SessioneMagazziniereViewPresenter {
                     for (ArticoloOrdine ao : ordine.getArticoliOrdine())
                         for (ArticoloMagazzino am : listAAM)
                             if (am.getArticolo().getNome().equals(ao.getArticolo().getNome()) &&
-                                    am.getDisponibilita() >= ao.getQuantita())
+                                    am.getDisponibilita() >= ao.getQuantita() &&
+                                    ao.getMagazzino().getNome().equals(m.getMagazzino().getNome()))
                                 listArticoliDisponibiliOrdineModel.addElement(am.getArticolo().getNome() + "   x "
                                         + am.getDisponibilita());
-
                     listArticoliDisponibiliOrdine.setModel(listArticoliDisponibiliOrdineModel);
                 }
 

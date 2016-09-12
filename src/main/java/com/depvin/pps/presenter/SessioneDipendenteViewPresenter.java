@@ -125,7 +125,7 @@ public class SessioneDipendenteViewPresenter {
         listOrdiniInviati.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         listStatoArticoliInviati.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
-        final List<Ordine> listordine = new ArrayList<Ordine>();
+        List<Ordine> listordine = new ArrayList<Ordine>();
         for (Ordine o : d.getOrdini())
             if (o.isInviato() && !listordine.contains(o)) {
                 listordine.add(o);
