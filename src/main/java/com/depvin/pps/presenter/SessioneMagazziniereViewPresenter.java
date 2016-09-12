@@ -163,7 +163,6 @@ public class SessioneMagazziniereViewPresenter {
                 }
         listOrdini.setModel(listOrdiniModel);
 
-        //Il database non rimuove un cazzo
         List<RichiestaArticolo> listRichiesteArticolo = new ArrayList<RichiestaArticolo>();
         List<RichiestaArticolo> listRA = sessione.ottieniListaRichiestaArticoliSede(m.getMagazzino().getSede());
         for (RichiestaArticolo ra : listRA) {
@@ -173,7 +172,7 @@ public class SessioneMagazziniereViewPresenter {
                 for (RichiestaArticolo rar : listRichiesteArticolo) {
                     if (rar.getArticolo().getNome().equals(ra.getArticolo().getNome()) && rar.getQuantita() < ra.getQuantita()) {
                         listRichiesteArticolo.remove(rar);
-                        sessione.rimuoviRichiesta(rar, m.getMagazzino().getSede());
+                        sessione.rimuoviRichiesta(rar);
                         listRichiesteArticolo.add(ra);
                     }
                 }
@@ -451,7 +450,7 @@ public class SessioneMagazziniereViewPresenter {
                     }
                     if (flag) {
                         if (am.getDisponibilita() >= listRA.get(indet).getQuantita()) {
-                            sessione.rimuoviRichiesta(listRA.get(indet), m.getMagazzino().getSede());
+                            sessione.rimuoviRichiesta(listRA.get(indet));
                             listRichiesteArticoliModel.clear();
                             List<RichiestaArticolo> listRAr = sessione.ottieniListaRichiestaArticoliSede(m.getMagazzino().getSede());
                             if (!listRA.equals(null))

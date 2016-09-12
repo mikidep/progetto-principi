@@ -108,8 +108,8 @@ public class SessioneMagazziniere implements Sessione {
         return Sistema.getInstance().ottieniListaProdottiPerCategoria(categoria);
     }
 
-    public void rimuoviRichiesta(RichiestaArticolo richiestaArticolo, Sede sede) {
-        Sistema.getInstance().rimuoviRichiesta(richiestaArticolo, sede);
+    public void rimuoviRichiesta(RichiestaArticolo richiestaArticolo) {
+        Sistema.getInstance().rimuoviRichiesta(richiestaArticolo);
     }
 
 }
