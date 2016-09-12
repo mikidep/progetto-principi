@@ -269,7 +269,7 @@ public class SessioneDipendenteViewPresenter {
                 try {
                     Runnable run = new Runnable() {
                         public void run() {
-                            Articolo articolo = null;
+                            Articolo articolo;
                             String nomeBox = (String) magazzinoBox.getSelectedItem();
                             richiediNotificaButton.setEnabled(false);
                             magazzinoBox.removeAllItems();
@@ -299,7 +299,7 @@ public class SessioneDipendenteViewPresenter {
                                     for (int x = 0; x < magazzinoBox.getItemCount(); x++) {
                                         if (magazzinoBox.getItemAt(x).equals(nomeBox)) {
                                             j++;
-                                            index = magazzinoBox.getSelectedIndex();
+                                            index = x;
                                         }
                                     }
                                 }
@@ -529,15 +529,17 @@ public class SessioneDipendenteViewPresenter {
 
         progettiBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                int index = progettiBox.getSelectedIndex();
-                Progetto prog = d.getProgetti().get(index);
-                listModelOrdinePendente.clear();
-                for (Ordine o : prog.getOrdini())
-                    if (o.getDipendente().getNome().equals(d.getNome()) && !o.isInviato())
-                        listModelOrdinePendente.addElement(o.getNome());
-                ordiniPendentiList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-                ordiniPendentiList.setModel(listModelOrdinePendente);
-                ordiniPendentiList.setVisible(true);
+                if (progettiBox.getSelectedIndex() != -1) {
+                    int index = progettiBox.getSelectedIndex();
+                    Progetto prog = d.getProgetti().get(index);
+                    listModelOrdinePendente.clear();
+                    for (Ordine o : prog.getOrdini())
+                        if (o.getDipendente().getNome().equals(d.getNome()) && !o.isInviato())
+                            listModelOrdinePendente.addElement(o.getNome());
+                    ordiniPendentiList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+                    ordiniPendentiList.setModel(listModelOrdinePendente);
+                    ordiniPendentiList.setVisible(true);
+                }
             }
         });
 
@@ -575,7 +577,14 @@ public class SessioneDipendenteViewPresenter {
                 richiestaProgettoBox.setEnabled(false);
 
                 Progetto prog = d.getProgetti().get(indexProg);
-                Ordine ord = prog.getOrdini().get(indexOrd);
+
+                //Ordine ord = prog.getOrdini().get(indexOrd);
+                List<Ordine> listO = new ArrayList<Ordine>();
+                for (Ordine o : prog.getOrdini())
+                    if (!o.isInviato())
+                        listO.add(o);
+                Ordine ord = listO.get(indexOrd);
+
                 listModelArticoliOrdineCorrente.clear();
                 for (ArticoloOrdine ao : ord.getArticoliOrdine()) {
 
@@ -713,6 +722,15 @@ public class SessioneDipendenteViewPresenter {
                     sessione.aggiungiOrdineProgetto(nomeField.getText(), d.getProgetti().get(index));
                     aggiungiArticoloAllOrdineButton.setEnabled(true);
                     nuovoOrdineLabel.setText(nomeField.getText());
+                    ordineNomeLabel.setText(nomeField.getText());
+                    inviaOrdine.setEnabled(true);
+
+                    listOrdineArticoliNuovo.clear();
+                    ordineArticoliNuovoList.setModel(listOrdineArticoliNuovo);
+
+                    listModelArticoliOrdineCorrente.clear();
+                    ordineCorrenteList.setModel(listModelArticoliOrdineCorrente);
+
                 }
             }
         });
@@ -750,7 +768,7 @@ public class SessioneDipendenteViewPresenter {
                     else
                         limite = Integer.parseInt(catalogoQuantitaField.getText());
                     for (ArticoloMagazzino am : listAM)
-                        if (am.getDisponibilita() > limite)
+                        if (am.getDisponibilita() >= limite)
                             listMa.add(am.getMagazzino());
                     Magazzino magazzino = listMa.get(index);
                     int inr = -1;
@@ -818,7 +836,7 @@ public class SessioneDipendenteViewPresenter {
 
         ordineCorrenteList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                inviaOrdine.setEnabled(true);
+                //inviaOrdine.setEnabled(true);
                 eliminaArticoloDallOrdineButton.setEnabled(true);
                 modificaQuantitàButton.setEnabled(true);
             }
@@ -855,11 +873,54 @@ public class SessioneDipendenteViewPresenter {
                     of.close();
                     showMessageDialog(getView(), "Ordine stampato con successo");
 
-                    progettiBox.setSelectedIndex(-1);
                     listModelOrdinePendente.clear();
                     ordiniPendentiList.setModel(listModelOrdinePendente);
+
+                    listOrdiniInviatiModel.clear();
+                    for (Ordine o : d.getOrdini())
+                        if (o.isInviato()) {
+                            listOrdiniInviatiModel.addElement(o.getNome());
+                        }
+                    listOrdiniInviati.setModel(listOrdiniInviatiModel);
+
+                    listModelOrdinePendente.clear();
+                    ordiniPendentiList.setModel(listModelOrdinePendente);
+
+                    listModelArticoliOrdineCorrente.clear();
+                    ordineCorrenteList.setModel(listModelArticoliOrdineCorrente);
+
+                    listOrdineArticoliNuovo.clear();
+                    ordineArticoliNuovoList.setModel(listOrdineArticoliNuovo);
+
                     cancellaOrdineButton.setEnabled(false);
                     modificaOrdineButton.setEnabled(false);
+                    modificaQuantitàButton.setEnabled(false);
+                    eliminaArticoloDallOrdineButton.setEnabled(false);
+                    inviaOrdine.setEnabled(false);
+
+                    magazzinoBox.setEnabled(false);
+                    magazzinoBox.removeAllItems();
+                    magazzinoBox.setSelectedIndex(-1);
+                    magazzinoNonBox.setEnabled(false);
+                    magazzinoNonBox.removeAllItems();
+                    magazzinoNonBox.setSelectedIndex(-1);
+                    catalogoQuantitaField.setText("");
+                    aggiungiArticoloAllOrdineButton.setEnabled(false);
+                    richiestaProgettoBox.setEnabled(false);
+                    richiediNotificaButton.setEnabled(false);
+
+                    ottieniInformazioniButton.setEnabled(false);
+                    ottieniImmagineButton.setEnabled(false);
+
+                    listModelArticoliCatalogo.clear();
+                    labelEvadiPrezzo.setText("");
+                    ordineNomeLabel.setText("");
+                    nuovoOrdineLabel.setText("");
+                    nomeField.setText("");
+                    prezzoTotaleLabel.setText("");
+
+                    progettiBox.setSelectedIndex(-1);
+                    progettoOrdineBox.setSelectedIndex(-1);
 
                 } catch (ReportCreationFailedException e) {
                     showMessageDialog(getView(), "Errore nella stampa dell'ordine");
@@ -878,7 +939,7 @@ public class SessioneDipendenteViewPresenter {
 
         ottieniImmagineButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                Articolo articolo = null;
+                Articolo articolo;
                 if (ricercaPerNomeField.getText().length() == 0) {
                     Categoria categoria = listCategoria.get(categoriaBox.getSelectedIndex());
                     Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
@@ -901,7 +962,7 @@ public class SessioneDipendenteViewPresenter {
 
         ottieniInformazioniButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                Articolo articolo = null;
+                Articolo articolo;
                 if (ricercaPerNomeField.getText().length() == 0) {
                     Categoria categoria = listCategoria.get(categoriaBox.getSelectedIndex());
                     Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
@@ -949,7 +1010,7 @@ public class SessioneDipendenteViewPresenter {
                 if (richiestaProgettoBox.getSelectedIndex() == -1)
                     showMessageDialog(getView(), "Scegliere un progetto");
                 else {
-                    Articolo articolo = null;
+                    Articolo articolo;
                     if (ricercaPerNomeField.getText().length() == 0) {
                         Categoria categoria = listCategoria.get(categoriaBox.getSelectedIndex());
                         Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
@@ -973,17 +1034,26 @@ public class SessioneDipendenteViewPresenter {
 
         listOrdiniInviati.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                listStatoArticoliInviatiModel.clear();
-                int index = listOrdiniInviati.getSelectedIndex();
-                Ordine o = listordine.get(index);
-                for (ArticoloOrdine ao : o.getArticoliOrdine())
-                    if (ao.isEvaso())
-                        listStatoArticoliInviatiModel.addElement(ao.getArticolo().getNome() +
-                                "-> stato: inviato");
-                    else
-                        listStatoArticoliInviatiModel.addElement(ao.getArticolo().getNome() +
-                                "-> stato: in attesa di evasione");
-                listStatoArticoliInviati.setModel(listStatoArticoliInviatiModel);
+                if (listOrdiniInviati.getSelectedIndex() != -1) {
+                    listStatoArticoliInviatiModel.clear();
+                    int index = listOrdiniInviati.getSelectedIndex();
+                    //Ordine o = listordine.get(index);
+                    List<Ordine> listor = new ArrayList<Ordine>();
+                    for (Ordine o : d.getOrdini())
+                        if (o.isInviato() && !listor.contains(o)) {
+                            listor.add(o);
+                        }
+                    Ordine o = listor.get(index);
+
+                    for (ArticoloOrdine ao : o.getArticoliOrdine())
+                        if (ao.isEvaso())
+                            listStatoArticoliInviatiModel.addElement(ao.getArticolo().getNome() +
+                                    "-> stato: evaso");
+                        else
+                            listStatoArticoliInviatiModel.addElement(ao.getArticolo().getNome() +
+                                    "-> stato: in attesa di evasione");
+                    listStatoArticoliInviati.setModel(listStatoArticoliInviatiModel);
+                }
             }
         });
     }
