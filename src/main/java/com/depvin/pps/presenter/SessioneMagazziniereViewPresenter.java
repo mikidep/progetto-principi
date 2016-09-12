@@ -92,8 +92,8 @@ public class SessioneMagazziniereViewPresenter {
         this.sessione = sessione;
         final Magazziniere m = sessione.getUtente();
         view = new JFrame("Sessione: " + m.getNome() + " " + m.getCognome());
-        rootPanel.setPreferredSize(new Dimension(1000, 750));
-        view.setLocation(200, 0);
+        rootPanel.setPreferredSize(new Dimension(1150, 750));
+        view.setLocation(100, 0);
         view.setContentPane(rootPanel);
         view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -161,11 +161,26 @@ public class SessioneMagazziniereViewPresenter {
                     listaOrdine.add(ao.getOrdine());
                     listOrdiniModel.addElement(ao.getOrdine().getNome());
                 }
-
         listOrdini.setModel(listOrdiniModel);
 
+        //Il database non rimuove un cazzo
+        List<RichiestaArticolo> listRichiesteArticolo = new ArrayList<RichiestaArticolo>();
         List<RichiestaArticolo> listRA = sessione.ottieniListaRichiestaArticoliSede(m.getMagazzino().getSede());
-        for (RichiestaArticolo ra : listRA)
+        for (RichiestaArticolo ra : listRA) {
+            if (listRichiesteArticolo.isEmpty())
+                listRichiesteArticolo.add(ra);
+            else {
+                for (RichiestaArticolo rar : listRichiesteArticolo) {
+                    if (rar.getArticolo().getNome().equals(ra.getArticolo().getNome()) && rar.getQuantita() < ra.getQuantita()) {
+                        listRichiesteArticolo.remove(rar);
+                        sessione.rimuoviRichiesta(rar, m.getMagazzino().getSede());
+                        listRichiesteArticolo.add(ra);
+                    }
+                }
+            }
+        }
+
+        for (RichiestaArticolo ra : listRichiesteArticolo)
             listRichiesteArticoliModel.addElement(ra.getArticolo().getNome() + "   x " + ra.getQuantita() +
                     "  progetto : " + ra.getProgetto().getNome());
         listRichiesteArticoli.setModel(listRichiesteArticoliModel);
@@ -424,14 +439,28 @@ public class SessioneMagazziniereViewPresenter {
                 } else
                     showMessageDialog(getView(), "Il campo \"modifica disponibilità\" non può rimanere vuoto");
                 labelquantitàDisponibile.setText(String.valueOf(am.getDisponibilita()));
-
-                listRichiesteArticoliModel.clear();
                 List<RichiestaArticolo> listRA = sessione.ottieniListaRichiestaArticoliSede(m.getMagazzino().getSede());
                 if (!listRA.equals(null)) {
-                    for (RichiestaArticolo ra : listRA)
-                        listRichiesteArticoliModel.addElement(ra.getArticolo().getNome() + "   x " + ra.getQuantita() +
-                                "  progetto : " + ra.getProgetto().getNome());
-                    listRichiesteArticoli.setModel(listRichiesteArticoliModel);
+                    boolean flag = false;
+                    int indet = -1;
+                    for (RichiestaArticolo ra : listRA) {
+                        if (ra.getArticolo().getNome().equals(am.getArticolo().getNome())) {
+                            flag = true;
+                            indet = listRA.indexOf(ra);
+                        }
+                    }
+                    if (flag) {
+                        if (am.getDisponibilita() >= listRA.get(indet).getQuantita()) {
+                            sessione.rimuoviRichiesta(listRA.get(indet), m.getMagazzino().getSede());
+                            listRichiesteArticoliModel.clear();
+                            List<RichiestaArticolo> listRAr = sessione.ottieniListaRichiestaArticoliSede(m.getMagazzino().getSede());
+                            if (!listRA.equals(null))
+                                for (RichiestaArticolo ra : listRAr)
+                                    listRichiesteArticoliModel.addElement(ra.getArticolo().getNome() + "   x " + ra.getQuantita() +
+                                            "  progetto : " + ra.getProgetto().getNome());
+                            listRichiesteArticoli.setModel(listRichiesteArticoliModel);
+                        }
+                    }
                 }
                 /*listModificaDisponibilitàArticoloMagazzino.clearSelection();
                 labelquantitàDisponibile.setText("");*/

@@ -491,4 +491,10 @@ public class Sistema {
         DBInterface.getInstance().save();
     }
 
+    void rimuoviRichiesta(RichiestaArticolo richiestaArticolo, Sede sede) {
+        List<RichiestaArticolo> listR = ottieniListaRichiestaArticoliSede(sede);
+        listR.remove(richiestaArticolo);
+        DBInterface.getInstance().save();
+    }
+
 }
