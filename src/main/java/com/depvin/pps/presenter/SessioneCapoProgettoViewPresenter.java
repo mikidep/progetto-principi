@@ -6,6 +6,7 @@ import com.depvin.pps.business.UserLoadingException;
 import com.depvin.pps.business.UserNotFoundException;
 import com.depvin.pps.model.CapoProgetto;
 import com.depvin.pps.model.Dipendente;
+import com.depvin.pps.model.Ordine;
 import com.depvin.pps.model.Progetto;
 
 import javax.swing.*;
@@ -77,7 +78,6 @@ public class SessioneCapoProgettoViewPresenter {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
                 listModelDip = new DefaultListModel();
                 int index = listProgetti.getSelectedIndex();
-                //System.out.println(index); //Verrà stampato due volte perchè, ogni volta viene riaggiornata la visibilità delle label
                 Progetto prog = cp.getProgetti().get(index);
                 List<Dipendente> dip = prog.getDipendenti();
                 for (Dipendente d : dip) {
@@ -125,7 +125,6 @@ public class SessioneCapoProgettoViewPresenter {
         stampaOrdinePerProgettoButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 int index = listProgetti.getSelectedIndex();
-                System.out.println(index);
                 Progetto prog = cp.getProgetti().get(index);
                 if (prog.getOrdini().isEmpty())
                     showMessageDialog(getView(), "Il seguente progetto non ha nessun ordine a suo carico");
@@ -157,11 +156,13 @@ public class SessioneCapoProgettoViewPresenter {
             public void actionPerformed(ActionEvent actionEvent) {
                 int indexProg = listProgetti.getSelectedIndex();
                 int indexDip = listDipendenti.getSelectedIndex();
-                System.out.println(indexDip);
-                System.out.println(indexProg);
                 Progetto prog = cp.getProgetti().get(indexProg);
                 Dipendente dip = prog.getDipendenti().get(indexDip);
-                if (prog.getOrdini().isEmpty())
+                boolean ordinePresente = false;
+                for (Ordine o : dip.getOrdini())
+                    if (o.getDipendente().getNome().equals(dip.getNome()))
+                        ordinePresente = true;
+                if (prog.getOrdini().isEmpty() || !ordinePresente)
                     showMessageDialog(getView(), "Il dipendente in questione non ha effettuato nessun ordine");
                 else {
                     //TODO:

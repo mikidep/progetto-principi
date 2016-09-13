@@ -670,7 +670,7 @@ public class SessioneDipendenteViewPresenter {
                 float totale = 0;
                 for (ArticoloOrdine aos : ord.getArticoliOrdine())
                     totale = totale + aos.getParziale();
-                prezzoTotaleLabel.setText(Float.toString(totale));
+                prezzoTotaleLabel.setText(Float.toString(totale) + " €");
 
                 prodottoBox.removeAllItems();
                 prodottoBox.setEnabled(false);
@@ -815,7 +815,7 @@ public class SessioneDipendenteViewPresenter {
                 /*else if (m.find())
                     showMessageDialog(getView(), "Hai inserito caratteri particolari nella quantità");*/
                 else {
-                    Articolo articolo = null;
+                    Articolo articolo;
                     if (ricercaPerNomeField.getText().length() == 0) {
                         Categoria categoria = listCategoria.get(categoriaBox.getSelectedIndex());
                         Prodotto p = categoria.getProdotti().get(prodottoBox.getSelectedIndex());
@@ -878,8 +878,8 @@ public class SessioneDipendenteViewPresenter {
                     for (ArticoloOrdine aos : d.getOrdini().get(innd).getArticoliOrdine())
                         totale = totale + aos.getParziale();
 
-                    prezzoTotaleLabel.setText(Float.toString(totale));
-                    labelEvadiPrezzo.setText(Float.toString(totale));
+                    prezzoTotaleLabel.setText(Float.toString(totale) + " €");
+                    labelEvadiPrezzo.setText(Float.toString(totale) + " €");
 
                     listModelArticoliOrdineCorrente.clear();
                     listOrdineArticoliNuovo.clear();
