@@ -49,9 +49,10 @@ public class Sistema {
         DBInterface.getInstance().save();
     }
 
-    void rimuoviOrdine(Ordine ordine) {
-        Dipendente d = ordine.getDipendente();
-        d.getOrdini().remove(ordine);
+    void rimuoviOrdine(Ordine ordine, Progetto progetto) {
+       /* Dipendente d = ordine.getDipendente();
+        d.getOrdini().remove(ordine);*/
+        progetto.getOrdini().remove(ordine);
         DBInterface.getInstance().save();
     }
 
@@ -494,6 +495,10 @@ public class Sistema {
     void rimuoviRichiesta(RichiestaArticolo richiestaArticolo) {
         Set<RichiestaArticolo> setR = richiestaArticolo.getProgetto().getRichieste();
         setR.remove(richiestaArticolo);
+        DBInterface.getInstance().save();
+    }
+
+    void sistemaSave() {
         DBInterface.getInstance().save();
     }
 

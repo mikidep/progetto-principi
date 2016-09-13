@@ -112,4 +112,8 @@ public class SessioneMagazziniere implements Sessione {
         Sistema.getInstance().rimuoviRichiesta(richiestaArticolo);
     }
 
+    public void sistemaSave() {
+        Sistema.getInstance().sistemaSave();
+    }
+
 }

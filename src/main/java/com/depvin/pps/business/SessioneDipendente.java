@@ -24,8 +24,8 @@ public class SessioneDipendente implements Sessione {
         Sistema.getInstance().inviaOrdine(ordine);
     }
 
-    public void rimuoviOrdine(Ordine ordine) {
-        Sistema.getInstance().rimuoviOrdine(ordine);
+    public void rimuoviOrdine(Ordine ordine, Progetto progetto) {
+        Sistema.getInstance().rimuoviOrdine(ordine, progetto);
     }
 
     public void rimuoviArticoloOrdine(Ordine ordine, ArticoloOrdine articoloOrdine) {

@@ -236,7 +236,7 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
                     <cascade-merge/>
                 </cascade>
             </many-to-one>
-            <one-to-many name="ordini" target-entity="Ordine" mapped-by="progetto">
+            <one-to-many name="ordini" target-entity="Ordine" mapped-by="progetto" orphan-removal="true">
                 <cascade>
                     <cascade-persist/>
                     <cascade-merge/>

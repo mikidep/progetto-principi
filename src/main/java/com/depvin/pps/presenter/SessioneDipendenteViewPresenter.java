@@ -552,9 +552,67 @@ public class SessioneDipendenteViewPresenter {
 
         cancellaOrdineButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
+
                 int indexProg = progettiBox.getSelectedIndex();
+                List<Ordine> listOr = new ArrayList<Ordine>();
+                for (Ordine o : d.getProgetti().get(indexProg).getOrdini())
+                    if (!o.isInviato())
+                        listOr.add(o);
                 int indexOrd = ordiniPendentiList.getSelectedIndex();
-                sessione.rimuoviOrdine(d.getProgetti().get(indexProg).getOrdini().get(indexOrd));
+                sessione.rimuoviOrdine(listOr.get(indexOrd), d.getProgetti().get(indexProg));
+
+                //AGG
+                listModelOrdinePendente.clear();
+                ordiniPendentiList.setModel(listModelOrdinePendente);
+
+                listOrdiniInviatiModel.clear();
+                for (Ordine o : d.getOrdini())
+                    if (o.isInviato()) {
+                        listOrdiniInviatiModel.addElement(o.getNome());
+                    }
+                listOrdiniInviati.setModel(listOrdiniInviatiModel);
+
+                listModelOrdinePendente.clear();
+                ordiniPendentiList.setModel(listModelOrdinePendente);
+
+                listModelArticoliOrdineCorrente.clear();
+                ordineCorrenteList.setModel(listModelArticoliOrdineCorrente);
+
+                listOrdineArticoliNuovo.clear();
+                ordineArticoliNuovoList.setModel(listOrdineArticoliNuovo);
+
+                cancellaOrdineButton.setEnabled(false);
+                modificaOrdineButton.setEnabled(false);
+                modificaQuantitàButton.setEnabled(false);
+                eliminaArticoloDallOrdineButton.setEnabled(false);
+                inviaOrdine.setEnabled(false);
+
+                magazzinoBox.setEnabled(false);
+                magazzinoBox.removeAllItems();
+                magazzinoBox.setSelectedIndex(-1);
+                magazzinoNonBox.setEnabled(false);
+                magazzinoNonBox.removeAllItems();
+                magazzinoNonBox.setSelectedIndex(-1);
+                catalogoQuantitaField.setText("");
+                aggiungiArticoloAllOrdineButton.setEnabled(false);
+                richiestaProgettoBox.setEnabled(false);
+                richiediNotificaButton.setEnabled(false);
+
+                ottieniInformazioniButton.setEnabled(false);
+                ottieniImmagineButton.setEnabled(false);
+
+                listModelArticoliCatalogo.clear();
+                labelEvadiPrezzo.setText("");
+                ordineNomeLabel.setText("");
+                nuovoOrdineLabel.setText("");
+                nomeField.setText("");
+                prezzoTotaleLabel.setText("");
+
+                progettiBox.setSelectedIndex(-1);
+                progettoOrdineBox.setSelectedIndex(-1);
+                //AGG
+
+
             }
         });
 
@@ -715,22 +773,34 @@ public class SessioneDipendenteViewPresenter {
 
         nuovoOrdineButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                if (nomeField.getText().length() == 0 || progettoOrdineBox.getSelectedIndex() == -1)
+                if (nomeField.getText().length() == 0 || progettoOrdineBox.getSelectedIndex() == -1 ||
+                        progettoOrdineBox.getSelectedIndex() == -1)
                     showMessageDialog(getView(), "I campi \"nome ordine\" e \"progetto\" non possono essere lasciati vuoti");
                 else {
-                    int index = progettoOrdineBox.getSelectedIndex();
-                    sessione.aggiungiOrdineProgetto(nomeField.getText(), d.getProgetti().get(index));
-                    aggiungiArticoloAllOrdineButton.setEnabled(true);
-                    nuovoOrdineLabel.setText(nomeField.getText());
-                    ordineNomeLabel.setText(nomeField.getText());
-                    inviaOrdine.setEnabled(true);
+                    if (progettoOrdineBox.getSelectedIndex() >= 0) {
+                        boolean nomeEsisteP = false;
+                        for (Ordine or : d.getProgetti().get(progettoOrdineBox.getSelectedIndex()).getOrdini())
+                            if (or.getNome().equals(nomeField.getText()))
+                                nomeEsisteP = true;
+                        if (!nomeEsisteP) {
+                            int index = progettoOrdineBox.getSelectedIndex();
+                            sessione.aggiungiOrdineProgetto(nomeField.getText(), d.getProgetti().get(index));
+                            aggiungiArticoloAllOrdineButton.setEnabled(true);
+                            nuovoOrdineLabel.setText(nomeField.getText());
+                            ordineNomeLabel.setText(nomeField.getText());
+                            inviaOrdine.setEnabled(true);
 
-                    listOrdineArticoliNuovo.clear();
-                    ordineArticoliNuovoList.setModel(listOrdineArticoliNuovo);
+                            listOrdineArticoliNuovo.clear();
+                            ordineArticoliNuovoList.setModel(listOrdineArticoliNuovo);
 
-                    listModelArticoliOrdineCorrente.clear();
-                    ordineCorrenteList.setModel(listModelArticoliOrdineCorrente);
-
+                            listModelArticoliOrdineCorrente.clear();
+                            ordineCorrenteList.setModel(listModelArticoliOrdineCorrente);
+                        } else {
+                            showMessageDialog(getView(), "Nome già in uso per un'altro ordine nel progetto, sceglierne un'altro");
+                        }
+                    } else {
+                        showMessageDialog(getView(), "Scegli un progetto");
+                    }
                 }
             }
         });
@@ -836,7 +906,6 @@ public class SessioneDipendenteViewPresenter {
 
         ordineCorrenteList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                //inviaOrdine.setEnabled(true);
                 eliminaArticoloDallOrdineButton.setEnabled(true);
                 modificaQuantitàButton.setEnabled(true);
             }

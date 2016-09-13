@@ -271,7 +271,7 @@ public class SessioneMagazziniereViewPresenter {
                     @Override
                     public void windowClosed(WindowEvent e) {
                         super.windowClosed(e);
-                        DBInterface.save();
+                        sessione.sistemaSave();
                     }
                 });
             }
@@ -287,7 +287,7 @@ public class SessioneMagazziniereViewPresenter {
                     @Override
                     public void windowClosed(WindowEvent e) {
                         super.windowClosed(e);
-                        DBInterface.save();
+                        sessione.sistemaSave();
                     }
                 });
             }
