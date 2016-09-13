@@ -162,23 +162,9 @@ public class SessioneMagazziniereViewPresenter {
                 }
         listOrdini.setModel(listOrdiniModel);
 
-        List<RichiestaArticolo> listRichiesteArticolo = new ArrayList<RichiestaArticolo>();
         List<RichiestaArticolo> listRA = sessione.ottieniListaRichiestaArticoliSede(m.getMagazzino().getSede());
-        for (RichiestaArticolo ra : listRA) {
-            if (listRichiesteArticolo.isEmpty())
-                listRichiesteArticolo.add(ra);
-            else {
-                for (RichiestaArticolo rar : listRichiesteArticolo) {
-                    if (rar.getArticolo().getNome().equals(ra.getArticolo().getNome()) && rar.getQuantita() < ra.getQuantita()) {
-                        listRichiesteArticolo.remove(rar);
-                        sessione.rimuoviRichiesta(rar);
-                        listRichiesteArticolo.add(ra);
-                    }
-                }
-            }
-        }
 
-        for (RichiestaArticolo ra : listRichiesteArticolo)
+        for (RichiestaArticolo ra : listRA)
             listRichiesteArticoliModel.addElement(ra.getArticolo().getNome() + "   x " + ra.getQuantita() +
                     "  progetto : " + ra.getProgetto().getNome());
         listRichiesteArticoli.setModel(listRichiesteArticoliModel);
@@ -767,7 +753,7 @@ public class SessioneMagazziniereViewPresenter {
         });
 
     }
-
+    
     public void show() {
         view.setVisible(true);
     }
