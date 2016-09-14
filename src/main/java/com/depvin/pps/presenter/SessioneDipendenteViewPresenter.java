@@ -82,7 +82,8 @@ public class SessioneDipendenteViewPresenter {
         this.sessione = sessione;
         final Dipendente d = sessione.getUtente();
         view = new JFrame("Sessione: " + d.getNome() + " " + d.getCognome());
-        final Pattern pattern = Pattern.compile("[a-zA-Z_-|\"£$%&/()=?^'/òçèé+*ù§à°#@{};:.]");
+        //final Pattern pattern = Pattern.compile("[a-zA-Z_-|\"£$%&/()=?^'/òçèé+*ù§à°#@{};:.]");
+        final Pattern pattern = Pattern.compile("[^0-9]");
         rootPanel.setPreferredSize(new Dimension(1200, 700));
         view.setLocation(80, 0);
         view.setContentPane(rootPanel);
