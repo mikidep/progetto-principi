@@ -27,4 +27,9 @@ public class RichiestaArticolo {
     public int getQuantita() {
         return quantita;
     }
+
+    public void setQuantita(int quantita) {
+        this.quantita = quantita;
+    }
+
 }

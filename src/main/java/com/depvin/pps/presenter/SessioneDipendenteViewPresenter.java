@@ -1111,8 +1111,9 @@ public class SessioneDipendenteViewPresenter {
                         int qt = richiesta.getQuantita();
                         int qt2 = Integer.parseInt(catalogoQuantitaField.getText());
                         int totale = qt + qt2;
-                        //richiesta.setQuantita(totale);
-                        //sessione.sistemaSave();
+                        richiesta.setQuantita(totale);
+                        sessione.sistemaSave();
+                        showMessageDialog(getView(), "Richiesta già presente, quantità aggiornata");
                     } else {
                         sessione.creaNotifica(articolo, progetto, Integer.parseInt(catalogoQuantitaField.getText()));
                         showMessageDialog(getView(), "Richiesta inviata con successo");
