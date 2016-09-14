@@ -1095,8 +1095,28 @@ public class SessioneDipendenteViewPresenter {
                     }
                     int indexProgetto = richiestaProgettoBox.getSelectedIndex();
                     Progetto progetto = d.getProgetti().get(indexProgetto);
-                    sessione.creaNotifica(articolo, progetto, Integer.parseInt(catalogoQuantitaField.getText()));
-                    showMessageDialog(getView(), "Richiesta inviata con successo");
+
+                    List<RichiestaArticolo> listRichieste = sessione.ottieniListaRichiestaArticoliSede(progetto.getSede());
+                    boolean richiestaPresente = false;
+                    int indice = -1;
+                    for (RichiestaArticolo ra : listRichieste)
+                        if (ra.getArticolo().getNome().equals(articolo.getNome()) &&
+                                ra.getProgetto().getNome().equals(progetto.getNome())) {
+                            richiestaPresente = true;
+                            indice = listRichieste.indexOf(ra);
+                        }
+
+                    if (richiestaPresente) {
+                        RichiestaArticolo richiesta = listRichieste.get(indice);
+                        int qt = richiesta.getQuantita();
+                        int qt2 = Integer.parseInt(catalogoQuantitaField.getText());
+                        int totale = qt + qt2;
+                        //richiesta.setQuantita(totale);
+                        //sessione.sistemaSave();
+                    } else {
+                        sessione.creaNotifica(articolo, progetto, Integer.parseInt(catalogoQuantitaField.getText()));
+                        showMessageDialog(getView(), "Richiesta inviata con successo");
+                    }
                 }
             }
         });

@@ -74,4 +74,17 @@ public class SessioneDipendente implements Sessione {
         Sistema.getInstance().modificaDisponibilitàArticoloOrdine(articoloOrdine, disponibilità);
     }
 
+    public List<Articolo> ottieniListaArticoliRichiestiiProgetto(Progetto progetto) {
+        return Sistema.getInstance().ottieniListaArticoliRichiestiProgetto(progetto);
+    }
+
+    public List<RichiestaArticolo> ottieniListaRichiestaArticoliSede(Sede sede) {
+        return Sistema.getInstance().ottieniListaRichiestaArticoliSede(sede);
+    }
+
+    public void sistemaSave() {
+        Sistema.getInstance().sistemaSave();
+    }
+
+
 }
