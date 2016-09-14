@@ -732,9 +732,12 @@ public class SessioneDipendenteViewPresenter {
 
         modificaQuantitàButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
+                Matcher m = pattern.matcher(catalogoQuantitaField.getText());
                 if (ordineQuantitaField.getText().length() == 0)
                     showMessageDialog(getView(), "Il campo \"Inserire nuova quantità\" non può essere lasciato vuoto");
-                else if (ordineQuantitaField.getText().contains(",") || ordineQuantitaField.getText().contains(".") || Integer.parseInt(ordineQuantitaField.getText()) < 0)
+                /*else if (ordineQuantitaField.getText().contains(",") || ordineQuantitaField.getText().contains(".") ||
+                        Integer.parseInt(ordineQuantitaField.getText()) < 0)*/
+                else if (m.find())
                     showMessageDialog(getView(), "La quantità deve essere un numero intero positivo!");
                 else {
                     int index = 0;
