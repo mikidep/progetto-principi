@@ -7,9 +7,6 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by costantino on 31/05/16.
- */
 public class CategoriaDAOTest {
     @Test
     public void getAllCategorie() throws Exception {

@@ -4,9 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by Michele De Pascalis on 30/11/15.
- */
 
 public class Ordine {
     private long id;

@@ -1,8 +1,5 @@
 package com.depvin.pps.dbinterface;
 
-/**
- * Created by Michele De Pascalis on 05/12/15.
- */
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

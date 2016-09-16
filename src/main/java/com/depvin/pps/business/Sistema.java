@@ -13,9 +13,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
-/**
- * Created by costantino on 05/12/15.
- */
 public class Sistema {
 
     private static Sistema ourInstance;

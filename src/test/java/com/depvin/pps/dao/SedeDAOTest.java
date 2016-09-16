@@ -5,9 +5,6 @@ import org.junit.Test;
 
 import java.util.List;
 
-/**
- * Created by costantino on 31/05/16.
- */
 public class SedeDAOTest {
     @Test
     public void getAllCategorie() throws Exception {

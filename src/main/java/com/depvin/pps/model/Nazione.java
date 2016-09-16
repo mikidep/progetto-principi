@@ -1,8 +1,5 @@
 package com.depvin.pps.model;
 
-/**
- * Created by Michele De Pascalis on 30/11/15.
- */
 
 public class Nazione {
     public static final float PREZZO_SPEDIZIONE_INTERNAZIONALE = 10.00f;

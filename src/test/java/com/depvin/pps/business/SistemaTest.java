@@ -8,9 +8,6 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by costantino on 17/05/16.
- */
 public class SistemaTest {
     @Test
     public void articoliToPDFBytes() throws Exception {

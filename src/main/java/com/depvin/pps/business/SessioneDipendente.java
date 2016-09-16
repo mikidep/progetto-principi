@@ -5,9 +5,6 @@ import com.depvin.pps.model.*;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
-/**
- * Created by costantino on 05/12/15.
- */
 public class SessioneDipendente implements Sessione {
 
     private Dipendente dipendente;

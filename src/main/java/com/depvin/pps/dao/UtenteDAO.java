@@ -1,8 +1,5 @@
 package com.depvin.pps.dao;
 
-/**
- * Created by Michele De Pascalis on 05/12/15.
- */
 
 import com.depvin.pps.dbinterface.DBInterface;
 import com.depvin.pps.model.*;

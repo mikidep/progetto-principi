@@ -3,9 +3,6 @@ package com.depvin.pps.model;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by Michele De Pascalis on 30/11/15.
- */
 
 public class Progetto {
     private long id;

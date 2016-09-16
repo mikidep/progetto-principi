@@ -1,9 +1,5 @@
 package com.depvin.pps.dao;
 
-/**
- * Created by costantino on 31/05/16.
- */
-
 import com.depvin.pps.dbinterface.DBInterface;
 import com.depvin.pps.model.Sede;
 

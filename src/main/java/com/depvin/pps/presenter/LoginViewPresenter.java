@@ -12,9 +12,6 @@ import java.util.concurrent.ExecutionException;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static javax.swing.JOptionPane.showMessageDialog;
 
-/**
- * Created by costantino on 24/05/16.
- */
 public class LoginViewPresenter {
     private JFrame view;
     private JPanel rootPanel;

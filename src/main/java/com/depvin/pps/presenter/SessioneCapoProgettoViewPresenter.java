@@ -24,9 +24,6 @@ import java.util.List;
 
 import static javax.swing.JOptionPane.showMessageDialog;
 
-/**
- * Created by costantino on 24/05/16.
- */
 public class SessioneCapoProgettoViewPresenter {
 
     SessioneCapoProgetto sessione;

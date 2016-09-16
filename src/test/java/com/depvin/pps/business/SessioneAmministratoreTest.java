@@ -5,9 +5,6 @@ import com.depvin.pps.model.Nazione;
 import com.depvin.pps.model.Sede;
 import org.junit.Test;
 
-/**
- * Created by costantino on 24/05/16.
- */
 public class SessioneAmministratoreTest {
 
     @Test

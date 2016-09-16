@@ -22,9 +22,6 @@ import java.awt.Color;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by costantino on 24/05/16.
- */
 
 public class SessioneDipendenteViewPresenter {
     SessioneDipendente sessione;

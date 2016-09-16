@@ -3,9 +3,6 @@ package com.depvin.pps.model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Michele De Pascalis on 27/11/15.
- */
 
 public class Categoria {
     private long id;

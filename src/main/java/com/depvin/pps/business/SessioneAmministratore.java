@@ -4,9 +4,6 @@ import com.depvin.pps.model.*;
 
 import java.util.List;
 
-/**
- * Created by costantino on 05/12/15.
- */
 public class SessioneAmministratore implements Sessione {
 
     private Amministratore amministratore;

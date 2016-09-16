@@ -1,8 +1,5 @@
 package com.depvin.pps.model;
 
-/**
- * Created by Michele De Pascalis on 30/11/15.
- */
 public class ArticoloOrdine {
     private long id;
     private Articolo articolo;
