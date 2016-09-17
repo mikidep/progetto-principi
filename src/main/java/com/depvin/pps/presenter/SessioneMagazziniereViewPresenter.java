@@ -5,6 +5,7 @@ import com.depvin.pps.business.ReportCreationFailedException;
 import com.depvin.pps.business.SessioneMagazziniere;
 import com.depvin.pps.dbinterface.DBInterface;
 import com.depvin.pps.model.*;
+import org.eclipse.persistence.sessions.Login;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -22,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static javax.swing.JOptionPane.showMessageDialog;
 
@@ -92,6 +95,7 @@ public class SessioneMagazziniereViewPresenter {
         view.setLocation(100, 0);
         view.setContentPane(rootPanel);
         view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        final Pattern pattern = Pattern.compile("[^0-9]");
 
         List<ArticoloMagazzino> listAM = m.getMagazzino().getArticoliMagazzino();
         List<Articolo> listAAA = new ArrayList<Articolo>();
@@ -141,7 +145,6 @@ public class SessioneMagazziniereViewPresenter {
 
         listModificaArticoloMagazzino.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         listModificaArticoloMagazzino.setVisible(true);
-
 
         for (ArticoloMagazzino am : m.getMagazzino().getArticoliMagazzino())
             listArticoliMagazzinoModel.addElement(am.getArticolo().getNome());
@@ -413,12 +416,14 @@ public class SessioneMagazziniereViewPresenter {
 
         confermaModificaButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
+                Matcher ma = pattern.matcher(quantitàFieldMod.getText());
                 int index = listModificaDisponibilitàArticoloMagazzino.getSelectedIndex();
                 ArticoloMagazzino am = m.getMagazzino().getArticoliMagazzino().get(index);
-                if (quantitàFieldMod.getText().length() != 0) {
+                if (quantitàFieldMod.getText().length() != 0 && !ma.find()) {
                     sessione.modificaQuantitàArticolo(am, Integer.parseInt(quantitàFieldMod.getText()), m.getMagazzino());
                 } else
-                    showMessageDialog(getView(), "Il campo \"modifica disponibilità\" non può rimanere vuoto");
+                    showMessageDialog(getView(), "Il campo \"modifica disponibilità\" non può rimanere vuoto e" +
+                            " devono essere inserite solo cifre");
                 labelquantitàDisponibile.setText(String.valueOf(am.getDisponibilita()));
                 List<RichiestaArticolo> listRA = sessione.ottieniListaRichiestaArticoliSede(m.getMagazzino().getSede());
                 if (!listRA.equals(null)) {
@@ -748,6 +753,16 @@ public class SessioneMagazziniereViewPresenter {
                 }
             }
         });
+
+        /*view.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                e.getWindow().dispose();
+                LoginViewPresenter log = new LoginViewPresenter();
+                log.show();
+            }
+        });*/
 
     }
     
