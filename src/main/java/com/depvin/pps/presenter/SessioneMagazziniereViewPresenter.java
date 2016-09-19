@@ -91,8 +91,8 @@ public class SessioneMagazziniereViewPresenter {
         this.sessione = sessione;
         final Magazziniere m = sessione.getUtente();
         view = new JFrame("Sessione: " + m.getNome() + " " + m.getCognome());
-        rootPanel.setPreferredSize(new Dimension(1150, 750));
-        view.setLocation(100, 0);
+        rootPanel.setPreferredSize(new Dimension(1250, 750));
+        view.setLocation(50, 0);
         view.setContentPane(rootPanel);
         view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         final Pattern pattern = Pattern.compile("[^0-9]");

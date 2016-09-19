@@ -616,71 +616,75 @@ public class SessioneDipendenteViewPresenter {
 
         modificaOrdineButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                int indexProg = progettiBox.getSelectedIndex();
-                int indexOrd = ordiniPendentiList.getSelectedIndex();
+                try {
+                    int indexProg = progettiBox.getSelectedIndex();
+                    int indexOrd = ordiniPendentiList.getSelectedIndex();
 
-                catalogoQuantitaField.setText("");
-                aggiungiArticoloAllOrdineButton.setEnabled(false);
-                listModelArticoliCatalogo.clear();
-                articoloCatList.setModel(listModelArticoliCatalogo);
-                magazzinoBox.setEnabled(false);
-                magazzinoBox.removeAllItems();
-                magazzinoBox.setSelectedIndex(-1);
-                magazzinoNonBox.setEnabled(false);
-                magazzinoNonBox.removeAllItems();
-                magazzinoNonBox.setSelectedIndex(-1);
-                articoloCatList.setEnabled(false);
-                richiestaProgettoBox.setEnabled(false);
+                    catalogoQuantitaField.setText("");
+                    aggiungiArticoloAllOrdineButton.setEnabled(false);
+                    listModelArticoliCatalogo.clear();
+                    articoloCatList.setModel(listModelArticoliCatalogo);
+                    magazzinoBox.setEnabled(false);
+                    magazzinoBox.removeAllItems();
+                    magazzinoBox.setSelectedIndex(-1);
+                    magazzinoNonBox.setEnabled(false);
+                    magazzinoNonBox.removeAllItems();
+                    magazzinoNonBox.setSelectedIndex(-1);
+                    articoloCatList.setEnabled(false);
+                    richiestaProgettoBox.setEnabled(false);
 
-                Progetto prog = d.getProgetti().get(indexProg);
+                    Progetto prog = d.getProgetti().get(indexProg);
 
-                //Ordine ord = prog.getOrdini().get(indexOrd);
-                List<Ordine> listO = new ArrayList<Ordine>();
-                for (Ordine o : prog.getOrdini())
-                    if (!o.isInviato())
-                        listO.add(o);
-                Ordine ord = listO.get(indexOrd);
+                    //Ordine ord = prog.getOrdini().get(indexOrd);
+                    List<Ordine> listO = new ArrayList<Ordine>();
+                    for (Ordine o : prog.getOrdini())
+                        if (!o.isInviato())
+                            listO.add(o);
+                    Ordine ord = listO.get(indexOrd);
 
-                listModelArticoliOrdineCorrente.clear();
-                for (ArticoloOrdine ao : ord.getArticoliOrdine()) {
+                    listModelArticoliOrdineCorrente.clear();
+                    for (ArticoloOrdine ao : ord.getArticoliOrdine()) {
 
-                    String newBudget = Float.toString(ao.getArticolo().getPrezzo());
-                    newBudget = newBudget.replaceAll(",", ".");
-                    if (!newBudget.contains("."))
-                        newBudget = newBudget + ".00";
-                    float budget = Float.parseFloat(newBudget);
+                        String newBudget = Float.toString(ao.getArticolo().getPrezzo());
+                        newBudget = newBudget.replaceAll(",", ".");
+                        if (!newBudget.contains("."))
+                            newBudget = newBudget + ".00";
+                        float budget = Float.parseFloat(newBudget);
 
-                    listModelArticoliOrdineCorrente.addElement(ao.getArticolo().getNome() + "     x " + ao.getQuantita() +
-                            "     : " + budget + " €" + "   Mag. : " + ao.getMagazzino().getNome());
+                        listModelArticoliOrdineCorrente.addElement(ao.getArticolo().getNome() + "     x " + ao.getQuantita() +
+                                "     : " + budget + " €" + "   Mag. : " + ao.getMagazzino().getNome());
+                    }
+                    ordineCorrenteList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+                    ordineArticoliNuovoList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+                    ordineCorrenteList.setModel(listModelArticoliOrdineCorrente);
+                    ordineArticoliNuovoList.setModel(listModelArticoliOrdineCorrente);
+                    ordineCorrenteList.setVisible(true);
+                    ordineArticoliNuovoList.setVisible(true);
+                    inviaOrdine.setEnabled(true);
+                    modificaQuantitàButton.setEnabled(true);
+                    nuovoOrdineButton.setEnabled(false);
+                    abilitaNuovoOrdineButton.setEnabled(true);
+                    ordineNomeLabel.setText(ord.getNome());
+                    nuovoOrdineLabel.setText(ord.getNome());
+                    float totale = 0;
+                    for (ArticoloOrdine aos : ord.getArticoliOrdine())
+                        totale = totale + aos.getParziale();
+                    prezzoTotaleLabel.setText(Float.toString(totale) + " €");
+
+                    prodottoBox.removeAllItems();
+                    prodottoBox.setEnabled(false);
+
+                    catalogoQuantitaField.setEnabled(false);
+                    eliminaArticoloDallOrdineButton.setEnabled(false);
+
+                    listModelArticoliCatalogo.clear();
+                    articoloCatList.setModel(listModelArticoliCatalogo);
+
+                    labelEvadiPrezzo.setText(Float.toString(totale) + " €");
+                    modificaQuantitàButton.setEnabled(false);
+                } catch (ArrayIndexOutOfBoundsException e) {
+
                 }
-                ordineCorrenteList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-                ordineArticoliNuovoList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-                ordineCorrenteList.setModel(listModelArticoliOrdineCorrente);
-                ordineArticoliNuovoList.setModel(listModelArticoliOrdineCorrente);
-                ordineCorrenteList.setVisible(true);
-                ordineArticoliNuovoList.setVisible(true);
-                inviaOrdine.setEnabled(true);
-                modificaQuantitàButton.setEnabled(true);
-                nuovoOrdineButton.setEnabled(false);
-                abilitaNuovoOrdineButton.setEnabled(true);
-                ordineNomeLabel.setText(ord.getNome());
-                nuovoOrdineLabel.setText(ord.getNome());
-                float totale = 0;
-                for (ArticoloOrdine aos : ord.getArticoliOrdine())
-                    totale = totale + aos.getParziale();
-                prezzoTotaleLabel.setText(Float.toString(totale) + " €");
-
-                prodottoBox.removeAllItems();
-                prodottoBox.setEnabled(false);
-
-                catalogoQuantitaField.setEnabled(false);
-                eliminaArticoloDallOrdineButton.setEnabled(false);
-
-                listModelArticoliCatalogo.clear();
-                articoloCatList.setModel(listModelArticoliCatalogo);
-
-                labelEvadiPrezzo.setText(Float.toString(totale) + " €");
-                modificaQuantitàButton.setEnabled(false);
             }
         });
 
@@ -744,30 +748,42 @@ public class SessioneDipendenteViewPresenter {
                     Ordine ordine = d.getOrdini().get(index);
                     int indexArt = ordineCorrenteList.getSelectedIndex();
                     ArticoloOrdine ao = ordine.getArticoliOrdine().get(indexArt);
-                    sessione.modificaDisponibilitàArticoloOrdine(ao, Integer.parseInt(ordineQuantitaField.getText()));
-                    listModelArticoliOrdineCorrente.clear();
-                    listOrdineArticoliNuovo.clear();
-                    float app = 0;
-                    for (ArticoloOrdine aor : ordine.getArticoliOrdine()) {
+                    //Controllare se sta nelle quantità richieste
+                    Magazzino maga = ao.getMagazzino();
+                    List<ArticoloMagazzino> listma = maga.getArticoliMagazzino();
+                    int indec = -1;
+                    for (ArticoloMagazzino aa : listma)
+                        if (aa.getArticolo().getNome().equals(ao.getArticolo().getNome()))
+                            indec = listma.indexOf(aa);
+                    ArticoloMagazzino artic = listma.get(indec);
+                    if (artic.getDisponibilita() >= Integer.parseInt(ordineQuantitaField.getText())) {
+                        sessione.modificaDisponibilitàArticoloOrdine(ao, Integer.parseInt(ordineQuantitaField.getText()));
+                        listModelArticoliOrdineCorrente.clear();
+                        listOrdineArticoliNuovo.clear();
+                        float app = 0;
+                        for (ArticoloOrdine aor : ordine.getArticoliOrdine()) {
 
-                        String newBudget = Float.toString(aor.getArticolo().getPrezzo());
-                        newBudget = newBudget.replaceAll(",", ".");
-                        if (!newBudget.contains("."))
-                            newBudget = newBudget + ".00";
-                        float budget = Float.parseFloat(newBudget);
+                            String newBudget = Float.toString(aor.getArticolo().getPrezzo());
+                            newBudget = newBudget.replaceAll(",", ".");
+                            if (!newBudget.contains("."))
+                                newBudget = newBudget + ".00";
+                            float budget = Float.parseFloat(newBudget);
 
-                        listModelArticoliOrdineCorrente.addElement(aor.getArticolo().getNome() + "     x " + aor.getQuantita() +
-                                "     : " + budget + " €" + "   Mag. : " + aor.getMagazzino().getNome());
-                        listOrdineArticoliNuovo.addElement(aor.getArticolo().getNome() + "     x " + aor.getQuantita() +
-                                "     : " + budget + " €" + "   Mag. : " + aor.getMagazzino().getNome());
-                        app = app + (budget * aor.getQuantita());
+                            listModelArticoliOrdineCorrente.addElement(aor.getArticolo().getNome() + "     x " + aor.getQuantita() +
+                                    "     : " + budget + " €" + "   Mag. : " + aor.getMagazzino().getNome());
+                            listOrdineArticoliNuovo.addElement(aor.getArticolo().getNome() + "     x " + aor.getQuantita() +
+                                    "     : " + budget + " €" + "   Mag. : " + aor.getMagazzino().getNome());
+                            app = app + (budget * aor.getQuantita());
+                        }
+                        labelEvadiPrezzo.setText(Float.toString(app) + " €");
+                        prezzoTotaleLabel.setText(Float.toString(app) + " €");
+                        ordineCorrenteList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+                        ordineArticoliNuovoList.setModel(listOrdineArticoliNuovo);
+                        ordineCorrenteList.setModel(listModelArticoliOrdineCorrente);
+                        modificaQuantitàButton.setEnabled(false);
+                    } else {
+                        showMessageDialog(getView(), "Quantità non disponibili nel magazzino");
                     }
-                    labelEvadiPrezzo.setText(Float.toString(app) + " €");
-                    prezzoTotaleLabel.setText(Float.toString(app) + " €");
-                    ordineCorrenteList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-                    ordineArticoliNuovoList.setModel(listOrdineArticoliNuovo);
-                    ordineCorrenteList.setModel(listModelArticoliOrdineCorrente);
-                    modificaQuantitàButton.setEnabled(false);
                 }
             }
         });
