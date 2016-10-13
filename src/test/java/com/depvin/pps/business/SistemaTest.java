@@ -19,7 +19,7 @@ public class SistemaTest {
         Fornitore fo = new Fornitore("mammata");
         List<Fornitore> fol = new ArrayList<Fornitore>();
         fol.add(fo);
-        Articolo a = new Articolo("Teaser", "Abbastanza cancro", 12.98f, pr, p, fol);
+        Articolo a = new Articolo("Teaser", "Abbastanza cancro", 12.98f, "", pr, p, fol);
         Dipendente d = new Dipendente("OPPSS", "Ilik".getBytes());
         Nazione nazione = new Nazione("Fanculandia", 5.60f);
         Sede sede = new Sede("Sede di Fanculo", nazione);

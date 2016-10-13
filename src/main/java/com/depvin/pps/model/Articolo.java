@@ -9,16 +9,18 @@ public class Articolo {
     private String descrizione;
     private byte[] immagine;
     private float prezzo;
+    private String url;
     private Prodotto prodotto;
     private Produttore produttore;
     private List<Fornitore> fornitori;
     private List<ArticoloOrdine> inOrdine;
     private List<ArticoloMagazzino> inMagazzino;
 
-    public Articolo(String nome, String descrizione, float prezzo, Prodotto prodotto, Produttore produttore, List<Fornitore> fornitori) {
+    public Articolo(String nome, String descrizione, float prezzo, String url, Prodotto prodotto, Produttore produttore, List<Fornitore> fornitori) {
         this.nome = nome;
         this.descrizione = descrizione;
         this.prezzo = prezzo;
+        this.url = url;
         this.prodotto = prodotto;
         this.produttore = produttore;
         this.fornitori = fornitori;
@@ -62,6 +64,14 @@ public class Articolo {
 
     public void setPrezzo(float prezzo) {
         this.prezzo = prezzo;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public Prodotto getProdotto() {

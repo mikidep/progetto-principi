@@ -77,6 +77,7 @@ public class SessioneMagazziniereViewPresenter {
     private JButton selezionaFornitoriButton;
     private JButton scegliFornitoriButton;
     private JButton scegliCategorieButton;
+    private JTextField fieldUrl;
 
     private DefaultListModel listArticoliDisponibiliOrdineModel;
     private DefaultListModel listOrdiniModel;
@@ -351,8 +352,9 @@ public class SessioneMagazziniereViewPresenter {
                                 lp.add(p);
                         prodotto = lp.get(prodottoBox.getSelectedIndex());
                     }
+                    String url = "";
                     Articolo articolo = new Articolo(nomeField.getText(), descrizioneField.getText(),
-                            budget, prodotto, produttore, fornitoriNuovo);
+                            budget, url, prodotto, produttore, fornitoriNuovo);
                     try {
                         BufferedImage img = ImageIO.read(new File(immagineField.getText()));
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -492,6 +494,7 @@ public class SessioneMagazziniereViewPresenter {
                 showMessageDialog(getView(), "Nome : " + am.getArticolo().getNome() + "\n" +
                         "Descrizione : " + am.getArticolo().getDescrizione() + "\n" +
                         "Prezzo : " + am.getArticolo().getPrezzo() + "\n" +
+                        "Url: " + am.getArticolo().getUrl() + "\n" +
                         "Categoria : " + listCatBuff + "\n" +
                         "Prodotto : " + am.getArticolo().getProdotto().getNome() + "\n" +
                         "Produttore : " + am.getArticolo().getProduttore().getNome() + "\n" +
@@ -525,7 +528,8 @@ public class SessioneMagazziniereViewPresenter {
                 if (prodottoModificaField.getText().length() == 0 &&
                         produttoreModificaField.getText().length() == 0 && nomeModificaField.getText().length() == 0 &&
                         prezzoModificaField.getText().length() == 0 &&
-                        descrizioneModificaField.getText().length() == 0 && immagineModificaField.getText().length() == 0) {
+                        descrizioneModificaField.getText().length() == 0 && immagineModificaField.getText().length() == 0
+                        && fieldUrl.getText().length() == 0) {
                     showMessageDialog(getView(), "Nessuna modifica compiuta, tutti i campi sono vuoti");
                 } else {
                     int index = listModificaArticoloMagazzino.getSelectedIndex();
@@ -562,6 +566,11 @@ public class SessioneMagazziniereViewPresenter {
                             showMessageDialog(getView(), "Modica avvenuta con successo");
                         } catch (IOException e) {
                         }
+                    }
+                    if (fieldUrl.getText().length() != 0) {
+                        ArticoloMagazzino ams = m.getMagazzino().getArticoliMagazzino().get(index);
+                        ams.getArticolo().setUrl(fieldUrl.getText());
+                        sessione.sistemaSave();
                     }
                     listArticoliMagazzinoModel.clear();
                     for (ArticoloMagazzino artm : m.getMagazzino().getArticoliMagazzino())
